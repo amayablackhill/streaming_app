@@ -9,9 +9,12 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -36,11 +39,37 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $user = new User();
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+
+        if (Schema::hasColumn('users', 'name')) {
+            $user->name = $request->name;
+        }
+
+        if (Schema::hasColumn('users', 'username')) {
+            $user->username = $request->name;
+        }
+
+        if (Schema::hasColumn('users', 'role_id')) {
+            $defaultRoleId = null;
+            if (Schema::hasTable('roles')) {
+                $defaultRoleId = DB::table('roles')
+                    ->whereRaw('LOWER(name) = ?', ['user'])
+                    ->value('id');
+            }
+
+            $user->role_id = $defaultRoleId ?? 2;
+        }
+
+        $user->save();
+
+        if (class_exists(Role::class)) {
+            $role = Role::query()->where('name', 'user')->first();
+            if ($role) {
+                $user->syncRoles([$role->name]);
+            }
+        }
 
         event(new Registered($user));
 
