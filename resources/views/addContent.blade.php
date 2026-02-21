@@ -13,6 +13,14 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add New Content</h2>
+                        @if (session('video_asset_id'))
+                            <div class="mb-4 rounded border border-green-200 bg-green-50 p-3 text-sm">
+                                Video pipeline started.
+                                <a class="text-blue-600 underline" href="{{ route('video-assets.show', session('video_asset_id')) }}">
+                                    Open playback/status page
+                                </a>
+                            </div>
+                        @endif
                         
                         <form action="{{ route('content.add') }}" method="POST" enctype="multipart/form-data" class="max-w-2xl mx-auto">
                             @csrf

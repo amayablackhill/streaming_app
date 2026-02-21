@@ -18,12 +18,14 @@ class ProbeVideoJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private const MAX_DEMO_DURATION_SECONDS = 20.0;
+
     public int $tries = 3;
     public int $timeout = 300;
-    public string $queue = 'video';
 
     public function __construct(public int $videoAssetId)
     {
+        $this->onQueue('video');
     }
 
     public function handle(): void
@@ -81,8 +83,21 @@ class ProbeVideoJob implements ShouldQueue
             fn (array $stream): bool => ($stream['codec_type'] ?? null) === 'video'
         );
 
+        $duration = isset($probeData['format']['duration']) ? (float) $probeData['format']['duration'] : null;
+        if ($duration !== null && $duration > self::MAX_DEMO_DURATION_SECONDS) {
+            $this->markFailed(
+                $videoAsset,
+                sprintf(
+                    'Demo clip duration %.2fs exceeds max allowed %.2fs.',
+                    $duration,
+                    self::MAX_DEMO_DURATION_SECONDS
+                )
+            );
+            return;
+        }
+
         $videoAsset->update([
-            'duration_seconds' => isset($probeData['format']['duration']) ? (float) $probeData['format']['duration'] : null,
+            'duration_seconds' => $duration,
             'width' => $videoStream['width'] ?? null,
             'height' => $videoStream['height'] ?? null,
             'video_bitrate' => isset($videoStream['bit_rate'])

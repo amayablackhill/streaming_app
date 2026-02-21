@@ -24,7 +24,7 @@ class ContentRequest extends FormRequest
             'rating' => 'nullable|numeric|between:0,100',
             'type' => 'nullable|string',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
-            'video' => 'nullable|mimetypes:video/mp4',
+            'video' => 'nullable|mimetypes:video/mp4|max:25600',
         ];
     }
 
@@ -33,6 +33,7 @@ class ContentRequest extends FormRequest
         return [
             'genre_id.exists' => 'The selected genre does not exist.',
             'picture.max' => 'The image size should not exceed 50MB.',
+            'video.max' => 'The demo clip must be 25MB or smaller.',
 
         ];
     }

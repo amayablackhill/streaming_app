@@ -20,10 +20,10 @@ class TranscodeToHlsJob implements ShouldQueue
 
     public int $tries = 3;
     public int $timeout = 3600;
-    public string $queue = 'video';
 
     public function __construct(public int $videoAssetId)
     {
+        $this->onQueue('video');
     }
 
     public function handle(): void
@@ -93,8 +93,19 @@ class TranscodeToHlsJob implements ShouldQueue
         }
 
         if (!Storage::disk($videoAsset->hls_disk)->exists($masterPath)) {
-            $this->markFailed($videoAsset, 'HLS transcoding finished but master playlist was not generated.');
-            return;
+            if (!Storage::disk($videoAsset->hls_disk)->exists($playlistPath)) {
+                $this->markFailed($videoAsset, 'HLS transcoding finished but variant playlist was not generated.');
+                return;
+            }
+
+            $masterBody = implode("\n", [
+                '#EXTM3U',
+                '#EXT-X-VERSION:3',
+                '#EXT-X-STREAM-INF:BANDWIDTH=2800000,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2"',
+                'v0/index.m3u8',
+                '',
+            ]);
+            Storage::disk($videoAsset->hls_disk)->put($masterPath, $masterBody);
         }
 
         $videoAsset->update([

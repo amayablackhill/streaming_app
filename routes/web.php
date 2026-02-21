@@ -6,6 +6,8 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicApiController;
 use App\Http\Controllers\SeasonEpisodeController;
+use App\Http\Controllers\VideoAssetController;
+use App\Http\Controllers\VideoPipelineHealthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CatalogController::class, 'index']);
@@ -48,6 +50,9 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/seasons/{id}/episodes/{episodeId}/edit', [AdminPageController::class, 'editEpisodeForm'])->name('episodes.edit');
     Route::post('/seasons/{id}/episodes/{episodeId}/edit', [SeasonEpisodeController::class, 'updateEpisode'])->name('episodes.update');
     Route::get('/getMovies', [AdminPageController::class, 'getMovies']);
+    Route::get('/video-assets/{videoAsset}', [VideoAssetController::class, 'show'])->name('video-assets.show');
+    Route::get('/video-assets/{videoAsset}/status', [VideoAssetController::class, 'status'])->name('video-assets.status');
+    Route::get('/health/video-pipeline', VideoPipelineHealthController::class)->name('admin.health.video-pipeline');
 
     Route::fallback([AdminPageController::class, 'fallback']);
 });

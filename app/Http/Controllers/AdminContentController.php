@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContentRequest;
+use App\Jobs\CleanupSourceJob;
+use App\Jobs\GenerateThumbnailsJob;
+use App\Jobs\ProbeVideoJob;
+use App\Jobs\TranscodeToHlsJob;
 use App\Models\Content;
+use App\Models\VideoAsset;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use Illuminate\Support\Str;
 
 class AdminContentController extends Controller
 {
@@ -15,7 +20,7 @@ class AdminContentController extends Controller
         $this->authorize('create', Content::class);
 
         return DB::transaction(function () use ($request) {
-            Content::create([
+            $content = Content::create([
                 'title' => $request->title,
                 'description' => $request->description,
                 'release_date' => $request->release_date,
@@ -25,10 +30,21 @@ class AdminContentController extends Controller
                 'duration' => $request->duration,
                 'type' => $request->type,
                 'picture' => $this->handleImageUpload($request),
-                'video' => $this->handleVideoUpload($request),
+                'video' => null,
             ]);
 
-            return redirect()->route('content.add')->with('success', __('Content created successfully'));
+            $videoAsset = $this->queueVideoProcessing($request, $content);
+            if ($videoAsset) {
+                $content->update(['video' => $videoAsset->original_filename]);
+                DB::afterCommit(function () use ($videoAsset): void {
+                    $this->dispatchVideoPipeline($videoAsset);
+                });
+            }
+
+            return redirect()
+                ->route('content.add')
+                ->with('success', __('Content created successfully'))
+                ->with('video_asset_id', $videoAsset?->id);
         });
     }
 
@@ -38,6 +54,13 @@ class AdminContentController extends Controller
         $this->authorize('update', $content);
 
         return DB::transaction(function () use ($request, $content) {
+            $videoAsset = $request->hasFile('video') ? $this->queueVideoProcessing($request, $content) : null;
+            if ($videoAsset) {
+                DB::afterCommit(function () use ($videoAsset): void {
+                    $this->dispatchVideoPipeline($videoAsset);
+                });
+            }
+
             $content->update([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -48,7 +71,7 @@ class AdminContentController extends Controller
                 'type' => $content->type,
                 'duration' => $request->duration,
                 'picture' => $request->hasFile('picture') ? $this->handleImageUpload($request) : $content->picture,
-                'video' => $request->hasFile('video') ? $this->handleVideoUpload($request) : $content->video,
+                'video' => $videoAsset?->original_filename ?? $content->video,
             ]);
 
             return redirect()->route('dashboard')->with('success', __(':movie updated successfully', ['movie' => $content->title]));
@@ -79,104 +102,40 @@ class AdminContentController extends Controller
         return $filename;
     }
 
-    private function handleVideoUpload($request): ?string
+    private function queueVideoProcessing($request, Content $content): ?VideoAsset
     {
         if (!$request->hasFile('video')) {
             return null;
         }
 
         $file = $request->file('video');
-        $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+        $uuid = (string) Str::uuid();
+        $sourcePath = $file->storeAs(
+            'videos/source',
+            $uuid.'.'.$file->getClientOriginalExtension(),
+            'public'
+        );
 
-        $outputFilenameBig = 'max_'.$filename;
-        $outputFilenameMedium = 'mid_'.$filename;
-        $outputFilenameSmall = 'min_'.$filename;
+        $videoAsset = VideoAsset::create([
+            'uuid' => $uuid,
+            'content_id' => $content->id,
+            'original_filename' => $file->getClientOriginalName(),
+            'source_disk' => 'public',
+            'source_path' => $sourcePath,
+            'hls_disk' => 'public',
+            'status' => VideoAsset::STATUS_PENDING,
+        ]);
 
-        $path = $file->storeAs('content', $filename, 'public');
-        $fullInputPath = storage_path('app/public/'.$path);
-
-        $fullOutputPathBig = storage_path('app/public/content/'.$outputFilenameBig);
-        $fullOutputPathMedium = storage_path('app/public/content/'.$outputFilenameMedium);
-        $fullOutputPathSmall = storage_path('app/public/content/'.$outputFilenameSmall);
-
-        if (!file_exists(dirname($fullOutputPathBig))) {
-            mkdir(dirname($fullOutputPathBig), 0755, true);
-        }
-
-        $this->processVideo($fullInputPath, $fullOutputPathBig, 'max', $filename);
-        $this->processVideo($fullInputPath, $fullOutputPathMedium, 'mid');
-        $this->processVideo($fullInputPath, $fullOutputPathSmall, 'min');
-
-        return $filename;
+        return $videoAsset;
     }
 
-    private function processVideo(string $inputPath, string $outputPath, string $size, ?string $filename = null): void
+    private function dispatchVideoPipeline(VideoAsset $videoAsset): void
     {
-        $scale = 'scale=640:360';
-
-        if ($size === 'mid') {
-            $scale = 'scale=480:270';
-        } elseif ($size === 'min') {
-            $scale = 'scale=320:180';
-        } elseif ($filename !== null) {
-            $framesOutputDir = storage_path('app/public/content/frames/'.$filename);
-            if (!file_exists($framesOutputDir)) {
-                mkdir($framesOutputDir, 0755, true);
-            }
-
-            $getDurationCommand = [
-                'ffprobe',
-                '-v', 'error',
-                '-show_entries', 'format=duration',
-                '-of', 'default=noprint_wrappers=1:nokey=1',
-                $inputPath,
-            ];
-
-            $processDuration = new Process($getDurationCommand);
-            $processDuration->run();
-            $duration = (float) $processDuration->getOutput();
-            $maxFrames = 10;
-            $timeInterval = $duration / ($maxFrames + 1);
-            $frameTimes = [];
-
-            for ($i = 1; $i <= $maxFrames; $i++) {
-                $frameTime = $i * $timeInterval;
-                $frameTimes[] = $frameTime;
-
-                $commandFrames = [
-                    'ffmpeg',
-                    '-ss', $frameTime,
-                    '-i', $inputPath,
-                    '-frames:v', '1',
-                    '-q:v', '2',
-                    $framesOutputDir.'/frame_'.str_pad((string) $i, 3, '0', STR_PAD_LEFT).'.jpg',
-                ];
-
-                $processFrames = new Process($commandFrames);
-                try {
-                    $processFrames->mustRun();
-                } catch (ProcessFailedException $exception) {
-                    throw new ProcessFailedException($processFrames);
-                }
-            }
-
-            file_put_contents($framesOutputDir.'/times.json', json_encode($frameTimes));
-        }
-
-        $command = [
-            'ffmpeg',
-            '-i', $inputPath,
-            '-vf', $scale,
-            '-c:a', 'copy',
-            '-y',
-            $outputPath,
-        ];
-
-        $process = new Process($command);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
+        Bus::chain([
+            new ProbeVideoJob($videoAsset->id),
+            new TranscodeToHlsJob($videoAsset->id),
+            new GenerateThumbnailsJob($videoAsset->id),
+            new CleanupSourceJob($videoAsset->id),
+        ])->onQueue('video')->dispatch();
     }
 }
