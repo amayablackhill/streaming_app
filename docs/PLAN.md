@@ -19,7 +19,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Eliminar role_id === 1 y User::isAdmin()
 
 ## Seguridad
-- [ ] Instalar Spatie Permission
+- [x] Instalar Spatie Permission
 - [ ] Roles: admin / user / premium
 - [ ] Policies + middleware aplicados
 
