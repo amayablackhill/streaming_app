@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Content extends Model
 {
@@ -31,5 +32,10 @@ class Content extends Model
     public function seasons()
     {
         return $this->hasMany(Season::class, 'serie_id');
+    }
+
+    public function videoAssets(): HasMany
+    {
+        return $this->hasMany(VideoAsset::class);
     }
 }
