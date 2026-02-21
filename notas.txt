@@ -1,0 +1,91 @@
+1 -- Documentación:
+    - Documentació preparació configuracions i funcionament de l'entorn docker
+        - php-nginx-mysql (mkdcocs)
+        - Material ajuda instalació nginx
+        - Material ajuda maria DB
+        - Road map
+    
+    - Documentació preparació codi Laravel en l'entorn de producció
+        - mkdocs - laravel (Pablo)
+        - Road map
+        - Documentació Carlos
+    
+    - Doumentació php-fpm (configuracions adicionals, NO nginx.conf)
+        - mkdocs - php-fpm
+        - Chat
+        - Road map?
+        - Documentació Carlos
+
+    - Documentació MySQL 
+        - mkdocs - MySQL
+        - ayuda de mariaDB (pablo)
+
+    - Documentació nginx
+        - Explicar archivo .conf
+        - mkdocs Pablo
+        - Documentació Carlos
+
+    - Documentació DNS dockeritzat
+
+    - Documentació pipelines
+        - Variables en entorno
+        - Explicacion .yml
+
+2 -- UF2:
+    - HTTPS:
+
+    Hay que crear las claves en la carpeta correspondiente.(pdf)
+    En el laravel.conf hay que añadir un modulo server que escuche al 80 y simplemente redirija
+    a https (1 linea).
+    Y cambiar el puerto que escuchaba al 443, y añadirle las claves.
+    - Gestió dominis (protegir .admin)
+
+
+    server {
+        listen 80;
+        return 301 https://$host$request_uri;
+    }
+
+
+    server {
+    listen 443 ssl;
+    server_name localhost;
+    ssl_certificate /etc/ssl/certs/public.crt;
+    ssl_certificate_key /etc/ssl/private/private.key;
+
+    # Definim el directori del projecte Laravel
+    root /var/www/html/netflix/public;
+
+    index index.php index.html index.htm;
+
+    # Habilitar la gestio  d'errors
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+        # Gestio d'errors amb htmls personalitzats
+        error_page 401 403 404 /40x.html;
+        error_page 500 501 502 503 /50x.html;
+        location = /40x.html {
+                root /var/www/html/errors;
+        }
+
+        location = /50x.html {
+                root /var/www/html/errors;
+        }
+
+    # Configurar el maneig de les sol  licituds PHP
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    # Prevenir l'acc  s a fitxers sensibles
+    location ~ /\.ht {
+        deny all;
+    }
+}

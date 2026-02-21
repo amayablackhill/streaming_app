@@ -1,0 +1,58 @@
+stages:
+  - pages
+  - test
+  - deploy
+
+pages:
+  stage: pages
+  image: python:3.9
+  script:
+    - pip install mkdocs mkdocs-material
+    - rm -rf public
+    - mkdocs build
+    - mv site public
+  artifacts:
+    paths:
+      - public
+  only:
+    - pages
+
+test:
+  stage: test
+  image: php:8.2
+  services:
+    - mysql:8.0
+  before_script:
+    - apt-get update && apt-get install -y unzip git zip curl libzip-dev libpng-dev libonig-dev
+    - docker-php-ext-install pdo_mysql zip
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install
+    - cp .env.example .env
+    - php artisan key:generate
+    - php artisan migrate:fresh --seed
+  script:
+    - php artisan test
+  only:
+    - staging
+
+
+production_deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client rsync git sshpass
+    - echo $SSH_HOST
+  script:
+    - sshpass -p "$PASSWORD" ssh -tt -o StrictHostKeyChecking=no root@$SSH_HOST "
+      cd $PROJECT_PATH &&
+      git config --global --add safe.directory /var/www/html/netflix &&
+      git checkout deploy &&
+      git pull &&
+      composer install --no-interaction --no-progress --no-dev &&
+      php artisan migrate --force &&
+      php artisan db:seed --force &&
+      npm install &&
+      npm run build &&
+      systemctl restart nginx"
+  only:
+    - deploy
