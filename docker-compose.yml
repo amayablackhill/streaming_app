@@ -23,6 +23,26 @@ services:
             - sail
         depends_on:
             - mysql
+    laravel.worker:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.3/app
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        command: php artisan queue:work --queue=video,default --tries=3 --timeout=3600
+        networks:
+            - sail
+        depends_on:
+            - mysql
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
