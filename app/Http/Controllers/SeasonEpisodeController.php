@@ -6,12 +6,14 @@ use App\Models\Content;
 use App\Models\Episode;
 use App\Models\Season;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 
 class SeasonEpisodeController extends Controller
 {
     public function destroySeason(int $id)
     {
+        Gate::authorize('create', Content::class);
         $season = Season::findOrFail($id);
         $season->delete();
 
@@ -20,6 +22,8 @@ class SeasonEpisodeController extends Controller
 
     public function storeSeason(Request $request, int $id)
     {
+        Gate::authorize('create', Content::class);
+
         $request->validate([
             'season_number' => 'required|integer|min:1',
             'release_date' => 'required|date',
@@ -44,6 +48,8 @@ class SeasonEpisodeController extends Controller
 
     public function updateEpisode(Request $request, int $id, int $episodeId)
     {
+        Gate::authorize('create', Content::class);
+
         $season = Season::findOrFail($id);
         $episode = Episode::findOrFail($episodeId);
 
@@ -63,6 +69,8 @@ class SeasonEpisodeController extends Controller
 
     public function storeEpisode(Request $request, int $id)
     {
+        Gate::authorize('create', Content::class);
+
         $request->validate([
             'episode_number' => 'required|integer|min:1',
             'title' => 'required|string|max:255',

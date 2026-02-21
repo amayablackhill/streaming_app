@@ -12,6 +12,8 @@ class AdminContentController extends Controller
 {
     public function addContent(ContentRequest $request)
     {
+        $this->authorize('create', Content::class);
+
         return DB::transaction(function () use ($request) {
             Content::create([
                 'title' => $request->title,
@@ -33,6 +35,7 @@ class AdminContentController extends Controller
     public function updateContent(ContentRequest $request, int $id)
     {
         $content = Content::findOrFail($id);
+        $this->authorize('update', $content);
 
         return DB::transaction(function () use ($request, $content) {
             $content->update([
@@ -55,6 +58,7 @@ class AdminContentController extends Controller
     public function destroyContent(int $id)
     {
         $content = Content::findOrFail($id);
+        $this->authorize('delete', $content);
         $content->delete();
 
         return redirect()->route('dashboard')->with('success', __('Movie deleted successfully'));

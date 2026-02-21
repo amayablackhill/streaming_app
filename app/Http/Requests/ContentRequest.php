@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Content;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ContentRequest extends FormRequest
 {
     public function authorize()
     {
-        return (bool) auth()->user()?->canAccessAdminPanel();
+        return (bool) auth()->user()?->can('create', Content::class);
     }
 
     public function rules()
