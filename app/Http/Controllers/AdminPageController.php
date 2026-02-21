@@ -48,13 +48,6 @@ class AdminPageController extends Controller
         return view('addSeasons', compact('series'));
     }
 
-    public function addSeasonForm(int $id): View
-    {
-        $serie = Content::findOrFail($id);
-
-        return view('addSeason', compact('serie'));
-    }
-
     public function seasonsManage(int $id): View
     {
         $content = Content::with(['seasons.episodes'])->findOrFail($id);

@@ -38,7 +38,6 @@ Route::put('/admin/editContent/{id}', [AdminContentController::class, 'updateCon
 Route::delete('/admin/deleteContent/{id}', [AdminContentController::class, 'destroyContent'])->name('content.destroy');
 
 Route::get('/admin/addSeasons', [AdminPageController::class, 'addSeasonsIndex'])->name('seasons.add');
-Route::get('/admin/addSeasons/{id}', [AdminPageController::class, 'addSeasonForm'])->name('seasons.edit');
 
 Route::get('/admin/series/{id}/seasons', [AdminPageController::class, 'seasonsManage'])->name('seasons.manage');
 Route::post('/admin/series/{id}/seasons', [SeasonEpisodeController::class, 'storeSeason'])->name('seasons.store');

@@ -67,5 +67,5 @@ Demo full-stack deployable (Railway) con:
 
 
 ## TODOs de riesgo detectados
-- [ ] Resolver ruta/vista legacy de temporadas: `/admin/addSeasons/{id}` apunta a `view('addSeason')`, pero `resources/views/addSeason.blade.php` no existe.
+- [x] Resolver ruta/vista legacy de temporadas: se eliminó `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
 - [ ] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por Spatie Permission en tarea de seguridad P0.
