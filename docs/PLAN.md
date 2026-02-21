@@ -28,7 +28,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Queue database configurada
 - [x] Worker funcional
 - [x] ProbeVideoJob
-- [ ] HLS 720p (1 rendition)
+- [x] HLS 720p (1 rendition)
 - [ ] Estados: pending|processing|ready|failed
 - [ ] Manejo robusto de errores FFmpeg
 
@@ -69,6 +69,7 @@ Demo full-stack deployable (Railway) con:
 ## TODOs de riesgo detectados
 - [x] Resolver ruta/vista legacy de temporadas: se eliminó `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
 - [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware `role:admin` + Spatie roles (`hasRole('admin')`), sin fallback legacy.
+
 
 
 
