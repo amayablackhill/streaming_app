@@ -34,6 +34,13 @@ class TranscodeToHlsJob implements ShouldQueue
             return;
         }
 
+        $videoAsset->update([
+            'status' => VideoAsset::STATUS_PROCESSING,
+            'error_message' => null,
+            'failed_at' => null,
+            'processed_at' => null,
+        ]);
+
         try {
             $inputPath = Storage::disk($videoAsset->source_disk)->path($videoAsset->source_path);
         } catch (Throwable $exception) {
@@ -80,11 +87,17 @@ class TranscodeToHlsJob implements ShouldQueue
             return;
         }
 
+        if (!Storage::disk($videoAsset->hls_disk)->exists($masterPath)) {
+            $this->markFailed($videoAsset, 'HLS transcoding finished but master playlist was not generated.');
+            return;
+        }
+
         $videoAsset->update([
             'hls_master_path' => $masterPath,
-            'status' => VideoAsset::STATUS_PROCESSING,
+            'status' => VideoAsset::STATUS_READY,
             'error_message' => null,
             'failed_at' => null,
+            'processed_at' => Carbon::now(),
         ]);
     }
 
@@ -109,6 +122,7 @@ class TranscodeToHlsJob implements ShouldQueue
             'status' => VideoAsset::STATUS_FAILED,
             'error_message' => mb_substr($message, 0, 5000),
             'failed_at' => Carbon::now(),
+            'processed_at' => null,
         ]);
     }
 }

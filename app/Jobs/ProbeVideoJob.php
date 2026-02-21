@@ -38,6 +38,7 @@ class ProbeVideoJob implements ShouldQueue
             'status' => VideoAsset::STATUS_PROCESSING,
             'error_message' => null,
             'failed_at' => null,
+            'processed_at' => null,
         ]);
 
         try {
@@ -108,6 +109,7 @@ class ProbeVideoJob implements ShouldQueue
             'status' => VideoAsset::STATUS_FAILED,
             'error_message' => mb_substr($message, 0, 5000),
             'failed_at' => Carbon::now(),
+            'processed_at' => null,
         ]);
     }
 }
