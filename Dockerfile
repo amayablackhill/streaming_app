@@ -13,6 +13,15 @@ RUN composer install \
 COPY . .
 RUN composer dump-autoload --optimize --no-dev
 
+FROM node:20-bookworm-slim AS frontend
+
+WORKDIR /app
+COPY package.json ./
+RUN npm install --no-audit --no-fund
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js tailwind.config.js postcss.config.js ./
+RUN npm run build
 
 FROM php:8.3-fpm-bookworm AS app
 
@@ -25,6 +34,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libjpeg62-turbo-dev \
     libonig-dev \
+    libpq-dev \
     libpng-dev \
     libxml2-dev \
     libzip-dev \
@@ -37,6 +47,7 @@ RUN apt-get update && apt-get install -y \
     intl \
     mbstring \
     pcntl \
+    pdo_pgsql \
     pdo_mysql \
     zip \
     && apt-get clean \
@@ -44,14 +55,16 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
+COPY --from=frontend /app/public/build /var/www/html/public/build
 
 COPY docker/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/supervisor/web.conf /etc/supervisor/conf.d/web.conf
 COPY docker/scripts/start-web.sh /usr/local/bin/start-web
+COPY docker/scripts/start-service.sh /usr/local/bin/start-service
 
-RUN chmod +x /usr/local/bin/start-web \
+RUN chmod +x /usr/local/bin/start-web /usr/local/bin/start-service \
     && mkdir -p /run/php /var/log/supervisor \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 8080
-CMD ["/usr/local/bin/start-web"]
+CMD ["/usr/local/bin/start-service"]

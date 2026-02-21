@@ -58,3 +58,15 @@ Notes:
 - Web container runs `nginx + php-fpm` through supervisor.
 - Worker container runs `php artisan queue:work --queue=video,default --tries=3 --timeout=3600`.
 - `FFMPEG_PATH` and `FFPROBE_PATH` are preconfigured to `/usr/bin/ffmpeg` and `/usr/bin/ffprobe`.
+
+## Railway
+
+This repository includes a Railway-ready Docker setup.
+
+- `web` service uses `SERVICE_ROLE=web` (nginx + php-fpm + queue worker for `video,default`).
+- `worker` service uses `SERVICE_ROLE=worker` and `WORKER_QUEUES=default`.
+- `Postgres` is provisioned as a separate Railway database service.
+- Storage volume is mounted on `web` at `/var/www/html/storage`.
+
+Detailed steps and CLI commands:
+- `docs/railway-deploy.md`

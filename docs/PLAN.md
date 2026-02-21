@@ -34,8 +34,8 @@ Demo full-stack deployable (Railway) con:
 
 ## Deploy
 - [x] Docker prod limpio
-- [ ] Railway: web + worker + postgres + volume
-- [ ] storage:link
+- [x] Railway: web + worker + postgres + volume
+- [x] storage:link
 - [ ] E2E probado (upload → ready → playback)
 
 ---
@@ -69,6 +69,7 @@ Demo full-stack deployable (Railway) con:
 ## TODOs de riesgo detectados
 - [x] Resolver ruta/vista legacy de temporadas: se eliminó `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
 - [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware `role:admin` + Spatie roles (`hasRole('admin')`), sin fallback legacy.
+
 
 
 
