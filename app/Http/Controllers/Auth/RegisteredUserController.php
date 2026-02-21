@@ -57,9 +57,17 @@ class RegisteredUserController extends Controller
                 $defaultRoleId = DB::table('roles')
                     ->whereRaw('LOWER(name) = ?', ['user'])
                     ->value('id');
+
+                if (!$defaultRoleId) {
+                    $defaultRoleId = DB::table('roles')->insertGetId([
+                        'name' => 'user',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
 
-            $user->role_id = $defaultRoleId ?? 2;
+            $user->role_id = $defaultRoleId;
         }
 
         $user->save();

@@ -42,7 +42,7 @@ Demo full-stack deployable (Railway) con:
 
 # P1 — Calidad Portfolio
 
-- [ ] 8–12 tests (feature first)
+- [x] 8-12 tests (feature first)
 - [x] GitHub Actions CI
 - [ ] UI badges + feedback processing
 - [ ] Thumbnails job
