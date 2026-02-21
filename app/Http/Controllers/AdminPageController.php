@@ -72,7 +72,7 @@ class AdminPageController extends Controller
 
     public function fallback(): RedirectResponse
     {
-        if (!auth()->check() || !auth()->user()->isAdmin()) {
+        if (!auth()->check() || !auth()->user()->canAccessAdminPanel()) {
             return redirect()->route('dashboard');
         }
 

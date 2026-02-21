@@ -16,7 +16,7 @@ Demo full-stack deployable (Railway) con:
 ## Arquitectura
 - [ ] Rutas limpias (sin lógica en web.php)
 - [x] Dividir God Controller
-- [ ] Eliminar role_id === 1 y User::isAdmin()
+- [x] Eliminar role_id === 1 y User::isAdmin()
 
 ## Seguridad
 - [ ] Instalar Spatie Permission
@@ -68,4 +68,4 @@ Demo full-stack deployable (Railway) con:
 
 ## TODOs de riesgo detectados
 - [x] Resolver ruta/vista legacy de temporadas: se eliminó `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
-- [ ] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por Spatie Permission en tarea de seguridad P0.
+- [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware temporal `admin.access` + `User::canAccessAdminPanel()` sin hardcode de IDs (pendiente migración completa a Spatie en P0 Seguridad).

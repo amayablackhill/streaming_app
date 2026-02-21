@@ -8,7 +8,7 @@ class ContentRequest extends FormRequest
 {
     public function authorize()
     {
-        return auth()->user()->isAdmin(); 
+        return (bool) auth()->user()?->canAccessAdminPanel();
     }
 
     public function rules()

@@ -42,13 +42,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function isAdmin()
-    {
-        return $this->role_id === 1;
-    }
-
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function canAccessAdminPanel(): bool
+    {
+        // TODO: replace this fallback with Spatie roles once permission tables are migrated.
+        return $this->role()->whereRaw('LOWER(name) = ?', ['admin'])->exists();
     }
 }

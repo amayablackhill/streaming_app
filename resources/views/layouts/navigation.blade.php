@@ -29,7 +29,7 @@
                     </x-nav-link>
                 </div>
 
-                @if(Auth::user() && Auth::user()->isAdmin())
+                @if(Auth::user() && Auth::user()->canAccessAdminPanel())
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-nav-link :href="route('content.add')" :active="request()->routeIs('content.add')">
                             {{ __('Add Content') }}
