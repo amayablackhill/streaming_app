@@ -71,6 +71,11 @@ This repository includes a Railway-ready Docker setup.
 Detailed steps and CLI commands:
 - `docs/railway-deploy.md`
 
+Pre-deploy gate (runs tests first, then deploys):
+```powershell
+./scripts/deploy-railway.ps1 -WebMessage "Deploy web" -WorkerMessage "Deploy worker"
+```
+
 ## Demo URL
 - `https://web-production-f4ce.up.railway.app`
 

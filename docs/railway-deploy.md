@@ -78,6 +78,12 @@ railway up --service web --detach -m "Deploy web"
 railway up --service worker --detach -m "Deploy worker"
 ```
 
+Preferred (test gate before deploy):
+
+```powershell
+./scripts/deploy-railway.ps1 -WebMessage "Deploy web" -WorkerMessage "Deploy worker"
+```
+
 ## Validate
 
 ```bash
