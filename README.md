@@ -70,3 +70,13 @@ This repository includes a Railway-ready Docker setup.
 
 Detailed steps and CLI commands:
 - `docs/railway-deploy.md`
+
+## Demo URL
+- `https://web-production-f4ce.up.railway.app`
+
+## Demo steps
+1. Open `https://web-production-f4ce.up.railway.app/login`.
+2. Sign in with an admin demo user and go to `https://web-production-f4ce.up.railway.app/admin/addContent`.
+3. Upload a short MP4 clip (<= 20s, <= 25MB) as content video.
+4. Open `/admin/video-assets/{id}` and wait until status becomes `ready`.
+5. Verify HLS playback and direct access to `master.m3u8` + `.ts` segments.

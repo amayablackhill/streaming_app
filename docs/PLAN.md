@@ -36,14 +36,14 @@ Demo full-stack deployable (Railway) con:
 - [x] Docker prod limpio
 - [x] Railway: web + worker + postgres + volume
 - [x] storage:link
-- [ ] E2E probado (upload → ready → playback)
+- [x] E2E probado (upload → ready → playback)
 
 ---
 
 # P1 — Calidad Portfolio
 
 - [ ] 8–12 tests (feature first)
-- [ ] GitHub Actions CI
+- [x] GitHub Actions CI
 - [ ] UI badges + feedback processing
 - [ ] Thumbnails job
 - [ ] Cleanup source job
