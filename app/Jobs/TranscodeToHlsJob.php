@@ -80,10 +80,15 @@ class TranscodeToHlsJob implements ShouldQueue
             Storage::disk($videoAsset->hls_disk)->path($playlistPath),
         ]);
 
-        $process->run();
+        try {
+            $process->run();
+        } catch (Throwable $exception) {
+            $this->markFailed($videoAsset, 'ffmpeg process crashed: '.$exception->getMessage());
+            return;
+        }
 
         if (!$process->isSuccessful()) {
-            $this->markFailed($videoAsset, trim($process->getErrorOutput()) ?: 'ffmpeg HLS transcoding failed.');
+            $this->markFailed($videoAsset, $this->buildProcessErrorMessage($process, 'ffmpeg HLS transcoding failed'));
             return;
         }
 
@@ -116,6 +121,10 @@ class TranscodeToHlsJob implements ShouldQueue
         Log::error('TranscodeToHlsJob failed', [
             'video_asset_id' => $videoAsset->id,
             'message' => $message,
+            'source_disk' => $videoAsset->source_disk,
+            'source_path' => $videoAsset->source_path,
+            'hls_disk' => $videoAsset->hls_disk,
+            'hls_master_path' => $videoAsset->hls_master_path,
         ]);
 
         $videoAsset->update([
@@ -124,5 +133,21 @@ class TranscodeToHlsJob implements ShouldQueue
             'failed_at' => Carbon::now(),
             'processed_at' => null,
         ]);
+    }
+
+    private function buildProcessErrorMessage(Process $process, string $prefix): string
+    {
+        $exitCode = $process->getExitCode();
+        $stderr = trim($process->getErrorOutput());
+        $stdout = trim($process->getOutput());
+        $details = $stderr !== '' ? $stderr : ($stdout !== '' ? $stdout : 'no output');
+
+        return sprintf(
+            '%s (exit_code=%s, cmd="%s"): %s',
+            $prefix,
+            $exitCode === null ? 'null' : (string) $exitCode,
+            $process->getCommandLine(),
+            mb_substr($details, 0, 1500)
+        );
     }
 }

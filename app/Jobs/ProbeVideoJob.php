@@ -58,10 +58,15 @@ class ProbeVideoJob implements ShouldQueue
             $sourcePath,
         ]);
 
-        $process->run();
+        try {
+            $process->run();
+        } catch (Throwable $exception) {
+            $this->markFailed($videoAsset, 'ffprobe process crashed: '.$exception->getMessage());
+            return;
+        }
 
         if (!$process->isSuccessful()) {
-            $this->markFailed($videoAsset, trim($process->getErrorOutput()) ?: 'ffprobe execution failed.');
+            $this->markFailed($videoAsset, $this->buildProcessErrorMessage($process, 'ffprobe execution failed'));
             return;
         }
 
@@ -103,6 +108,8 @@ class ProbeVideoJob implements ShouldQueue
         Log::error('ProbeVideoJob failed', [
             'video_asset_id' => $videoAsset->id,
             'message' => $message,
+            'source_disk' => $videoAsset->source_disk,
+            'source_path' => $videoAsset->source_path,
         ]);
 
         $videoAsset->update([
@@ -111,5 +118,21 @@ class ProbeVideoJob implements ShouldQueue
             'failed_at' => Carbon::now(),
             'processed_at' => null,
         ]);
+    }
+
+    private function buildProcessErrorMessage(Process $process, string $prefix): string
+    {
+        $exitCode = $process->getExitCode();
+        $stderr = trim($process->getErrorOutput());
+        $stdout = trim($process->getOutput());
+        $details = $stderr !== '' ? $stderr : ($stdout !== '' ? $stdout : 'no output');
+
+        return sprintf(
+            '%s (exit_code=%s, cmd="%s"): %s',
+            $prefix,
+            $exitCode === null ? 'null' : (string) $exitCode,
+            $process->getCommandLine(),
+            mb_substr($details, 0, 1500)
+        );
     }
 }
