@@ -44,7 +44,7 @@ Demo full-stack deployable (Railway) con:
 
 - [x] 8-12 tests (feature first)
 - [x] GitHub Actions CI
-- [ ] UI badges + feedback processing
+- [x] UI badges + feedback processing
 - [ ] Thumbnails job
 - [ ] Cleanup source job
 

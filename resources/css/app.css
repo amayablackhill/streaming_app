@@ -2,64 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-.style-login {
-    background-color: #55c1ff;
-}
-
-.title-login {
-    color: #ffffff;
-    font-size: 50px;
-    font-weight: bold;
-}
 :root {
-    --swiper-theme-color: #fff;
+    --swiper-theme-color: #e50914;
+    --app-bg: #020617;
+    --app-surface: #0f172a;
+    --app-border: #1e293b;
+    --app-text: #e2e8f0;
+    --app-muted: #94a3b8;
 }
 
 body {
-    background: #000000;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    background: var(--app-bg);
+    color: var(--app-text);
+    font-family: "Figtree", "Segoe UI", sans-serif;
     margin: 0;
     padding: 0;
 }
 
-.py-12 {
-    padding: 3rem 0;
+h2 {
+    color: #f1f5f9;
 }
 
 .section-title {
-    color: white;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    padding-left: 2rem;
+    color: #f1f5f9;
+    font-size: 1.4vw;
+    font-weight: 600;
+    margin-bottom: 15px;
 }
-:root {
-    --swiper-theme-color: #e50914;
-    --netflix-dark: #141414;
-    --netflix-light: #e5e5e5;
-}
-
-body {
-    background: var(--netflix-dark);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    /* color: rgb(39, 38, 38); */
-    margin: 0;
-    padding: 0;
-}
-h2 {
-    color: white;
-}
-
 
 .netflix-slider {
     margin: 40px 0;
     padding: 0 4%;
-}
-
-.section-title {
-    color: var(--netflix-dark);
-    font-size: 1.4vw;
-    font-weight: 500;
-    margin-bottom: 15px;
 }
 
 .swiper {
@@ -73,7 +46,7 @@ h2 {
 }
 
 .swiper-slide {
-    width: auto !important; /* Para el efecto Netflix */
+    width: auto !important;
     transition: transform 0.3s ease, z-index 0.3s ease;
     position: relative;
 }
@@ -100,7 +73,7 @@ h2 {
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
     padding: 20px 10px 10px;
     margin: 0;
     font-size: 0.9rem;
@@ -115,23 +88,23 @@ h2 {
 .swiper-button-next,
 .swiper-button-prev {
     color: var(--swiper-theme-color);
-    background: rgba(20, 20, 20, 0.7);
+    background: rgba(2, 6, 23, 0.7);
     width: 40px;
     height: 100%;
     top: 0;
     margin-top: 0;
     border-radius: 0;
-    display: none; 
+    display: none;
 }
 
 .swiper-button-next {
     right: 0;
-    background: linear-gradient(to left, rgba(20,20,20,0.7) 0%, transparent 100%);
+    background: linear-gradient(to left, rgba(2, 6, 23, 0.85) 0%, transparent 100%);
 }
 
 .swiper-button-prev {
     left: 0;
-    background: linear-gradient(to right, rgba(20,20,20,0.7) 0%, transparent 100%);
+    background: linear-gradient(to right, rgba(2, 6, 23, 0.85) 0%, transparent 100%);
 }
 
 .swiper:hover .swiper-button-next,
@@ -142,13 +115,5 @@ h2 {
 .swiper-button-next::after,
 .swiper-button-prev::after {
     font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.tempButton {
-    color: black;
-}
-
-.colortemporal {
-    color: black;
+    font-weight: 700;
 }
