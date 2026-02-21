@@ -1,38 +1,19 @@
 <?php
 
-use App\Http\Controllers\ContentController;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\AdminPageController;
+use App\Http\Controllers\AdminContentController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicApiController;
+use App\Http\Controllers\SeasonEpisodeController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Season;
-use App\Models\Episode;
-use App\Models\Content;
-use App\Models\Genre;
-use App\Http\Controllers\MovieController;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+Route::get('/', [CatalogController::class, 'index']);
+Route::get('/home', [CatalogController::class, 'home']);
 
-Route::get('/home', function () {
-    $contents = Content::all();
-    return view('content-list', compact('contents'));
-});
-
-Route::get('/dashboard', function () {
-    //$contents = Content::all();
-    return view('vueProject');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [CatalogController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,149 +21,44 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/movies/{id}', function ($id) {
-    $content = Content::where('id', $id)->firstOrFail();
-    return view('viewMovie', compact('content'));
-});
+Route::get('/movies/{id}', [CatalogController::class, 'showMovie']);
+Route::get('/series/{id}', [CatalogController::class, 'showSeries']);
 
-Route::get('/series/{id}', function ($id) {
-    $content = Content::where('id', $id)->firstOrFail();
-    return view('viewSerie', compact('content'));
-});
+Route::get('/movies', [CatalogController::class, 'movies'])->name('content.movies.list');
+Route::get('/series', [CatalogController::class, 'series'])->name('content.series.list');
 
-Route::get('/movies', function () {
-    $contents = Content::all()->where('type', 'film');
-    return view('content-list', compact('contents'));
-})->name('content.movies.list');
+Route::get('/admin/movies', [AdminPageController::class, 'moviesTable'])->name('movies.table');
+Route::get('/admin/series', [AdminPageController::class, 'seriesTable'])->name('series.table');
 
-Route::get('/series', function () {
-    $contents = Content::all()->where('type', 'serie');
-    return view('content-list', compact('contents'));
-})->name('content.series.list');
+Route::get('/admin/addContent', [AdminPageController::class, 'addContentForm'])->name('content.add');
+Route::post('/admin/addContent', [AdminContentController::class, 'addContent'])->name('content.add');
 
+Route::get('/admin/editContent/{id}', [AdminPageController::class, 'editContentForm'])->name('content.edit');
+Route::put('/admin/editContent/{id}', [AdminContentController::class, 'updateContent'])->name('content.update');
+Route::delete('/admin/deleteContent/{id}', [AdminContentController::class, 'destroyContent'])->name('content.destroy');
 
+Route::get('/admin/addSeasons', [AdminPageController::class, 'addSeasonsIndex'])->name('seasons.add');
+Route::get('/admin/addSeasons/{id}', [AdminPageController::class, 'addSeasonForm'])->name('seasons.edit');
 
-Route::get('/admin/movies', function () {
-    $movies = Content::all()->where('type', 'film');
-    return view('moviesTable', compact('movies'));
-})->name('movies.table');
+Route::get('/admin/series/{id}/seasons', [AdminPageController::class, 'seasonsManage'])->name('seasons.manage');
+Route::post('/admin/series/{id}/seasons', [SeasonEpisodeController::class, 'storeSeason'])->name('seasons.store');
 
-Route::get('/admin/series', function () {
-    $series = Content::all()->where('type', 'serie');
-    return view('seriesTable', compact('series'));
-})->name('series.table');
+Route::post('/admin/seasons/{id}/episodes', [SeasonEpisodeController::class, 'storeEpisode'])->name('episodes.store');
+Route::delete('/admin/deleteSeason/{id}', [SeasonEpisodeController::class, 'destroySeason'])->name('seasons.destroy');
+Route::get('/admin/seasons/{id}/episodes/create', [AdminPageController::class, 'createEpisodeForm'])->name('episodes.create');
+Route::get('/admin/seasons/{id}/episodes/{episodeId}/edit', [AdminPageController::class, 'editEpisodeForm'])->name('episodes.edit');
+Route::post('/admin/seasons/{id}/episodes/{episodeId}/edit', [SeasonEpisodeController::class, 'updateEpisode'])->name('episodes.update');
 
-
-
-
-Route::get('/admin/addContent', function () {
-    $genres = Genre::all();
-    return view('addContent', compact('genres'));
-})->name('content.add');
-
-Route::post('/admin/addContent', [ContentController::class, 'addContent'])->name('content.add');
-
-Route::get('/admin/editContent/{id}', function ($id) {
-    $content = Content::findOrFail($id);
-    $genres = Genre::all();
-    return view('editContent', compact('content', 'genres'));
-})->name('content.edit');
-
-Route::put('/admin/editContent/{id}', [ContentController::class, 'updateContent'])->name('content.update');
-
-Route::delete('/admin/deleteContent/{id}', [ContentController::class, 'destroyContent'])->name('content.destroy');
-
-
-Route::get('/admin/addSeasons', function () {
-    $series = Content::all()->where('type', 'serie');
-    return view('addSeasons', compact('series'));
-})->name('seasons.add');
-
-
-Route::get('/admin/addSeasons/{id}', function ($id) {
-    $serie = Content::findOrFail($id);
-    return view('addSeason', compact('serie'));
-})->name('seasons.edit');
-
-Route::post('/admin/addSeasons', [ContentController::class, 'addSeasons'])->name('seasons.add');
-
-
-// Rutas para temporadas
-Route::get('/admin/series/{id}/seasons', function ($id) {
-    $content = Content::with(['seasons.episodes'])->findOrFail($id);
-    return view('seasonsManage', compact('content'));
-})->name('seasons.manage');
-
-Route::post('/admin/series/{id}/seasons', [ContentController::class, 'storeSeason'])->name('seasons.store');
-    
-// Rutas para episodios
-Route::post('/admin/seasons/{id}/episodes', [ContentController::class, 'storeEpisode'])->name('episodes.store');
-
-Route::delete('/admin/deleteSeason/{id}', [ContentController::class, 'destroySeason'])->name('seasons.destroy');
-
-Route::get('/admin/seasons/{id}/episodes/create', function ($id) {
-    $season = Season::findOrFail($id);
-    return view('addEpisodes', compact('season'));
-})->name('episodes.create');
-
-Route::get('/admin/seasons/{id}/episodes/{episodeId}/edit', function ($id, $episodeId) {
-    $episode = Episode::findOrFail($episodeId);
-    $season = Season::findOrFail($id);
-    return view('addEpisodes', compact('episode', 'season'));
-})->name('episodes.edit');
-
-Route::post('/admin/seasons/{id}/episodes/{episodeId}/edit', [ContentController::class, 'updateEpisode'])->name('episodes.update');
-
-
-Route::get('/series/{id}/seasons/{seasonId}/episodes/{episodeId}/watch', function ($id, $seasonId, $episodeId) {
-    $episode = Episode::findOrFail($episodeId);
-
-    return view('watchEpisode', compact('episode'));
-})->name('episodes.watch');
-
+Route::get('/series/{id}/seasons/{seasonId}/episodes/{episodeId}/watch', [CatalogController::class, 'watchEpisode'])->name('episodes.watch');
 
 Route::prefix('admin')->group(function () {
-    Route::fallback(function () {
-        if (!auth()->user()->isAdmin()) {
-            return redirect()->route('dashboard');
-        }
-        abort(404);
-    });
+    Route::fallback([AdminPageController::class, 'fallback']);
 });
 
-// POSTMAN
-
-Route::get('/admin/getMovies', function () {
-    $movies = Content::all()->where('type', 'Film');
-    return response()->json($movies);
-});
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::get('/api/movies', function () {
-    $movies = Content::where('type', 'film')->get();
-    return response()->json(['movies' => $movies]);
-});
-
-Route::get('/api/series', function () {
-    $series = Content::where('type', 'serie')->get();
-    return response()->json(['series' => $series]);
-});
-
-Route::get('/footer', function() {
-    return response()->json([
-        'footer' => [
-            'web' => config('app.url'),
-            'address' => '123 Movie Street',
-            'phone' => '+123456789',
-            'email' => 'info@netflick.com'
-        ]
-    ]);
-});
-
-
+Route::get('/admin/getMovies', [AdminPageController::class, 'getMovies']);
+Route::middleware('auth:sanctum')->get('/user', [PublicApiController::class, 'user']);
+Route::get('/api/movies', [PublicApiController::class, 'movies']);
+Route::get('/api/series', [PublicApiController::class, 'series']);
+Route::get('/footer', [PublicApiController::class, 'footer']);
 
 require __DIR__.'/auth.php';
