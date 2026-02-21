@@ -1,0 +1,69 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: netflix-main:prod
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8080
+      APP_KEY: base64:CHANGE_ME
+      PORT: 8080
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: app
+      DB_USERNAME: app
+      DB_PASSWORD: secret
+      QUEUE_CONNECTION: database
+      FILESYSTEM_DISK: public
+      FFMPEG_PATH: /usr/bin/ffmpeg
+      FFPROBE_PATH: /usr/bin/ffprobe
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    volumes:
+      - app_storage:/var/www/html/storage
+
+  worker:
+    image: netflix-main:prod
+    command: php artisan queue:work --queue=video,default --tries=3 --timeout=3600
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8080
+      APP_KEY: base64:CHANGE_ME
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: app
+      DB_USERNAME: app
+      DB_PASSWORD: secret
+      QUEUE_CONNECTION: database
+      FILESYSTEM_DISK: public
+      FFMPEG_PATH: /usr/bin/ffmpeg
+      FFPROBE_PATH: /usr/bin/ffprobe
+    depends_on:
+      - mysql
+    volumes:
+      - app_storage:/var/www/html/storage
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  app_storage:
+  mysql_data:

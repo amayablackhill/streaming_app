@@ -37,3 +37,24 @@ Useful checks:
 ./vendor/bin/sail logs -f laravel.worker
 ./vendor/bin/sail artisan queue:failed
 ```
+
+## Production Docker (clean baseline)
+
+Build image:
+```bash
+docker build -t netflix-main:prod .
+```
+
+Run production stack locally:
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml exec web php artisan migrate --force
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs -f web
+docker compose -f docker-compose.prod.yml logs -f worker
+```
+
+Notes:
+- Web container runs `nginx + php-fpm` through supervisor.
+- Worker container runs `php artisan queue:work --queue=video,default --tries=3 --timeout=3600`.
+- `FFMPEG_PATH` and `FFPROBE_PATH` are preconfigured to `/usr/bin/ffmpeg` and `/usr/bin/ffprobe`.
