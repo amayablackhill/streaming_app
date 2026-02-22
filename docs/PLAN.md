@@ -53,7 +53,7 @@ Demo full-stack deployable (Railway) con:
 # P2 — Diferenciadores
 
 - [x] HLS 3 renditions
-- [ ] TMDB import (opcional)
+- [x] TMDB import (opcional)
 - [x] TMDB seeder base (opcional, manual con API key)
 
 ---

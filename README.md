@@ -99,3 +99,20 @@ Notes:
 - It creates/updates `contents` (type `film`) from TMDB discover popular.
 - Posters are downloaded to `storage/app/public/movies`.
 - It is not part of default `DatabaseSeeder` to avoid CI/network dependency.
+
+## TMDB sync command (API-safe)
+For iterative imports without hammering the API:
+
+```bash
+./vendor/bin/sail artisan tmdb:sync --pages=1 --limit=12 --download-posters
+```
+
+Flags:
+- `--pages`: how many discover pages to scan.
+- `--limit`: max items to process.
+- `--download-posters`: download poster files only when needed.
+- `--refresh-existing`: force refresh existing records.
+
+Rate/call controls:
+- `TMDB_THROTTLE_MS` (default `250`) adds delay between outbound calls.
+- Requests use retry + timeout and cache genres/details to reduce repeated calls.
