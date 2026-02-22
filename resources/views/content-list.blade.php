@@ -56,7 +56,7 @@
                 @endforeach
             </div>
 
-            <div x-show="!loading" class="cc-stack-8" style="display: none;">
+            <div x-show="!loading" x-cloak class="cc-stack-8">
                 @foreach ($sections as $section)
                     <section class="cc-stack-4">
                         <header class="cc-stack-2">

@@ -63,7 +63,7 @@
 
                     <article class="rounded-md border border-cc-border bg-cc-bg-surface/80 p-5" x-show="status === 'ready' && hlsUrl">
                         <h2 class="font-serif text-xl text-cc-text-primary">HLS Playback</h2>
-                        <video id="video-player" controls class="mt-4 w-full rounded-sm border border-cc-border bg-black" style="max-height: 70vh;"></video>
+                        <video id="video-player" controls class="mt-4 max-h-[70vh] w-full rounded-sm border border-cc-border bg-black"></video>
                     </article>
 
                     <template x-if="errorMessage">
