@@ -13,12 +13,17 @@ docker run --rm -u "$(id -u):$(id -g)" -v ./:/var/www/html -w /var/www/html lara
 ./vendor/bin/sail up -d
 ```
 
-3. Run migrations and seeders:
+3. Run migrations + base seed (users/roles):
 ```bash
 ./vendor/bin/sail artisan migrate --seed
 ```
 
-4. Start frontend dev server (optional):
+4. Load deterministic demo catalog data:
+```bash
+./vendor/bin/sail artisan app:demo-seed
+```
+
+5. Start frontend dev server (optional):
 ```bash
 ./vendor/bin/sail npm install
 ./vendor/bin/sail npm run dev
@@ -116,3 +121,19 @@ Flags:
 Rate/call controls:
 - `TMDB_THROTTLE_MS` (default `250`) adds delay between outbound calls.
 - Requests use retry + timeout and cache genres/details to reduce repeated calls.
+
+## Demo seed command (local-first)
+This command sets a clean, consistent demo catalog for portfolio screenshots and recruiter walkthroughs.
+
+```bash
+./vendor/bin/sail artisan app:demo-seed
+```
+
+Optional TMDB expansion (still controlled and rate-limited):
+```bash
+./vendor/bin/sail artisan app:demo-seed --with-tmdb --tmdb-pages=1 --tmdb-limit=12 --download-posters
+```
+
+Notes:
+- Default behavior resets catalog tables (`contents`, `seasons`, `episodes`, `genres`) and inserts a curated baseline.
+- Use `--append` if you want to keep existing catalog rows.
