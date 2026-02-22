@@ -12,8 +12,9 @@ class RoleSeeder extends Seeder
         $now = now();
 
         DB::table('roles')->upsert([
-            ['id' => 1, 'name' => 'Admin', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 2, 'name' => 'User', 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 1, 'name' => 'admin', 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 2, 'name' => 'user', 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 3, 'name' => 'premium', 'created_at' => $now, 'updated_at' => $now],
         ], ['id'], ['name', 'updated_at']);
     }
 }
