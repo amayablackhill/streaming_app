@@ -19,11 +19,17 @@
                 <div class="swiper popular-swiper">
                     <div class="swiper-wrapper">
                         @foreach($contents as $content)
+                        @php
+                            $detailUrl = url('/'.($content->type === 'serie' ? 'series' : 'movies').'/'.$content->id);
+                            $posterUrl = $content->picture
+                                ? asset('storage/'.($content->type === 'film' ? 'movies' : 'series').'/'.$content->picture)
+                                : asset('storage/logo/netflick_logo_definitive.png');
+                        @endphp
                         <div class="swiper-slide">
-                            <a href="/{{ $content->type == 'serie' ? 'series' : 'movies' }}/{{ $content->id }}">
-                                <img src="{{ asset('storage/' . ($content->type == 'film' ? 'movies' : 'series') . '/' . $content->picture) }}" alt="{{ $content->name }}" loading="lazy" style="width: 300px; height: 450px">
+                            <a href="{{ $detailUrl }}">
+                                <img src="{{ $posterUrl }}" alt="{{ $content->title }}" loading="lazy" style="width: 300px; height: 450px">
                             </a>   
-                            <h2>{{ $content->name }}</h2>
+                            <h2>{{ $content->title }}</h2>
                         </div>
                         @endforeach
                     </div>
@@ -39,9 +45,15 @@
                 <div class="swiper trending-swiper">
                     <div class="swiper-wrapper">
                         @foreach($contents->shuffle() as $content)
+                        @php
+                            $detailUrl = url('/'.($content->type === 'serie' ? 'series' : 'movies').'/'.$content->id);
+                            $posterUrl = $content->picture
+                                ? asset('storage/'.($content->type === 'film' ? 'movies' : 'series').'/'.$content->picture)
+                                : asset('storage/logo/netflick_logo_definitive.png');
+                        @endphp
                         <div class="swiper-slide">
-                                <a href="/movies/{{ $content->id }}"> 
-                                    <img src="{{ asset('storage/' . ($content->type == 'film' ? 'movies' : 'series') . '/' . $content->picture) }}" alt="{{ $content->name }}" loading="lazy" style="width: 300px; height: 450px">
+                                <a href="{{ $detailUrl }}"> 
+                                    <img src="{{ $posterUrl }}" alt="{{ $content->title }}" loading="lazy" style="width: 300px; height: 450px">
                                 </a>
                         </div>
                         @endforeach
@@ -57,12 +69,17 @@
                 <h2 class="section-title">Action Movies</h2>
                 <div class="swiper action-swiper">
                     <div class="swiper-wrapper">
-                        @foreach($contents->filter(fn($content) => str_contains($content->genre, 'Action')) as $content)
+                        @foreach($contents->filter(fn($content) => str_contains(strtolower(optional($content->genre)->name ?? ''), 'action')) as $content)
+                        @php
+                            $posterUrl = $content->picture
+                                ? asset('storage/'.($content->type === 'film' ? 'movies' : 'series').'/'.$content->picture)
+                                : asset('storage/logo/netflick_logo_definitive.png');
+                        @endphp
                         <div class="swiper-slide">
                             <a href="/movies/{{ $content->id }}">
-                                <img src="{{ asset('storage/' . ($content->type == 'film' ? 'movies' : 'series') . '/' . $content->picture) }}" alt="{{ $content->name }}" loading="lazy" style="width: 300px; height: 450px">
+                                <img src="{{ $posterUrl }}" alt="{{ $content->title }}" loading="lazy" style="width: 300px; height: 450px">
                             </a>
-                            <h2>{{ $content->name }}</h2>
+                            <h2>{{ $content->title }}</h2>
                         </div>
                         @endforeach
                     </div>
@@ -76,12 +93,17 @@
                 <h2 class="section-title">Horror Movies</h2>
                 <div class="swiper action-swiper">
                     <div class="swiper-wrapper">
-                        @foreach($contents->filter(fn($content) => str_contains($content->genre, 'Terror')) as $content)
+                        @foreach($contents->filter(fn($content) => str_contains(strtolower(optional($content->genre)->name ?? ''), 'terror') || str_contains(strtolower(optional($content->genre)->name ?? ''), 'horror')) as $content)
+                        @php
+                            $posterUrl = $content->picture
+                                ? asset('storage/'.($content->type === 'film' ? 'movies' : 'series').'/'.$content->picture)
+                                : asset('storage/logo/netflick_logo_definitive.png');
+                        @endphp
                         <div class="swiper-slide">
                             <a href="/movies/{{ $content->id }}">
-                                <img src="{{ asset('storage/' . ($content->type == 'film' ? 'movies' : 'series') . '/' . $content->picture) }}" alt="{{ $content->name }}" loading="lazy" style="width: 300px; height: 450px">
+                                <img src="{{ $posterUrl }}" alt="{{ $content->title }}" loading="lazy" style="width: 300px; height: 450px">
                             </a>
-                            <h2>{{ $content->name }}</h2>
+                            <h2>{{ $content->title }}</h2>
                         </div>
                         @endforeach
                     </div>
