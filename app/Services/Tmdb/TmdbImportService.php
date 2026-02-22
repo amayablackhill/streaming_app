@@ -86,11 +86,6 @@ class TmdbImportService
         $youtubeTrailerId = $this->resolveYoutubeTrailerId($videos);
         $genreId = $this->resolveGenreId($details);
 
-        $content = Content::query()
-            ->where('tmdb_type', $type)
-            ->where('tmdb_id', $resolvedTmdbId)
-            ->first();
-
         $payload = [
             'tmdb_id' => $resolvedTmdbId,
             'tmdb_type' => $type,
@@ -113,14 +108,13 @@ class TmdbImportService
             'tmdb_last_synced_at' => now(),
         ];
 
-        if ($content) {
-            $content->fill($payload);
-            $content->save();
-
-            return $content->fresh();
-        }
-
-        return Content::query()->create($payload);
+        return Content::query()->updateOrCreate(
+            [
+                'tmdb_type' => $type,
+                'tmdb_id' => $resolvedTmdbId,
+            ],
+            $payload
+        );
     }
 
     private function resolveReleaseDate(string $type, array $details): ?string

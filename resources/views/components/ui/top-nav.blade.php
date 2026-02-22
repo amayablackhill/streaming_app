@@ -16,6 +16,7 @@
         ['label' => 'Add Content', 'route' => 'content.add', 'patterns' => ['content.add', 'content.edit', 'content.update']],
         ['label' => 'Movies Table', 'route' => 'movies.table', 'patterns' => ['movies.table']],
         ['label' => 'Series Table', 'route' => 'series.table', 'patterns' => ['series.table', 'seasons.*', 'episodes.*', 'video-assets.*']],
+        ['label' => 'TMDB Import', 'route' => 'admin.tmdb.search', 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import']],
     ];
 
     $links = $isAdmin ? array_merge($baseLinks, $adminLinks) : $baseLinks;

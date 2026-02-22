@@ -2,44 +2,70 @@
 
 namespace App\Console\Commands;
 
-use App\Services\TmdbImportService;
+use App\Models\Content;
+use App\Services\Tmdb\Exceptions\TmdbException;
+use App\Services\Tmdb\Exceptions\TmdbNotConfiguredException;
+use App\Services\Tmdb\TmdbImportService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 class TmdbSyncCommand extends Command
 {
     protected $signature = 'tmdb:sync
-        {--pages=1 : Number of TMDB pages to scan}
-        {--limit=20 : Max items to import}
-        {--download-posters : Download poster files to public storage}
-        {--refresh-existing : Force refresh of existing movies}';
+        {--limit=50 : Max stale records to sync}';
 
-    protected $description = 'Sync real movie catalog from TMDB with controlled API calls';
+    protected $description = 'Refresh metadata for stale TMDB-linked local records';
 
     public function handle(TmdbImportService $tmdbImportService): int
     {
-        if (!$tmdbImportService->canRun()) {
-            $this->warn('TMDB credentials missing. Set TMDB_API_KEY or TMDB_BEARER_TOKEN.');
+        if (trim((string) config('services.tmdb.token', '')) === '') {
+            $this->warn('TMDB_TOKEN is not configured. Sync skipped.');
             return self::SUCCESS;
         }
 
-        $pages = (int) $this->option('pages');
         $limit = (int) $this->option('limit');
-        $downloadPosters = (bool) $this->option('download-posters');
-        $refreshExisting = (bool) $this->option('refresh-existing');
+        $limit = max(1, $limit);
+        $staleBefore = Carbon::now()->subDays(30);
 
-        $stats = $tmdbImportService->importPopularMovies(
-            pages: max(1, $pages),
-            limit: max(1, $limit),
-            downloadPosters: $downloadPosters,
-            refreshExisting: $refreshExisting
-        );
+        $targets = Content::query()
+            ->whereNotNull('tmdb_id')
+            ->whereNotNull('tmdb_type')
+            ->where(function ($query) use ($staleBefore): void {
+                $query
+                    ->whereNull('tmdb_last_synced_at')
+                    ->orWhere('tmdb_last_synced_at', '<=', $staleBefore);
+            })
+            ->orderBy('tmdb_last_synced_at')
+            ->limit($limit)
+            ->get();
+
+        if ($targets->isEmpty()) {
+            $this->info('No stale TMDB-linked records found.');
+            return self::SUCCESS;
+        }
+
+        $updated = 0;
+        $errors = 0;
+
+        foreach ($targets as $content) {
+            try {
+                $tmdbImportService->importByTmdb((string) $content->tmdb_type, (int) $content->tmdb_id);
+                $updated++;
+                $this->line("Synced {$content->tmdb_type}:{$content->tmdb_id} ({$content->title})");
+            } catch (TmdbNotConfiguredException $exception) {
+                $this->warn($exception->getMessage());
+                return self::SUCCESS;
+            } catch (TmdbException $exception) {
+                $errors++;
+                report($exception);
+                $this->error("Failed {$content->tmdb_type}:{$content->tmdb_id} - {$exception->getMessage()}");
+            }
+        }
 
         $this->info('TMDB sync finished');
-        $this->line('Processed: '.$stats['processed']);
-        $this->line('Created: '.$stats['created']);
-        $this->line('Updated: '.$stats['updated']);
-        $this->line('Skipped: '.$stats['skipped']);
-        $this->line('Errors: '.$stats['errors']);
+        $this->line("Candidates: {$targets->count()}");
+        $this->line("Updated: {$updated}");
+        $this->line("Errors: {$errors}");
 
         return self::SUCCESS;
     }

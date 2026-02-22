@@ -45,7 +45,9 @@ class TmdbClient
         $cacheKey = "tmdb:detail:{$type}:{$id}";
 
         return Cache::remember($cacheKey, now()->addDays(7), function () use ($type, $id) {
-            return $this->request("{$type}/{$id}");
+            return $this->request("{$type}/{$id}", [
+                'append_to_response' => 'credits',
+            ]);
         });
     }
 

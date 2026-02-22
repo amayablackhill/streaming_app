@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminPageController;
+use App\Http\Controllers\Admin\TmdbImportController;
 use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProfileController;
@@ -54,6 +55,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/video-assets/{videoAsset}', [VideoAssetController::class, 'show'])->name('video-assets.show');
     Route::get('/video-assets/{videoAsset}/status', [VideoAssetController::class, 'status'])->name('video-assets.status');
     Route::get('/health/video-pipeline', VideoPipelineHealthController::class)->name('admin.health.video-pipeline');
+    Route::get('/tmdb/search', [TmdbImportController::class, 'search'])->name('admin.tmdb.search');
+    Route::post('/tmdb/import', [TmdbImportController::class, 'import'])->name('admin.tmdb.import');
 
     Route::fallback([AdminPageController::class, 'fallback']);
 });
