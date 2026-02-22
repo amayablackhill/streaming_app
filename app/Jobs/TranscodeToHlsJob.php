@@ -49,64 +49,71 @@ class TranscodeToHlsJob implements ShouldQueue
         }
 
         $baseOutputDir = 'videos/hls/'.$videoAsset->uuid;
-        $variantDir = $baseOutputDir.'/v0';
-        $segmentPattern = $variantDir.'/seg_%05d.ts';
-        $playlistPath = $variantDir.'/index.m3u8';
         $masterPath = $baseOutputDir.'/master.m3u8';
-
-        Storage::disk($videoAsset->hls_disk)->makeDirectory($variantDir);
+        $renditions = [
+            ['variant' => 'v0', 'height' => 720, 'bandwidth' => 2800000, 'maxrate' => '2996k', 'bufsize' => '4200k', 'audio' => '128k', 'resolution' => '1280x720', 'codec' => 'avc1.64001f,mp4a.40.2'],
+            ['variant' => 'v1', 'height' => 480, 'bandwidth' => 1400000, 'maxrate' => '1498k', 'bufsize' => '2100k', 'audio' => '96k', 'resolution' => '854x480', 'codec' => 'avc1.64001e,mp4a.40.2'],
+            ['variant' => 'v2', 'height' => 360, 'bandwidth' => 800000, 'maxrate' => '856k', 'bufsize' => '1200k', 'audio' => '96k', 'resolution' => '640x360', 'codec' => 'avc1.64001e,mp4a.40.2'],
+        ];
 
         $ffmpegPath = env('FFMPEG_PATH', 'ffmpeg');
-        $process = new Process([
-            $ffmpegPath,
-            '-y',
-            '-i', $inputPath,
-            '-vf', 'scale=-2:720',
-            '-c:v', 'libx264',
-            '-preset', 'veryfast',
-            '-profile:v', 'main',
-            '-crf', '23',
-            '-c:a', 'aac',
-            '-ar', '48000',
-            '-ac', '2',
-            '-b:a', '128k',
-            '-f', 'hls',
-            '-hls_time', '6',
-            '-hls_playlist_type', 'vod',
-            '-hls_flags', 'independent_segments',
-            '-hls_segment_filename', Storage::disk($videoAsset->hls_disk)->path($segmentPattern),
-            '-master_pl_name', 'master.m3u8',
-            '-var_stream_map', 'v:0,a:0',
-            Storage::disk($videoAsset->hls_disk)->path($playlistPath),
-        ]);
+        foreach ($renditions as $rendition) {
+            $variantDir = $baseOutputDir.'/'.$rendition['variant'];
+            $playlistPath = $variantDir.'/index.m3u8';
+            $segmentPattern = $variantDir.'/seg_%05d.ts';
 
-        try {
-            $process->run();
-        } catch (Throwable $exception) {
-            $this->markFailed($videoAsset, 'ffmpeg process crashed: '.$exception->getMessage());
-            return;
-        }
+            Storage::disk($videoAsset->hls_disk)->makeDirectory($variantDir);
 
-        if (!$process->isSuccessful()) {
-            $this->markFailed($videoAsset, $this->buildProcessErrorMessage($process, 'ffmpeg HLS transcoding failed'));
-            return;
-        }
+            $process = new Process([
+                $ffmpegPath,
+                '-y',
+                '-i', $inputPath,
+                '-map', '0:v:0',
+                '-map', '0:a?',
+                '-vf', 'scale=-2:'.$rendition['height'],
+                '-c:v', 'libx264',
+                '-preset', 'veryfast',
+                '-profile:v', 'main',
+                '-crf', '23',
+                '-maxrate', $rendition['maxrate'],
+                '-bufsize', $rendition['bufsize'],
+                '-c:a', 'aac',
+                '-ar', '48000',
+                '-ac', '2',
+                '-b:a', $rendition['audio'],
+                '-f', 'hls',
+                '-hls_time', '6',
+                '-hls_playlist_type', 'vod',
+                '-hls_flags', 'independent_segments',
+                '-hls_segment_filename', Storage::disk($videoAsset->hls_disk)->path($segmentPattern),
+                Storage::disk($videoAsset->hls_disk)->path($playlistPath),
+            ]);
 
-        if (!Storage::disk($videoAsset->hls_disk)->exists($masterPath)) {
-            if (!Storage::disk($videoAsset->hls_disk)->exists($playlistPath)) {
-                $this->markFailed($videoAsset, 'HLS transcoding finished but variant playlist was not generated.');
+            try {
+                $process->run();
+            } catch (Throwable $exception) {
+                $this->markFailed($videoAsset, 'ffmpeg process crashed: '.$exception->getMessage());
                 return;
             }
 
-            $masterBody = implode("\n", [
-                '#EXTM3U',
-                '#EXT-X-VERSION:3',
-                '#EXT-X-STREAM-INF:BANDWIDTH=2800000,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2"',
-                'v0/index.m3u8',
-                '',
-            ]);
-            Storage::disk($videoAsset->hls_disk)->put($masterPath, $masterBody);
+            if (!$process->isSuccessful()) {
+                $this->markFailed($videoAsset, $this->buildProcessErrorMessage($process, 'ffmpeg HLS transcoding failed'));
+                return;
+            }
+
+            if (!Storage::disk($videoAsset->hls_disk)->exists($playlistPath)) {
+                $this->markFailed($videoAsset, 'HLS transcoding finished but variant playlist was not generated: '.$playlistPath);
+                return;
+            }
         }
+
+        $masterLines = ['#EXTM3U', '#EXT-X-VERSION:3'];
+        foreach ($renditions as $rendition) {
+            $masterLines[] = '#EXT-X-STREAM-INF:BANDWIDTH='.$rendition['bandwidth'].',RESOLUTION='.$rendition['resolution'].',CODECS="'.$rendition['codec'].'"';
+            $masterLines[] = $rendition['variant'].'/index.m3u8';
+        }
+        $masterLines[] = '';
+        Storage::disk($videoAsset->hls_disk)->put($masterPath, implode("\n", $masterLines));
 
         $videoAsset->update([
             'hls_master_path' => $masterPath,
