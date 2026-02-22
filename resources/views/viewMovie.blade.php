@@ -1,89 +1,126 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie - {{ $content->title }}</title>
-    
-    
-    @csrf
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body>
-    
-    <x-app-layout>
+<x-app-layout>
+    @php
+        $posterUrl = $content->picture
+            ? asset('storage/movies/' . $content->picture)
+            : asset('storage/logo/netflick_logo_definitive.png');
 
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="movie-display mb-12">
-                <h3 class="text-3xl font-bold mb-4">{{ $content->title }}</h3>
-                <div class="aspect-w-16 aspect-h-12">
-                    <label for="resolution" class="block text-sm font-medium text-gray-700">Select Resolution</label>
-                    <select id="resolution" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="max">Max resolution</option>
-                        <option value="mid">Medium resolution</option>
-                        <option value="min">Min resolution</option>
-                    </select>
-                    <video controls class="w-full mt-4" id="original-video">
-                        <source id="video-source" src="" type="video/mp4">
-                    </video>
+        $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
+        $genreName = optional($content->genre)->name ?? 'Uncategorized';
+        $durationLabel = $content->duration ? $content->duration . ' min' : 'N/A';
+        $ratingLabel = isset($content->rating) ? number_format((float) $content->rating, 1) : null;
 
-                    <div class="grid grid-cols-9 gap-0">
-                        @foreach (range(1, 9) as $i)
-                            <div>
-                                <a onclick="loadTimeStamp(frameTimes[{{ $i - 1 }}])">
-                                    <img src="{{ asset("storage/content/frames/{$content->video}/frame_00{$i}.jpg") }}" alt="" style="width: 100%; height: auto;">
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
+        $videoValue = trim((string) ($content->video ?? ''));
+        $youtubeId = null;
 
-                    <script>
-                        var frameTimes = @json(json_decode(file_get_contents(storage_path('app/public/content/frames/'.$content->video.'/times.json'))));
+        if ($videoValue !== '') {
+            if (preg_match('/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/', $videoValue, $matches)) {
+                $youtubeId = $matches[1];
+            } elseif (preg_match('/^[A-Za-z0-9_-]{11}$/', $videoValue)) {
+                $youtubeId = $videoValue;
+            }
+        }
 
-                        function loadTimeStamp(time) {
-                            var video = document.getElementById("original-video");
-                            video.currentTime = time;
-                            video.play();
-                        }
+        $videoCandidates = [];
+        if ($videoValue !== '') {
+            $videoCandidates = [
+                'content/max_' . $videoValue,
+                'content/mid_' . $videoValue,
+                'content/min_' . $videoValue,
+                'content/' . $videoValue,
+                'movies/' . $videoValue,
+            ];
+        }
 
-                        document.addEventListener("DOMContentLoaded", function() {
-                            var resolutionSelect = document.getElementById('resolution');
-                            var videoSource = document.getElementById('video-source');
-                            
-                            if (resolutionSelect && videoSource) {
-                                var resolutionDefault = (window.innerWidth > 1024) ? "max" : (window.innerWidth > 768) ? "mid" : (window.innerWidth > 480) ? "min" : "min";
-                                resolutionSelect.value = resolutionDefault;
-                                
-                                videoSource.src = `{{ asset('storage/content/') }}/${resolutionDefault}_{{ $content->video }}`;
-                                videoSource.parentElement.load();
-                            }
+        $playbackPath = collect($videoCandidates)->first(
+            fn (string $path): bool => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
+        );
+        $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
+    @endphp
 
-                            document.getElementById('resolution').addEventListener('change', function() {
-                                var resolution = this.value;
-                                var videoSource = document.getElementById('video-source');
-                                if (videoSource) {
-                                    videoSource.src = `{{ asset('storage/content/') }}/${resolution}_{{ $content->video }}`;
-                                    videoSource.parentElement.load();
-                                }
-                            });
-                        });
-                    </script>
+    <article class="cc-stack-6">
+        <header class="cc-stack-2">
+            <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Film Detail</p>
+            <h1 class="cc-title-display">{{ $content->title }}</h1>
+            <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
+                Watch the official trailer or demo playback and review the editorial metadata.
+            </p>
+        </header>
 
-            <div class="movie-info flex flex-wrap items-center justify-center">
-                <img src="{{ asset('storage/movies/' . $content->picture) }}" alt="{{ $content->title }}" loading="lazy" class="w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4">
-                <div class="movie-info-text w-1/2 md:w-2/3 lg:w-3/4 xl:w-4/5 p-4">
-                    <h3 class="text-3xl font-bold mb-2">Title: {{ $content->title }}</h3>
-                    <h3 class="text-3xl font-bold mb-2">Director: {{ $content->director }}</h3>
-                    <h3 class="text-3xl font-bold mb-2">Release Year: {{ $content->release_date }}</h3>
-                    <h3 class="text-3xl font-bold mb-2">Rating: {{ $content->rating }}</h3>
-                    <h3 class="text-3xl font-bold mb-2">Genre: {{ $content->genre->name }}</h3>
-                    <p class="text-xl">{{ $content->description }}</p>
+        <x-ui.alert tone="info" title="Playback policy">
+            Catalog playback uses trailers and short demo clips only.
+        </x-ui.alert>
+
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+            <section class="cc-surface cc-stack-4 p-4 sm:p-5">
+                <div class="cc-elevated aspect-video overflow-hidden">
+                    @if ($youtubeId)
+                        <iframe
+                            src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}"
+                            title="Trailer for {{ $content->title }}"
+                            loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            class="h-full w-full"
+                        ></iframe>
+                    @elseif ($playbackUrl)
+                        <video controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black">
+                            <source src="{{ $playbackUrl }}" type="video/mp4">
+                            Your browser does not support HTML5 video.
+                        </video>
+                    @else
+                        <x-ui.empty-state
+                            title="Trailer not available"
+                            description="This title has no trailer URL or local demo clip configured yet."
+                        />
+                    @endif
                 </div>
-            </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <x-ui.badge tone="neutral">Film</x-ui.badge>
+                    <x-ui.badge tone="neutral">{{ $releaseYear }}</x-ui.badge>
+                    <x-ui.badge tone="neutral">{{ $durationLabel }}</x-ui.badge>
+                    @if ($ratingLabel)
+                        <x-ui.badge tone="premium">Rating {{ $ratingLabel }}</x-ui.badge>
+                    @endif
+                </div>
+            </section>
+
+            <aside class="cc-surface cc-stack-4 p-4 sm:p-5">
+                <div class="overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
+                    <img
+                        src="{{ $posterUrl }}"
+                        alt="{{ $content->title }} poster"
+                        loading="lazy"
+                        class="h-auto w-full object-cover"
+                    >
+                </div>
+
+                <dl class="cc-stack-2 text-sm leading-editorial text-cc-text-secondary">
+                    <div>
+                        <dt class="text-cc-caption uppercase tracking-label text-cc-text-muted">Director</dt>
+                        <dd class="text-cc-text-primary">{{ $content->director ?: 'Unknown' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-cc-caption uppercase tracking-label text-cc-text-muted">Genre</dt>
+                        <dd class="text-cc-text-primary">{{ $genreName }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-cc-caption uppercase tracking-label text-cc-text-muted">Release date</dt>
+                        <dd class="text-cc-text-primary">{{ $content->release_date ?: 'N/A' }}</dd>
+                    </div>
+                </dl>
+
+                <x-ui.button href="{{ route('content.movies.list') }}" variant="secondary" size="sm">
+                    Back to films
+                </x-ui.button>
+            </aside>
         </div>
 
-    </x-app-layout>
-
-
-</body>
-</html>
+        <section class="cc-surface cc-stack-2 p-4 sm:p-5">
+            <h2 class="cc-title-section">Synopsis</h2>
+            <p class="text-sm leading-editorial text-cc-text-secondary">
+                {{ $content->description ?: 'No synopsis available yet.' }}
+            </p>
+        </section>
+    </article>
+</x-app-layout>
