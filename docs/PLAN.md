@@ -81,7 +81,7 @@ Demo full-stack deployable (Railway) con:
 ## Admin UX
 - [x] Redisenar `addContent.blade.php` (step-like form, validaciones visibles, mensajes consistentes)
 - [x] Rehacer tablas admin (movies/series/seasons) con estados vacios, filtros basicos y acciones claras
-- [ ] Mejorar pantalla `video-assets/show.blade.php` (timeline de estados + thumbnail + links tecnicos)
+- [x] Mejorar pantalla `video-assets/show.blade.php` (timeline de estados + thumbnail + links tecnicos)
 
 ## Calidad de interfaz
 - [ ] Normalizar jerarquia tipografica y espaciados en todas las vistas Blade activas
