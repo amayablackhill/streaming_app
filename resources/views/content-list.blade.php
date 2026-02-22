@@ -42,6 +42,10 @@
             $sections[] = ['title' => 'Now Showing', 'subtitle' => 'Featured', 'items' => $movies];
             $sections[] = ['title' => 'Serialized Stories', 'subtitle' => 'Curated Selection', 'items' => $series];
         }
+
+        $adminActionHref = auth()->check() && auth()->user()->canAccessAdminPanel()
+            ? route('admin.home')
+            : null;
     @endphp
 
     @if ($isHomeView && $featuredMovie)
@@ -137,8 +141,8 @@
                             <x-ui.empty-state
                                 title="No titles found"
                                 description="This section is still empty. Add content from the admin panel or sync metadata imports."
-                                :action-label="auth()->check() ? 'Go to dashboard' : null"
-                                :action-href="auth()->check() ? route('dashboard') : null"
+                                :action-label="$adminActionHref ? 'Go to admin' : null"
+                                :action-href="$adminActionHref"
                             />
                         @else
                             @if ($isHomeView)
@@ -215,6 +219,6 @@
                 </div>
                 <p class="text-[10px] uppercase tracking-[0.3em] text-white/20">Cineclub Curated Archive</p>
             </div>
-        </footer>
+        </FOOTER>
     @endif
 </x-app-layout>

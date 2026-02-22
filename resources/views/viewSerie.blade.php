@@ -38,6 +38,9 @@
         );
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
         $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
+        $adminActionHref = auth()->check() && auth()->user()->canAccessAdminPanel()
+            ? route('admin.home')
+            : null;
     @endphp
 
     <article class="cc-stack-6">
@@ -134,8 +137,8 @@
                 <x-ui.empty-state
                     title="No seasons available"
                     description="This series still has no seasons published. Add them from the admin panel."
-                    :action-label="auth()->check() ? 'Go to dashboard' : null"
-                    :action-href="auth()->check() ? route('dashboard') : null"
+                    :action-label="$adminActionHref ? 'Go to admin' : null"
+                    :action-href="$adminActionHref"
                 />
             @else
                 <div class="cc-stack-4">
