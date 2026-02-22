@@ -84,7 +84,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Mejorar pantalla `video-assets/show.blade.php` (timeline de estados + thumbnail + links tecnicos)
 
 ## Calidad de interfaz
-- [ ] Normalizar jerarquia tipografica y espaciados en todas las vistas Blade activas
+- [x] Normalizar jerarquia tipografica y espaciados en todas las vistas Blade activas
 - [ ] Eliminar estilos inline y CSS legacy no usado; mover a utilidades Tailwind/componentes
 - [ ] Asegurar responsive real (mobile-first) para dashboard, catalogo y admin
 - [ ] Pasar accesibilidad minima (focus visible, contraste AA aproximado, labels/aria)
