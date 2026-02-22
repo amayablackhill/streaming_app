@@ -3,28 +3,91 @@
 @tailwind utilities;
 
 :root {
-    --swiper-theme-color: #e50914;
-    --app-bg: #020617;
-    --app-surface: #0f172a;
-    --app-border: #1e293b;
-    --app-text: #e2e8f0;
-    --app-muted: #94a3b8;
+    --cc-bg-primary: #141414;
+    --cc-bg-surface: #1c1c1c;
+    --cc-bg-elevated: #222222;
+    --cc-text-primary: #e8e6e3;
+    --cc-text-secondary: #b8b5b0;
+    --cc-text-muted: #8a8782;
+    --cc-accent: #3e4a3f;
+    --cc-border: rgba(255, 255, 255, 0.06);
+    --cc-radius-sm: 2px;
+    --cc-radius-md: 4px;
+    --cc-duration-fast: 150ms;
+    --cc-duration-base: 200ms;
+    --cc-duration-slow: 250ms;
+    --swiper-theme-color: var(--cc-accent);
 }
 
-body {
-    background: var(--app-bg);
-    color: var(--app-text);
-    font-family: "Figtree", "Segoe UI", sans-serif;
-    margin: 0;
-    padding: 0;
+@layer base {
+    html {
+        color-scheme: dark;
+        background-color: var(--cc-bg-primary);
+    }
+
+    body {
+        @apply bg-cc-bg-primary text-cc-text-primary antialiased;
+        font-family: "Figtree", "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply text-cc-text-primary;
+    }
+
+    a {
+        @apply text-cc-text-secondary transition-colors duration-200 ease-soft;
+    }
+
+    a:hover {
+        @apply text-cc-text-primary;
+    }
+
+    * {
+        border-color: var(--cc-border);
+    }
+
+    *:focus-visible {
+        outline: 1px solid var(--cc-accent);
+        outline-offset: 2px;
+        border-radius: var(--cc-radius-sm);
+    }
 }
 
-h2 {
-    color: #f1f5f9;
+@layer components {
+    .cc-surface {
+        background-color: var(--cc-bg-surface);
+        border: 1px solid var(--cc-border);
+        border-radius: var(--cc-radius-md);
+    }
+
+    .cc-elevated {
+        background-color: var(--cc-bg-elevated);
+        border: 1px solid var(--cc-border);
+        border-radius: var(--cc-radius-md);
+    }
+
+    .cc-input {
+        background-color: var(--cc-bg-elevated);
+        color: var(--cc-text-primary);
+        border: 1px solid var(--cc-border);
+        border-radius: var(--cc-radius-sm);
+        transition: border-color var(--cc-duration-fast) ease-out;
+    }
+
+    .cc-input:focus-visible {
+        border-color: var(--cc-accent);
+    }
 }
 
 .section-title {
-    color: #f1f5f9;
+    color: var(--cc-text-primary);
     font-size: 1.4vw;
     font-weight: 600;
     margin-bottom: 15px;
@@ -47,16 +110,16 @@ h2 {
 
 .swiper-slide {
     width: auto !important;
-    transition: transform 0.3s ease, z-index 0.3s ease;
+    transition: transform var(--cc-duration-base) ease-out, z-index var(--cc-duration-base) ease-out;
     position: relative;
 }
 
 .swiper-slide img {
     width: 100%;
     height: auto;
-    border-radius: 4px;
+    border-radius: var(--cc-radius-md);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease;
+    transition: transform var(--cc-duration-base) ease-out;
 }
 
 .swiper-slide:hover {
@@ -78,7 +141,7 @@ h2 {
     margin: 0;
     font-size: 0.9rem;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--cc-duration-base) ease-out;
 }
 
 .swiper-slide:hover h2 {

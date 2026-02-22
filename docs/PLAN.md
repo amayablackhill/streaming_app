@@ -48,6 +48,14 @@ Demo full-stack deployable (Railway) con:
 - [x] Thumbnails job
 - [x] Cleanup source job
 
+## P1 - UI Foundation Sprint (Blade + Tailwind + Alpine)
+
+- [x] UIF-01 Design tokens Cineclub en `tailwind.config.js` + base CSS en `resources/css/app.css`
+- [ ] UIF-02 Componentes atomicos `resources/views/components/ui/{button,input,badge,card-film,modal}.blade.php`
+- [ ] UIF-03 Layout shells `editorial-shell`, `admin-shell`, `auth-shell` y `top-nav`
+- [ ] UIF-04 Componente `x-ui.rail` con `overflow-x` + `scroll-snap` (sin autoplay)
+- [ ] UIF-05 Motion system consistente (150-250ms, ease-out/ease-in-out) aplicado a componentes base
+
 ---
 
 # P2 - Diferenciadores
@@ -58,7 +66,7 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
-# P3 - UI Overhaul (Rediseño Total)
+# P3 - UI Overhaul (RediseÃ±o Total)
 
 ## Fundacion visual
 - [ ] Definir design tokens globales (color, spacing, radius, shadows, typography)
