@@ -67,6 +67,16 @@ Demo full-stack deployable (Railway) con:
 - [x] UIS-06 Player detail: trailer YouTube + fallback HLS demo clip
 - [x] UIS-07 Datos demo consistentes via `php artisan app:demo-seed` (local first, API opcional)
 
+## P1 - TMDB Import-Only Hardening
+
+- [x] TMDB metadata columns en `contents` con unique `(tmdb_type, tmdb_id)`
+- [x] Accessors en `Content` (`poster_url`, `backdrop_url`, `display_overview`, `display_runtime`) con fallback legacy
+- [x] Service layer `TmdbClient` + `TmdbImportService` con cache TTL y errores controlados
+- [x] Admin import UI (`GET /admin/tmdb/search`, `POST /admin/tmdb/import`) bajo `role:admin`
+- [x] Sync command `tmdb:sync --limit=50` para registros stale (>30 dias)
+- [x] Tests con `Http::fake()` para create/update/no-duplicate/search/token-missing
+- [x] README actualizado con estrategia import-only + `TMDB_TOKEN`
+
 ---
 
 # P2 - Diferenciadores

@@ -91,36 +91,42 @@ Pre-deploy gate (runs tests first, then deploys):
 4. Open `/admin/video-assets/{id}` and wait until status becomes `ready`.
 5. Verify HLS playback and direct access to `master.m3u8` + `.ts` segments.
 
-## Optional: TMDB seeder (real catalog data)
-Use this when you want real movie metadata in local/dev.
+## TMDB import-only integration
+TMDB is used only for admin import and periodic metadata refresh.
+Public catalog navigation never calls TMDB at runtime.
 
-1. Add `TMDB_API_KEY` to `.env`.
-2. Run:
-```bash
-./vendor/bin/sail artisan db:seed --class=Database\\Seeders\\TmdbContentSeeder
-```
-
-Notes:
-- It creates/updates `contents` (type `film`) from TMDB discover popular.
-- Posters are downloaded to `storage/app/public/movies`.
-- It is not part of default `DatabaseSeeder` to avoid CI/network dependency.
-
-## TMDB sync command (API-safe)
-For iterative imports without hammering the API:
+### 1) Configure token
+Set in `.env`:
 
 ```bash
-./vendor/bin/sail artisan tmdb:sync --pages=1 --limit=12 --download-posters
+TMDB_TOKEN=your_tmdb_v4_read_token
 ```
 
-Flags:
-- `--pages`: how many discover pages to scan.
-- `--limit`: max items to process.
-- `--download-posters`: download poster files only when needed.
-- `--refresh-existing`: force refresh existing records.
+If `TMDB_TOKEN` is empty:
+- app keeps working with local data
+- TMDB admin import UI is shown as disabled
+- `tmdb:sync` command exits gracefully
 
-Rate/call controls:
-- `TMDB_THROTTLE_MS` (default `250`) adds delay between outbound calls.
-- Requests use retry + timeout and cache genres/details to reduce repeated calls.
+### 2) Admin import flow
+1. Open `/admin/tmdb/search`
+2. Search by title and choose type (`movie` or `tv`)
+3. Click `Import` on a result
+4. App creates/updates local content by unique key `(tmdb_type, tmdb_id)`
+
+### 3) Manual sync command
+Refresh stale TMDB-linked records (`tmdb_last_synced_at <= 30 days`):
+
+```bash
+./vendor/bin/sail artisan tmdb:sync --limit=50
+```
+
+### 4) Caching strategy
+- `search`: 12 hours
+- `details`: 7 days
+- `videos`: 7 days
+
+Images use TMDB CDN paths (`poster_path`, `backdrop_path`) directly.
+No poster/backdrop files are downloaded during import.
 
 ## Demo seed command (local-first)
 This command sets a clean, consistent demo catalog for portfolio screenshots and recruiter walkthroughs.
