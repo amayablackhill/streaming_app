@@ -46,7 +46,7 @@ Demo full-stack deployable (Railway) con:
 - [x] GitHub Actions CI
 - [x] UI badges + feedback processing
 - [x] Thumbnails job
-- [ ] Cleanup source job
+- [x] Cleanup source job
 
 ---
 
