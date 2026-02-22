@@ -24,11 +24,6 @@ class CatalogController extends Controller
         return view('content-list', compact('contents'));
     }
 
-    public function dashboard(): View
-    {
-        return view('vueProject');
-    }
-
     public function showMovie(int $id): View
     {
         $content = Content::findOrFail($id);

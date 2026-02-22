@@ -6,12 +6,21 @@ use App\Models\Content;
 use App\Models\Episode;
 use App\Models\Genre;
 use App\Models\Season;
+use App\Models\VideoAsset;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 class AdminPageController extends Controller
 {
+    public function index(): View
+    {
+        return view('admin.index', [
+            'movieCount' => Content::where('type', 'film')->count(),
+            'seriesCount' => Content::where('type', 'serie')->count(),
+            'videoAssetCount' => VideoAsset::query()->count(),
+        ]);
+    }
+
     public function moviesTable(): View
     {
         $movies = Content::where('type', 'film')->get();
@@ -72,17 +81,6 @@ class AdminPageController extends Controller
 
     public function fallback(): RedirectResponse
     {
-        if (!auth()->check() || !auth()->user()->canAccessAdminPanel()) {
-            return redirect()->route('dashboard');
-        }
-
-        abort(404);
-    }
-
-    public function getMovies(): JsonResponse
-    {
-        $movies = Content::where('type', 'film')->get();
-
-        return response()->json($movies);
+        return redirect()->route('admin.home');
     }
 }

@@ -5,18 +5,14 @@ use App\Http\Controllers\Admin\TmdbImportController;
 use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PublicApiController;
 use App\Http\Controllers\SeasonEpisodeController;
 use App\Http\Controllers\VideoAssetController;
 use App\Http\Controllers\VideoPipelineHealthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [CatalogController::class, 'index']);
-Route::get('/home', [CatalogController::class, 'home'])->name('home');
-
-Route::get('/dashboard', [CatalogController::class, 'dashboard'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/', [CatalogController::class, 'index'])->name('home');
+Route::permanentRedirect('/home', '/');
+Route::permanentRedirect('/dashboard', '/')->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -32,6 +28,7 @@ Route::get('/series', [CatalogController::class, 'series'])->name('content.serie
 Route::get('/search', [CatalogController::class, 'search'])->name('search');
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/', [AdminPageController::class, 'index'])->name('admin.home');
     Route::get('/movies', [AdminPageController::class, 'moviesTable'])->name('movies.table');
     Route::get('/series', [AdminPageController::class, 'seriesTable'])->name('series.table');
 
@@ -51,7 +48,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/seasons/{id}/episodes/create', [AdminPageController::class, 'createEpisodeForm'])->name('episodes.create');
     Route::get('/seasons/{id}/episodes/{episodeId}/edit', [AdminPageController::class, 'editEpisodeForm'])->name('episodes.edit');
     Route::post('/seasons/{id}/episodes/{episodeId}/edit', [SeasonEpisodeController::class, 'updateEpisode'])->name('episodes.update');
-    Route::get('/getMovies', [AdminPageController::class, 'getMovies']);
     Route::get('/video-assets/{videoAsset}', [VideoAssetController::class, 'show'])->name('video-assets.show');
     Route::get('/video-assets/{videoAsset}/status', [VideoAssetController::class, 'status'])->name('video-assets.status');
     Route::get('/health/video-pipeline', VideoPipelineHealthController::class)->name('admin.health.video-pipeline');
@@ -62,10 +58,5 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::get('/series/{id}/seasons/{seasonId}/episodes/{episodeId}/watch', [CatalogController::class, 'watchEpisode'])->name('episodes.watch');
-
-Route::middleware('auth:sanctum')->get('/user', [PublicApiController::class, 'user']);
-Route::get('/api/movies', [PublicApiController::class, 'movies']);
-Route::get('/api/series', [PublicApiController::class, 'series']);
-Route::get('/footer', [PublicApiController::class, 'footer']);
 
 require __DIR__.'/auth.php';

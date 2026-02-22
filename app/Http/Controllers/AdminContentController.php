@@ -94,7 +94,7 @@ class AdminContentController extends Controller
                     ->update(['is_featured' => false]);
             }
 
-            return redirect()->route('dashboard')->with('success', __(':movie updated successfully', ['movie' => $content->title]));
+            return redirect()->route('admin.home')->with('success', __(':movie updated successfully', ['movie' => $content->title]));
         });
     }
 
@@ -104,7 +104,7 @@ class AdminContentController extends Controller
         $this->authorize('delete', $content);
         $content->delete();
 
-        return redirect()->route('dashboard')->with('success', __('Movie deleted successfully'));
+        return redirect()->route('admin.home')->with('success', __('Movie deleted successfully'));
     }
 
     private function handleImageUpload($request): ?string
