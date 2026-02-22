@@ -39,7 +39,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/editContent/{id}', [AdminContentController::class, 'updateContent'])->name('content.update');
     Route::delete('/deleteContent/{id}', [AdminContentController::class, 'destroyContent'])->name('content.destroy');
 
-    Route::get('/addSeasons', [AdminPageController::class, 'addSeasonsIndex'])->name('seasons.add');
     Route::get('/series/{id}/seasons', [AdminPageController::class, 'seasonsManage'])->name('seasons.manage');
     Route::post('/series/{id}/seasons', [SeasonEpisodeController::class, 'storeSeason'])->name('seasons.store');
 

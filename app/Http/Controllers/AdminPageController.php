@@ -50,13 +50,6 @@ class AdminPageController extends Controller
         return view('editContent', compact('content', 'genres'));
     }
 
-    public function addSeasonsIndex(): View
-    {
-        $series = Content::where('type', 'serie')->get();
-
-        return view('addSeasons', compact('series'));
-    }
-
     public function seasonsManage(int $id): View
     {
         $content = Content::with(['seasons.episodes'])->findOrFail($id);
