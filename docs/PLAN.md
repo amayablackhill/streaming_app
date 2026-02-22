@@ -54,6 +54,7 @@ Demo full-stack deployable (Railway) con:
 
 - [ ] HLS 3 renditions
 - [ ] TMDB import (opcional)
+- [x] TMDB seeder base (opcional, manual con API key)
 
 ---
 
@@ -69,14 +70,4 @@ Demo full-stack deployable (Railway) con:
 ## TODOs de riesgo detectados
 - [x] Resolver ruta/vista legacy de temporadas: se eliminó `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
 - [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware `role:admin` + Spatie roles (`hasRole('admin')`), sin fallback legacy.
-
-
-
-
-
-
-
-
-
-
 

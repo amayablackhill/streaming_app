@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'tmdb' => [
+        'api_key' => env('TMDB_API_KEY'),
+        'language' => env('TMDB_LANGUAGE', 'en-US'),
+        'image_base_url' => env('TMDB_IMAGE_BASE_URL', 'https://image.tmdb.org/t/p/w500'),
+    ],
+
 ];

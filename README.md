@@ -85,3 +85,17 @@ Pre-deploy gate (runs tests first, then deploys):
 3. Upload a short MP4 clip (<= 20s, <= 25MB) as content video.
 4. Open `/admin/video-assets/{id}` and wait until status becomes `ready`.
 5. Verify HLS playback and direct access to `master.m3u8` + `.ts` segments.
+
+## Optional: TMDB seeder (real catalog data)
+Use this when you want real movie metadata in local/dev.
+
+1. Add `TMDB_API_KEY` to `.env`.
+2. Run:
+```bash
+./vendor/bin/sail artisan db:seed --class=Database\\Seeders\\TmdbContentSeeder
+```
+
+Notes:
+- It creates/updates `contents` (type `film`) from TMDB discover popular.
+- Posters are downloaded to `storage/app/public/movies`.
+- It is not part of default `DatabaseSeeder` to avoid CI/network dependency.
