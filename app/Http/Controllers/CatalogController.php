@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Content;
 use App\Models\Episode;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class CatalogController extends Controller
 {
-    public function index(): RedirectResponse
+    public function index(): View
     {
-        return redirect('/login');
+        return $this->home();
     }
 
     public function home(): View

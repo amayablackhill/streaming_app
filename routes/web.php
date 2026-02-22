@@ -11,7 +11,7 @@ use App\Http\Controllers\VideoPipelineHealthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CatalogController::class, 'index']);
-Route::get('/home', [CatalogController::class, 'home']);
+Route::get('/home', [CatalogController::class, 'home'])->name('home');
 
 Route::get('/dashboard', [CatalogController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])

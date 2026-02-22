@@ -28,9 +28,7 @@
 <nav x-data="{ open: false }" class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}" aria-label="Primary">
     <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-8">
-            <a href="{{ route('dashboard') }}" class="font-serif text-xl tracking-wide text-cc-text-primary">
-                Cineclub
-            </a>
+            <x-layout.logo :href="route('home')" />
 
             <div class="hidden items-center gap-1 md:flex">
                 @foreach ($links as $link)

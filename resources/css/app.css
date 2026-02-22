@@ -201,4 +201,14 @@
     .cc-stack-6 > * + * {
         margin-top: var(--cc-space-6);
     }
+
+    .cc-hero-gradient {
+        background:
+            linear-gradient(to top, var(--cc-bg-primary) 0%, transparent 42%),
+            linear-gradient(to right, var(--cc-bg-primary) 0%, transparent 62%);
+    }
+
+    .text-primary {
+        color: var(--cc-accent);
+    }
 }

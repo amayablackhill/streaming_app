@@ -56,6 +56,16 @@ Demo full-stack deployable (Railway) con:
 - [x] UIF-04 Componente `x-ui.rail` con `overflow-x` + `scroll-snap` (sin autoplay)
 - [x] UIF-05 Motion system consistente (150-250ms, ease-out/ease-in-out) aplicado a componentes base
 
+## P1 - UI Sprint Mockup Integration
+
+- [x] UIS-01 Home base: logo exacto del mockup + hero editorial + footer minimal
+- [ ] UIS-02 Buscador `/search?q=` con paginacion y empty state
+- [ ] UIS-03 Hero alimentado por `featured` real en DB (fallback controlado)
+- [ ] UIS-04 Rails curatoriales con `x-ui.rail` en Home (sin look retail)
+- [ ] UIS-05 Detail real alineado a mockup `editorial_film_detail`
+- [ ] UIS-06 Player detail: trailer YouTube + fallback HLS demo clip
+- [ ] UIS-07 Datos demo consistentes via `php artisan app:demo-seed` (local first, API opcional)
+
 ---
 
 # P2 - Diferenciadores
