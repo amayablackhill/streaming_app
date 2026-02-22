@@ -8,6 +8,7 @@
             initialStatus: @js($videoAsset->status),
             initialError: @js($videoAsset->error_message),
             initialHlsUrl: @js($hlsUrl),
+            initialThumbUrl: @js($thumbnailUrl),
         })"
         x-init="init()"
         class="py-10"
@@ -34,6 +35,11 @@
                         <span class="font-semibold text-slate-200">Last check:</span>
                         <span x-text="lastCheckedAt"></span>
                     </p>
+                </div>
+
+                <div class="mt-4" x-show="thumbnailUrl">
+                    <p class="mb-2 text-sm font-semibold text-slate-200">Generated Thumbnail</p>
+                    <img :src="thumbnailUrl" alt="Generated thumbnail" class="w-full max-w-sm rounded-md border border-slate-700" />
                 </div>
 
                 <template x-if="errorMessage">
@@ -68,6 +74,7 @@
                 status: config.initialStatus,
                 errorMessage: config.initialError,
                 hlsUrl: config.initialHlsUrl,
+                thumbnailUrl: config.initialThumbUrl,
                 timer: null,
                 hlsInstance: null,
                 lastCheckedAt: null,
@@ -93,6 +100,7 @@
                         this.status = data.status;
                         this.errorMessage = data.error_message;
                         this.hlsUrl = data.hls_url;
+                        this.thumbnailUrl = data.thumbnails_url;
                         this.lastCheckedAt = new Date().toLocaleTimeString();
 
                         if (this.status === 'ready') {

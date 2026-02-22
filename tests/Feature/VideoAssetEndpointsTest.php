@@ -49,6 +49,10 @@ class VideoAssetEndpointsTest extends TestCase
         ]);
 
         Storage::disk('public')->put($videoAsset->hls_master_path, '#EXTM3U');
+        Storage::disk('public')->put('videos/hls/demo/thumbs/thumb_001.jpg', 'img');
+        $videoAsset->update([
+            'thumbnails_path' => 'videos/hls/demo/thumbs/thumb_001.jpg',
+        ]);
 
         $response = $this->actingAs($admin)->getJson("/admin/video-assets/{$videoAsset->id}/status");
 
@@ -56,6 +60,6 @@ class VideoAssetEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('id', $videoAsset->id)
             ->assertJsonPath('status', VideoAsset::STATUS_READY)
-            ->assertJsonStructure(['hls_url', 'processed_at', 'failed_at']);
+            ->assertJsonStructure(['hls_url', 'thumbnails_url', 'processed_at', 'failed_at']);
     }
 }
