@@ -65,12 +65,12 @@
                     <table class="min-w-[44rem] divide-y divide-cc-border text-sm sm:min-w-full">
                         <thead class="bg-cc-bg-elevated/70">
                             <tr class="text-left text-xs uppercase tracking-label text-cc-text-muted">
-                                <th class="px-4 py-3">Title</th>
-                                <th class="hidden px-4 py-3 sm:table-cell">Release</th>
-                                <th class="hidden px-4 py-3 md:table-cell">Genre</th>
-                                <th class="px-4 py-3">Seasons</th>
-                                <th class="hidden px-4 py-3 sm:table-cell">Rating</th>
-                                <th class="px-4 py-3">Actions</th>
+                                <th scope="col" class="px-4 py-3">Title</th>
+                                <th scope="col" class="hidden px-4 py-3 sm:table-cell">Release</th>
+                                <th scope="col" class="hidden px-4 py-3 md:table-cell">Genre</th>
+                                <th scope="col" class="px-4 py-3">Seasons</th>
+                                <th scope="col" class="hidden px-4 py-3 sm:table-cell">Rating</th>
+                                <th scope="col" class="px-4 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-cc-border bg-cc-bg-surface/40">

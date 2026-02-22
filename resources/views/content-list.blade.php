@@ -43,7 +43,7 @@
         <div class="cc-divider"></div>
 
         <div x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 180)">
-            <div x-show="loading" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div x-show="loading" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="status" aria-live="polite" aria-label="Loading catalog">
                 @foreach (range(1, 8) as $item)
                     <article class="cc-surface overflow-hidden animate-pulse">
                         <div class="aspect-[2/3] bg-cc-bg-elevated"></div>

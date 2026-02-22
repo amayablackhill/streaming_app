@@ -29,6 +29,8 @@
                         class="inline-flex items-center rounded-sm border px-3 py-1 text-xs font-medium uppercase tracking-[0.08em]"
                         :class="statusToneClass()"
                         x-text="status"
+                        role="status"
+                        aria-live="polite"
                     ></span>
                 </div>
             </header>
@@ -50,7 +52,7 @@
                             </template>
                         </ol>
 
-                        <div class="mt-4 rounded-md border border-cc-border bg-cc-bg-primary/60 p-4 text-sm text-cc-text-secondary">
+                        <div class="mt-4 rounded-md border border-cc-border bg-cc-bg-primary/60 p-4 text-sm text-cc-text-secondary" role="status" aria-live="polite">
                             <p x-show="status === 'processing'">Worker is transcoding to HLS and generating artifacts.</p>
                             <p x-show="status === 'pending'">Clip is queued and waiting for the video worker.</p>
                             <p x-show="status === 'ready'">Pipeline completed. Playback and file links are now available.</p>

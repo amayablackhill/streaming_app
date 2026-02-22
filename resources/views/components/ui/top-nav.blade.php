@@ -25,7 +25,7 @@
         : 'bg-cc-bg-surface/90 border-cc-border';
 @endphp
 
-<nav x-data="{ open: false }" class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}">
+<nav x-data="{ open: false }" class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}" aria-label="Primary">
     <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-8">
             <a href="{{ route('dashboard') }}" class="font-serif text-xl tracking-wide text-cc-text-primary">
@@ -40,6 +40,7 @@
                     <a
                         href="{{ route($link['route']) }}"
                         class="rounded-sm px-3 py-2 text-sm transition-all cc-motion-base {{ $isActive ? 'text-cc-text-primary bg-cc-bg-elevated border border-cc-border' : 'text-cc-text-secondary hover:text-cc-text-primary' }}"
+                        @if ($isActive) aria-current="page" @endif
                     >
                         {{ $link['label'] }}
                     </a>
@@ -72,6 +73,8 @@
             class="inline-flex items-center justify-center rounded-sm border border-cc-border p-2 text-cc-text-secondary transition-colors cc-motion-base hover:text-cc-text-primary md:hidden"
             @click="open = !open"
             aria-label="Toggle navigation"
+            :aria-expanded="open.toString()"
+            aria-controls="mobile-nav-menu"
         >
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path :class="{ 'hidden': open }" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16" />
@@ -88,6 +91,7 @@
         x-transition:leave="transition-opacity cc-motion-fast cc-motion-exit"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
+        id="mobile-nav-menu"
         class="border-t border-cc-border bg-cc-bg-surface/95 px-4 py-3 md:hidden"
     >
         <div class="grid gap-1">
@@ -98,6 +102,7 @@
                 <a
                     href="{{ route($link['route']) }}"
                     class="rounded-sm px-3 py-2 text-sm {{ $isActive ? 'bg-cc-bg-elevated text-cc-text-primary' : 'text-cc-text-secondary' }}"
+                    @if ($isActive) aria-current="page" @endif
                 >
                     {{ $link['label'] }}
                 </a>

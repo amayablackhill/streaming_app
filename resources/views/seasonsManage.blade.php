@@ -165,11 +165,11 @@
                                         <table class="min-w-[40rem] divide-y divide-cc-border text-sm sm:min-w-full">
                                             <thead class="bg-cc-bg-surface/70">
                                                 <tr class="text-left text-xs uppercase tracking-label text-cc-text-muted">
-                                                    <th class="px-3 py-2">Episode</th>
-                                                    <th class="px-3 py-2">Title</th>
-                                                    <th class="hidden px-3 py-2 sm:table-cell">Duration</th>
-                                                    <th class="hidden px-3 py-2 md:table-cell">Release</th>
-                                                    <th class="px-3 py-2">Actions</th>
+                                                    <th scope="col" class="px-3 py-2">Episode</th>
+                                                    <th scope="col" class="px-3 py-2">Title</th>
+                                                    <th scope="col" class="hidden px-3 py-2 sm:table-cell">Duration</th>
+                                                    <th scope="col" class="hidden px-3 py-2 md:table-cell">Release</th>
+                                                    <th scope="col" class="px-3 py-2">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-cc-border">
