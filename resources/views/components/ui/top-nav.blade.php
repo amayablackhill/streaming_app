@@ -39,7 +39,7 @@
                     @endphp
                     <a
                         href="{{ route($link['route']) }}"
-                        class="rounded-sm px-3 py-2 text-sm transition-all duration-200 ease-soft {{ $isActive ? 'text-cc-text-primary bg-cc-bg-elevated border border-cc-border' : 'text-cc-text-secondary hover:text-cc-text-primary' }}"
+                        class="rounded-sm px-3 py-2 text-sm transition-all cc-motion-base {{ $isActive ? 'text-cc-text-primary bg-cc-bg-elevated border border-cc-border' : 'text-cc-text-secondary hover:text-cc-text-primary' }}"
                     >
                         {{ $link['label'] }}
                     </a>
@@ -53,7 +53,7 @@
                     {{ $isAdmin ? 'curator' : 'member' }}
                 </x-ui.badge>
 
-                <a href="{{ route('profile.edit') }}" class="rounded-sm px-3 py-2 text-sm text-cc-text-secondary hover:text-cc-text-primary">
+                <a href="{{ route('profile.edit') }}" class="rounded-sm px-3 py-2 text-sm text-cc-text-secondary transition-colors cc-motion-base hover:text-cc-text-primary">
                     {{ $user->name ?? $user->username }}
                 </a>
 
@@ -69,7 +69,7 @@
 
         <button
             type="button"
-            class="inline-flex items-center justify-center rounded-sm border border-cc-border p-2 text-cc-text-secondary transition-colors duration-200 ease-soft hover:text-cc-text-primary md:hidden"
+            class="inline-flex items-center justify-center rounded-sm border border-cc-border p-2 text-cc-text-secondary transition-colors cc-motion-base hover:text-cc-text-primary md:hidden"
             @click="open = !open"
             aria-label="Toggle navigation"
         >
@@ -80,7 +80,16 @@
         </button>
     </div>
 
-    <div x-show="open" x-transition class="border-t border-cc-border bg-cc-bg-surface/95 px-4 py-3 md:hidden">
+    <div
+        x-show="open"
+        x-transition:enter="transition-opacity cc-motion-base"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity cc-motion-fast cc-motion-exit"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="border-t border-cc-border bg-cc-bg-surface/95 px-4 py-3 md:hidden"
+    >
         <div class="grid gap-1">
             @foreach ($links as $link)
                 @php

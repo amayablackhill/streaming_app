@@ -54,7 +54,7 @@ Demo full-stack deployable (Railway) con:
 - [x] UIF-02 Componentes atomicos `resources/views/components/ui/{button,input,badge,card-film,modal}.blade.php`
 - [x] UIF-03 Layout shells `editorial-shell`, `admin-shell`, `auth-shell` y `top-nav`
 - [x] UIF-04 Componente `x-ui.rail` con `overflow-x` + `scroll-snap` (sin autoplay)
-- [ ] UIF-05 Motion system consistente (150-250ms, ease-out/ease-in-out) aplicado a componentes base
+- [x] UIF-05 Motion system consistente (150-250ms, ease-out/ease-in-out) aplicado a componentes base
 
 ---
 

@@ -6,7 +6,7 @@
 ])
 
 @php
-    $baseClasses = 'inline-flex items-center justify-center gap-2 border rounded-md font-medium tracking-wide transition-all duration-200 ease-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+    $baseClasses = 'inline-flex items-center justify-center gap-2 border rounded-md font-medium tracking-wide transition-all cc-motion-base focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
     $sizeClasses = [
         'sm' => 'h-9 px-3 text-xs',

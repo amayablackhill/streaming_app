@@ -9,7 +9,7 @@
     'badgeTone' => 'neutral',
 ])
 
-<article class="group cc-surface overflow-hidden transition-all duration-200 ease-soft hover:-translate-y-0.5 hover:border-cc-text-muted/40">
+<article class="group cc-surface overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40">
     <a href="{{ $href }}" class="block">
         <div class="aspect-[2/3] bg-cc-bg-elevated overflow-hidden">
             @if ($image)
@@ -17,7 +17,7 @@
                     src="{{ $image }}"
                     alt="{{ $title }}"
                     loading="lazy"
-                    class="h-full w-full object-cover transition-transform duration-250 ease-soft group-hover:scale-[1.02]"
+                    class="h-full w-full object-cover transition-transform cc-motion-slow group-hover:scale-[1.02]"
                 />
             @else
                 <div class="flex h-full items-center justify-center px-4 text-center text-xs uppercase tracking-[0.1em] text-cc-text-muted">

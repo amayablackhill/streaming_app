@@ -16,6 +16,8 @@
     --cc-duration-fast: 150ms;
     --cc-duration-base: 200ms;
     --cc-duration-slow: 250ms;
+    --cc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --cc-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --swiper-theme-color: var(--cc-accent);
 }
 
@@ -78,7 +80,7 @@
         color: var(--cc-text-primary);
         border: 1px solid var(--cc-border);
         border-radius: var(--cc-radius-sm);
-        transition: border-color var(--cc-duration-fast) ease-out;
+        transition: border-color var(--cc-duration-fast) var(--cc-ease-out);
     }
 
     .cc-input:focus-visible {
@@ -135,6 +137,27 @@
     }
 }
 
+@layer utilities {
+    .cc-motion-fast {
+        transition-duration: var(--cc-duration-fast);
+        transition-timing-function: var(--cc-ease-out);
+    }
+
+    .cc-motion-base {
+        transition-duration: var(--cc-duration-base);
+        transition-timing-function: var(--cc-ease-out);
+    }
+
+    .cc-motion-slow {
+        transition-duration: var(--cc-duration-slow);
+        transition-timing-function: var(--cc-ease-out);
+    }
+
+    .cc-motion-exit {
+        transition-timing-function: var(--cc-ease-in-out);
+    }
+}
+
 .section-title {
     color: var(--cc-text-primary);
     font-size: 1.4vw;
@@ -159,7 +182,7 @@
 
 .swiper-slide {
     width: auto !important;
-    transition: transform var(--cc-duration-base) ease-out, z-index var(--cc-duration-base) ease-out;
+    transition: transform var(--cc-duration-base) var(--cc-ease-out), z-index var(--cc-duration-base) var(--cc-ease-out);
     position: relative;
 }
 
@@ -168,7 +191,7 @@
     height: auto;
     border-radius: var(--cc-radius-md);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    transition: transform var(--cc-duration-base) ease-out;
+    transition: transform var(--cc-duration-base) var(--cc-ease-out);
 }
 
 .swiper-slide:hover {
@@ -190,7 +213,7 @@
     margin: 0;
     font-size: 0.9rem;
     opacity: 0;
-    transition: opacity var(--cc-duration-base) ease-out;
+    transition: opacity var(--cc-duration-base) var(--cc-ease-out);
 }
 
 .swiper-slide:hover h2 {
