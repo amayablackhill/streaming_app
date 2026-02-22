@@ -84,6 +84,55 @@
     .cc-input:focus-visible {
         border-color: var(--cc-accent);
     }
+
+    .cc-rail {
+        position: relative;
+    }
+
+    .cc-rail-track {
+        display: flex;
+        gap: 0.875rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        cursor: grab;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .cc-rail-track:active {
+        cursor: grabbing;
+    }
+
+    .cc-rail-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .cc-rail-track > * {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+    }
+
+    .cc-rail-fade-left,
+    .cc-rail-fade-right {
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        bottom: 0.5rem;
+        width: 2.5rem;
+        z-index: 10;
+    }
+
+    .cc-rail-fade-left {
+        left: 0;
+        background: linear-gradient(to right, var(--cc-bg-primary), transparent);
+    }
+
+    .cc-rail-fade-right {
+        right: 0;
+        background: linear-gradient(to left, var(--cc-bg-primary), transparent);
+    }
 }
 
 .section-title {
