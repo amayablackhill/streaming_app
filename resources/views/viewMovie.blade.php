@@ -35,6 +35,7 @@
             fn (string $path): bool => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
         );
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
+        $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
     @endphp
 
     <article class="min-h-[calc(100vh-4rem)] bg-cc-bg-primary">
@@ -50,7 +51,7 @@
 
                 <div class="absolute bottom-0 left-0 z-10 w-full bg-gradient-to-t from-cc-bg-primary to-transparent p-5 lg:hidden">
                     <h1 class="font-serif text-3xl text-white">{{ $content->title }}</h1>
-                    <p class="mt-1 text-sm text-cc-accent">{{ $releaseYear }} · {{ $content->director ?: 'Unknown Director' }}</p>
+                    <p class="mt-1 text-sm text-cc-accent">{{ $releaseYear }}  -  {{ $content->director ?: 'Unknown Director' }}</p>
                 </div>
             </section>
 
@@ -79,7 +80,7 @@
                     </div>
 
                     <div class="mb-10 flex flex-wrap items-center gap-3 border-b border-cc-border pb-6">
-                        @if ($youtubeId || $playbackUrl)
+                        @if ($youtubeId || $hlsPlaybackUrl || $playbackUrl)
                             <a
                                 href="#player"
                                 class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-cc-bg-primary transition-all cc-motion-base hover:bg-cc-text-primary"
@@ -119,6 +120,8 @@
                                     allowfullscreen
                                     class="h-full w-full"
                                 ></iframe>
+                            @elseif ($hlsPlaybackUrl)
+                                <video id="detail-hls-player" controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black"></video>
                             @elseif ($playbackUrl)
                                 <video controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black">
                                     <source src="{{ $playbackUrl }}" type="video/mp4">
@@ -167,4 +170,33 @@
             </section>
         </main>
     </article>
+
+    @if (!$youtubeId && $hlsPlaybackUrl)
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const player = document.getElementById('detail-hls-player');
+                const source = @js($hlsPlaybackUrl);
+
+                if (!player || !source) {
+                    return;
+                }
+
+                if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                    player.src = source;
+                    return;
+                }
+
+                if (window.Hls && window.Hls.isSupported()) {
+                    const hls = new window.Hls();
+                    hls.loadSource(source);
+                    hls.attachMedia(player);
+                    return;
+                }
+
+                player.outerHTML = '<div class="flex h-full items-center justify-center p-6 text-center text-sm text-cc-text-secondary">HLS playback is not supported in this browser.</div>';
+            });
+        </script>
+    @endif
 </x-app-layout>
+

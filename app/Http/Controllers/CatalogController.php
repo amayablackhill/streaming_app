@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Content;
 use App\Models\Episode;
+use App\Models\VideoAsset;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class CatalogController extends Controller
 {
@@ -29,15 +32,17 @@ class CatalogController extends Controller
     public function showMovie(int $id): View
     {
         $content = Content::findOrFail($id);
+        $hlsUrl = $this->resolveReadyHlsUrl($content);
 
-        return view('viewMovie', compact('content'));
+        return view('viewMovie', compact('content', 'hlsUrl'));
     }
 
     public function showSeries(int $id): View
     {
         $content = Content::findOrFail($id);
+        $hlsUrl = $this->resolveReadyHlsUrl($content);
 
-        return view('viewSerie', compact('content'));
+        return view('viewSerie', compact('content', 'hlsUrl'));
     }
 
     public function movies(): View
@@ -84,5 +89,25 @@ class CatalogController extends Controller
         $episode = Episode::findOrFail($episodeId);
 
         return view('watchEpisode', compact('episode'));
+    }
+
+    private function resolveReadyHlsUrl(Content $content): ?string
+    {
+        $videoAsset = $content->videoAssets()
+            ->where('status', VideoAsset::STATUS_READY)
+            ->whereNotNull('hls_master_path')
+            ->orderByDesc('processed_at')
+            ->orderByDesc('id')
+            ->first();
+
+        if (!$videoAsset) {
+            return null;
+        }
+
+        try {
+            return Storage::disk($videoAsset->hls_disk)->url($videoAsset->hls_master_path);
+        } catch (Throwable) {
+            return null;
+        }
     }
 }

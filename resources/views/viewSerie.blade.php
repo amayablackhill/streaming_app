@@ -37,6 +37,7 @@
             fn (string $path): bool => \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
         );
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
+        $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
     @endphp
 
     <article class="cc-stack-6">
@@ -64,6 +65,8 @@
                             allowfullscreen
                             class="h-full w-full"
                         ></iframe>
+                    @elseif ($hlsPlaybackUrl)
+                        <video id="detail-hls-player-series" controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black"></video>
                     @elseif ($playbackUrl)
                         <video controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black">
                             <source src="{{ $playbackUrl }}" type="video/mp4">
@@ -182,7 +185,7 @@
                                                     <p class="text-xs text-cc-text-secondary">
                                                         {{ $episode->duration ? $episode->duration . ' min' : 'Duration N/A' }}
                                                         @if ($episode->release_date)
-                                                            · {{ $episode->release_date }}
+                                                             -  {{ $episode->release_date }}
                                                         @endif
                                                     </p>
                                                     @if ($episode->plot)
@@ -210,4 +213,33 @@
             @endif
         </section>
     </article>
+
+    @if (!$youtubeId && $hlsPlaybackUrl)
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const player = document.getElementById('detail-hls-player-series');
+                const source = @js($hlsPlaybackUrl);
+
+                if (!player || !source) {
+                    return;
+                }
+
+                if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                    player.src = source;
+                    return;
+                }
+
+                if (window.Hls && window.Hls.isSupported()) {
+                    const hls = new window.Hls();
+                    hls.loadSource(source);
+                    hls.attachMedia(player);
+                    return;
+                }
+
+                player.outerHTML = '<div class="flex h-full items-center justify-center p-6 text-center text-sm text-cc-text-secondary">HLS playback is not supported in this browser.</div>';
+            });
+        </script>
+    @endif
 </x-app-layout>
+

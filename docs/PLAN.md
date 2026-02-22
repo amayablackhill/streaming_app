@@ -64,7 +64,7 @@ Demo full-stack deployable (Railway) con:
 - [x] UIS-03 Hero alimentado por `featured` real en DB (fallback controlado)
 - [x] UIS-04 Rails curatoriales con `x-ui.rail` en Home (sin look retail)
 - [x] UIS-05 Detail real alineado a mockup `editorial_film_detail`
-- [ ] UIS-06 Player detail: trailer YouTube + fallback HLS demo clip
+- [x] UIS-06 Player detail: trailer YouTube + fallback HLS demo clip
 - [ ] UIS-07 Datos demo consistentes via `php artisan app:demo-seed` (local first, API opcional)
 
 ---
