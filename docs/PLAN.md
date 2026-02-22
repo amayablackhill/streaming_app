@@ -76,6 +76,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Sync command `tmdb:sync --limit=50` para registros stale (>30 dias)
 - [x] Tests con `Http::fake()` para create/update/no-duplicate/search/token-missing
 - [x] README actualizado con estrategia import-only + `TMDB_TOKEN`
+- [x] Cleanup legado TMDB (`App\\Services\\TmdbImportService`, `TmdbContentSeeder`, env/config old keys)
 
 ---
 

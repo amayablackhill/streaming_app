@@ -6,7 +6,6 @@ use App\Models\Content;
 use App\Models\Episode;
 use App\Models\Genre;
 use App\Models\Season;
-use App\Services\TmdbImportService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -14,16 +13,11 @@ use Illuminate\Support\Facades\Schema;
 class DemoSeedCommand extends Command
 {
     protected $signature = 'app:demo-seed
-        {--append : Keep existing catalog rows and only upsert demo baseline}
-        {--with-tmdb : Import extra films from TMDB after baseline seed}
-        {--tmdb-pages=1 : TMDB pages to scan when --with-tmdb is enabled}
-        {--tmdb-limit=12 : TMDB max items to import when --with-tmdb is enabled}
-        {--download-posters : Download TMDB poster files}
-        {--refresh-existing : Force TMDB refresh for existing films}';
+        {--append : Keep existing catalog rows and only upsert demo baseline}';
 
     protected $description = 'Seed a deterministic demo catalog for portfolio usage (local-first, TMDB optional)';
 
-    public function handle(TmdbImportService $tmdbImportService): int
+    public function handle(): int
     {
         $append = (bool) $this->option('append');
 
@@ -34,31 +28,6 @@ class DemoSeedCommand extends Command
 
         $stats = $this->seedBaselineCatalog();
         $this->info("Baseline catalog seeded. Films={$stats['films']} Series={$stats['series']} Genres={$stats['genres']}.");
-
-        if ((bool) $this->option('with-tmdb')) {
-            if (!$tmdbImportService->canRun()) {
-                $this->warn('TMDB credentials missing. Baseline seed completed without TMDB sync.');
-                return self::SUCCESS;
-            }
-
-            $tmdbStats = $tmdbImportService->importPopularMovies(
-                pages: max(1, (int) $this->option('tmdb-pages')),
-                limit: max(1, (int) $this->option('tmdb-limit')),
-                downloadPosters: (bool) $this->option('download-posters'),
-                refreshExisting: (bool) $this->option('refresh-existing')
-            );
-
-            $this->line(
-                sprintf(
-                    'TMDB sync done. Processed=%d Created=%d Updated=%d Skipped=%d Errors=%d',
-                    $tmdbStats['processed'],
-                    $tmdbStats['created'],
-                    $tmdbStats['updated'],
-                    $tmdbStats['skipped'],
-                    $tmdbStats['errors']
-                )
-            );
-        }
 
         $this->info('Demo catalog is ready.');
 

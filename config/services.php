@@ -33,11 +33,7 @@ return [
 
     'tmdb' => [
         'token' => env('TMDB_TOKEN'),
-        'api_key' => env('TMDB_API_KEY'),
-        'bearer_token' => env('TMDB_BEARER_TOKEN'),
         'language' => env('TMDB_LANGUAGE', 'en-US'),
-        'image_base_url' => env('TMDB_IMAGE_BASE_URL', 'https://image.tmdb.org/t/p/w500'),
-        'throttle_ms' => (int) env('TMDB_THROTTLE_MS', 250),
     ],
 
 ];

@@ -135,9 +135,9 @@ This command sets a clean, consistent demo catalog for portfolio screenshots and
 ./vendor/bin/sail artisan app:demo-seed
 ```
 
-Optional TMDB expansion (still controlled and rate-limited):
+Append-only mode (keeps current catalog rows):
 ```bash
-./vendor/bin/sail artisan app:demo-seed --with-tmdb --tmdb-pages=1 --tmdb-limit=12 --download-posters
+./vendor/bin/sail artisan app:demo-seed --append
 ```
 
 Notes:
