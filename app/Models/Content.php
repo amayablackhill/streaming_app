@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Content extends Model
 {
@@ -22,6 +23,23 @@ class Content extends Model
         'picture',
         'video',
         'is_featured',
+        'tmdb_id',
+        'tmdb_type',
+        'overview',
+        'runtime_minutes',
+        'rating_average',
+        'rating_count',
+        'poster_path',
+        'backdrop_path',
+        'youtube_trailer_id',
+        'tmdb_last_synced_at',
+    ];
+
+    protected $casts = [
+        'release_date' => 'date',
+        'tmdb_last_synced_at' => 'datetime',
+        'rating_average' => 'decimal:2',
+        'is_featured' => 'boolean',
     ];
 
     public function genre()
@@ -37,5 +55,55 @@ class Content extends Model
     public function videoAssets(): HasMany
     {
         return $this->hasMany(VideoAsset::class);
+    }
+
+    public function getPosterUrlAttribute(): ?string
+    {
+        if (!empty($this->poster_path)) {
+            return $this->tmdbImageUrl($this->poster_path, 'w500');
+        }
+
+        return $this->legacyImageUrl();
+    }
+
+    public function getBackdropUrlAttribute(): ?string
+    {
+        if (!empty($this->backdrop_path)) {
+            return $this->tmdbImageUrl($this->backdrop_path, 'original');
+        }
+
+        return $this->legacyImageUrl();
+    }
+
+    public function getDisplayOverviewAttribute(): ?string
+    {
+        return $this->overview ?: $this->description;
+    }
+
+    public function getDisplayRuntimeAttribute(): ?int
+    {
+        return $this->runtime_minutes ?: $this->duration;
+    }
+
+    private function tmdbImageUrl(string $path, string $size): string
+    {
+        $cleanPath = Str::start($path, '/');
+
+        return "https://image.tmdb.org/t/p/{$size}{$cleanPath}";
+    }
+
+    private function legacyImageUrl(): ?string
+    {
+        if (empty($this->picture)) {
+            return null;
+        }
+
+        if (Str::startsWith($this->picture, ['http://', 'https://'])) {
+            return $this->picture;
+        }
+
+        $folder = $this->type === 'serie' ? 'series' : 'movies';
+
+        return asset("storage/{$folder}/{$this->picture}");
     }
 }
