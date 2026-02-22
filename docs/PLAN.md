@@ -76,7 +76,7 @@ Demo full-stack deployable (Railway) con:
 ## Catalogo publico
 - [x] Rehacer `content-list.blade.php` con grid/cards limpias y skeleton loading simple
 - [x] Rehacer `viewMovie.blade.php` enfocando trailer/embed + metadata legible
-- [ ] Rehacer `viewSerie.blade.php` con lista de temporadas/episodios clara y CTA de reproduccion
+- [x] Rehacer `viewSerie.blade.php` con lista de temporadas/episodios clara y CTA de reproduccion
 
 ## Admin UX
 - [ ] Redisenar `addContent.blade.php` (step-like form, validaciones visibles, mensajes consistentes)
