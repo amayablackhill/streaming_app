@@ -2,19 +2,19 @@
 
 ## Objetivo
 Demo full-stack deployable (Railway) con:
-- Catálogo con trailers (YouTube embed)
-- Pipeline HLS asíncrono para clips demo (max 20s / 25MB)
+- Catalogo con trailers (YouTube embed)
+- Pipeline HLS asincrono para clips demo (max 20s / 25MB)
 - Spatie roles/permisos
 - Queue database
-- 8–12 tests + CI
+- 8-12 tests + CI
 - Deploy estable (web + worker + postgres + volume)
 
 ---
 
-# P0 — Bloqueadores (NO avanzar sin esto)
+# P0 - Bloqueadores (NO avanzar sin esto)
 
 ## Arquitectura
-- [x] Rutas limpias (sin lógica en web.php)
+- [x] Rutas limpias (sin logica en web.php)
 - [x] Dividir God Controller
 - [x] Eliminar role_id === 1 y User::isAdmin()
 
@@ -24,7 +24,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Policies + middleware aplicados
 
 ## Pipeline Base
-- [x] Migración + modelo video_assets
+- [x] Migracion + modelo video_assets
 - [x] Queue database configurada
 - [x] Worker funcional
 - [x] ProbeVideoJob
@@ -36,11 +36,11 @@ Demo full-stack deployable (Railway) con:
 - [x] Docker prod limpio
 - [x] Railway: web + worker + postgres + volume
 - [x] storage:link
-- [x] E2E probado (upload → ready → playback)
+- [x] E2E probado (upload -> ready -> playback)
 
 ---
 
-# P1 — Calidad Portfolio
+# P1 - Calidad Portfolio
 
 - [x] 8-12 tests (feature first)
 - [x] GitHub Actions CI
@@ -50,7 +50,7 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
-# P2 — Diferenciadores
+# P2 - Diferenciadores
 
 - [x] HLS 3 renditions
 - [x] TMDB import (opcional)
@@ -58,16 +58,43 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
+# P3 - UI Overhaul (Redise�o Total)
+
+## Fundacion visual
+- [ ] Definir design tokens globales (color, spacing, radius, shadows, typography)
+- [ ] Unificar `app.blade.php`, `guest.blade.php` y `navigation.blade.php` bajo un solo sistema visual
+- [ ] Crear componentes base reutilizables (`card`, `badge`, `button`, `input`, `alert`, `empty-state`)
+
+## Catalogo publico
+- [ ] Rehacer `content-list.blade.php` con grid/cards limpias y skeleton loading simple
+- [ ] Rehacer `viewMovie.blade.php` enfocando trailer/embed + metadata legible
+- [ ] Rehacer `viewSerie.blade.php` con lista de temporadas/episodios clara y CTA de reproduccion
+
+## Admin UX
+- [ ] Redisenar `addContent.blade.php` (step-like form, validaciones visibles, mensajes consistentes)
+- [ ] Rehacer tablas admin (movies/series/seasons) con estados vacios, filtros basicos y acciones claras
+- [ ] Mejorar pantalla `video-assets/show.blade.php` (timeline de estados + thumbnail + links tecnicos)
+
+## Calidad de interfaz
+- [ ] Normalizar jerarquia tipografica y espaciados en todas las vistas Blade activas
+- [ ] Eliminar estilos inline y CSS legacy no usado; mover a utilidades Tailwind/componentes
+- [ ] Asegurar responsive real (mobile-first) para dashboard, catalogo y admin
+- [ ] Pasar accesibilidad minima (focus visible, contraste AA aproximado, labels/aria)
+
+## Entrega visual para portfolio
+- [ ] Capturas finales (home, detalle, admin, pipeline status)
+- [ ] Actualizar README con seccion UI/UX decisions + screenshots
+
+---
+
 # Definition of Done Global
 
-- App deployada en Railway y accesible públicamente
-- Upload clip → processing → ready → reproduce HLS
+- App deployada en Railway y accesible publicamente
+- Upload clip -> processing -> ready -> reproduce HLS
 - Tests en verde + CI
 - Sin hardcodes de roles
 - README claro con instrucciones + demo creds
 
-
 ## TODOs de riesgo detectados
-- [x] Resolver ruta/vista legacy de temporadas: se eliminó `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
+- [x] Resolver ruta/vista legacy de temporadas: se elimino `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
 - [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware `role:admin` + Spatie roles (`hasRole('admin')`), sin fallback legacy.
-
