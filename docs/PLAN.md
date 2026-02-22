@@ -79,7 +79,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Rehacer `viewSerie.blade.php` con lista de temporadas/episodios clara y CTA de reproduccion
 
 ## Admin UX
-- [ ] Redisenar `addContent.blade.php` (step-like form, validaciones visibles, mensajes consistentes)
+- [x] Redisenar `addContent.blade.php` (step-like form, validaciones visibles, mensajes consistentes)
 - [ ] Rehacer tablas admin (movies/series/seasons) con estados vacios, filtros basicos y acciones claras
 - [ ] Mejorar pantalla `video-assets/show.blade.php` (timeline de estados + thumbnail + links tecnicos)
 

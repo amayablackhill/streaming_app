@@ -1,123 +1,195 @@
 <x-app-layout>
-    <div class="py-10">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <div class="rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-lg">
-                <div class="mb-6">
-                    <h1 class="text-2xl font-semibold text-slate-100">Add New Content</h1>
-                    <p class="mt-1 text-sm text-slate-400">Upload trailers or short demo clips for HLS processing.</p>
+    <section class="cc-stack-6">
+        <header class="cc-stack-2">
+            <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Admin · Curator Workflow</p>
+            <h1 class="cc-title-display">Add New Content</h1>
+            <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
+                Publish catalog entries with legal trailers or short demo clips for the HLS pipeline.
+            </p>
+            <div class="flex flex-wrap items-center gap-2">
+                <x-ui.badge tone="neutral">Step 1 Identity</x-ui.badge>
+                <x-ui.badge tone="neutral">Step 2 Metadata</x-ui.badge>
+                <x-ui.badge tone="neutral">Step 3 Media</x-ui.badge>
+            </div>
+        </header>
+
+        @if ($errors->any())
+            <x-ui.alert tone="error" title="Validation error">
+                <ul class="list-disc space-y-1 pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </x-ui.alert>
+        @endif
+
+        @if (session('video_asset_id'))
+            <x-ui.alert tone="success" title="Video pipeline started">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-sm">Your clip is processing asynchronously.</span>
+                    <x-ui.button
+                        :href="route('video-assets.show', session('video_asset_id'))"
+                        variant="secondary"
+                        size="sm"
+                    >
+                        Open status page
+                    </x-ui.button>
                 </div>
+            </x-ui.alert>
+        @endif
 
-                @if (session('video_asset_id'))
-                    <div class="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
-                        <div class="mb-1 flex items-center gap-2">
-                            <x-status-badge status="processing" />
-                            <span class="text-sm font-medium text-amber-200">Video pipeline started</span>
-                        </div>
-                        <a class="text-sm text-amber-300 underline hover:text-amber-200" href="{{ route('video-assets.show', session('video_asset_id')) }}">
-                            Open playback/status page
-                        </a>
-                    </div>
-                @endif
+        <form action="{{ route('content.add') }}" method="POST" enctype="multipart/form-data" class="cc-stack-6">
+            @csrf
 
-                <form action="{{ route('content.add') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    @csrf
+            <section class="cc-surface cc-stack-4 p-4 sm:p-5">
+                <header class="cc-stack-2">
+                    <x-ui.badge tone="neutral">Step 1</x-ui.badge>
+                    <h2 class="cc-title-section">Identity</h2>
+                </header>
 
-                    <div>
-                        <label for="type" class="block text-sm font-medium text-slate-200">Type*</label>
-                        <select name="type" id="type" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="cc-stack-2">
+                        <label for="type" class="text-sm font-medium text-cc-text-secondary">Type *</label>
+                        <select name="type" id="type" class="cc-input w-full text-sm">
                             <option value="">Select type</option>
                             <option value="film" @selected(old('type') === 'film')>Film</option>
-                            <option value="serie" @selected(old('type') === 'serie')>Serie</option>
+                            <option value="serie" @selected(old('type') === 'serie')>Series</option>
                         </select>
                         @error('type')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-slate-200">Content Title*</label>
-                        <input type="text" name="title" id="title" value="{{ old('title') }}" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
+                    <div class="cc-stack-2">
+                        <label for="title" class="text-sm font-medium text-cc-text-secondary">Title *</label>
+                        <x-ui.input
+                            id="title"
+                            name="title"
+                            type="text"
+                            :value="old('title')"
+                            :invalid="$errors->has('title')"
+                            autocomplete="off"
+                        />
                         @error('title')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
 
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-slate-200">Description*</label>
-                        <textarea name="description" id="description" rows="3" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">{{ old('description') }}</textarea>
-                        @error('description')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <div class="cc-stack-2">
+                    <label for="description" class="text-sm font-medium text-cc-text-secondary">Synopsis *</label>
+                    <textarea
+                        name="description"
+                        id="description"
+                        rows="4"
+                        class="cc-input w-full text-sm leading-editorial"
+                    >{{ old('description') }}</textarea>
+                    @error('description')
+                        <p class="text-xs text-rose-300">{{ $message }}</p>
+                    @enderror
+                </div>
+            </section>
 
-                    <div>
-                        <label for="release_date" class="block text-sm font-medium text-slate-200">Release Date*</label>
-                        <input type="date" name="release_date" id="release_date" value="{{ old('release_date') }}" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
+            <section class="cc-surface cc-stack-4 p-4 sm:p-5">
+                <header class="cc-stack-2">
+                    <x-ui.badge tone="neutral">Step 2</x-ui.badge>
+                    <h2 class="cc-title-section">Metadata</h2>
+                </header>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="cc-stack-2">
+                        <label for="release_date" class="text-sm font-medium text-cc-text-secondary">Release date *</label>
+                        <x-ui.input id="release_date" name="release_date" type="date" :value="old('release_date')" :invalid="$errors->has('release_date')" />
                         @error('release_date')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="duration" class="block text-sm font-medium text-slate-200">Duration (minutes)*</label>
-                        <input type="number" name="duration" id="duration" min="1" value="{{ old('duration') }}" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
+                    <div class="cc-stack-2">
+                        <label for="duration" class="text-sm font-medium text-cc-text-secondary">Duration (minutes) *</label>
+                        <x-ui.input id="duration" name="duration" type="number" min="1" :value="old('duration')" :invalid="$errors->has('duration')" />
                         @error('duration')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="director" class="block text-sm font-medium text-slate-200">Director*</label>
-                        <input type="text" name="director" id="director" value="{{ old('director') }}" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
+                    <div class="cc-stack-2">
+                        <label for="director" class="text-sm font-medium text-cc-text-secondary">Director *</label>
+                        <x-ui.input id="director" name="director" type="text" :value="old('director')" :invalid="$errors->has('director')" />
                         @error('director')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="genre_id" class="block text-sm font-medium text-slate-200">Genre*</label>
-                        <select name="genre_id" id="genre_id" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
-                            <option value="">Select a genre</option>
-                            @foreach($genres as $genre)
-                                <option value="{{ $genre->id }}" @selected(old('genre_id') == $genre->id)>{{ $genre->name }}</option>
+                    <div class="cc-stack-2">
+                        <label for="genre_id" class="text-sm font-medium text-cc-text-secondary">Genre *</label>
+                        <select name="genre_id" id="genre_id" class="cc-input w-full text-sm">
+                            <option value="">Select genre</option>
+                            @foreach ($genres as $genre)
+                                <option value="{{ $genre->id }}" @selected((string) old('genre_id') === (string) $genre->id)>
+                                    {{ $genre->name }}
+                                </option>
                             @endforeach
                         </select>
                         @error('genre_id')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
 
-                    <div>
-                        <label for="rating" class="block text-sm font-medium text-slate-200">Rating (1-100)</label>
-                        <input type="number" name="rating" id="rating" min="0" max="100" step="0.1" value="{{ old('rating') }}" class="mt-1 block w-full rounded-md border-slate-700 bg-slate-950 text-slate-100 focus:border-red-500 focus:ring-red-500">
-                        @error('rating')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <div class="cc-stack-2 md:max-w-xs">
+                    <label for="rating" class="text-sm font-medium text-cc-text-secondary">Rating (0–100)</label>
+                    <x-ui.input id="rating" name="rating" type="number" min="0" max="100" step="0.1" :value="old('rating')" :invalid="$errors->has('rating')" />
+                    @error('rating')
+                        <p class="text-xs text-rose-300">{{ $message }}</p>
+                    @enderror
+                </div>
+            </section>
 
-                    <div>
-                        <label for="picture" class="block text-sm font-medium text-slate-200">Content Poster</label>
-                        <input type="file" name="picture" id="picture" accept="image/*" class="mt-1 block w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 file:mr-3 file:rounded-md file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-slate-200 hover:file:bg-slate-700">
+            <section class="cc-surface cc-stack-4 p-4 sm:p-5">
+                <header class="cc-stack-2">
+                    <x-ui.badge tone="neutral">Step 3</x-ui.badge>
+                    <h2 class="cc-title-section">Media</h2>
+                    <p class="text-xs text-cc-text-muted">
+                        Demo clip limits: MP4, 25MB max. If clip duration exceeds 20s, pipeline will fail gracefully.
+                    </p>
+                </header>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="cc-stack-2">
+                        <label for="picture" class="text-sm font-medium text-cc-text-secondary">Poster image</label>
+                        <input
+                            type="file"
+                            name="picture"
+                            id="picture"
+                            accept="image/*"
+                            class="cc-input w-full text-sm file:mr-3 file:rounded-sm file:border-0 file:bg-cc-bg-elevated file:px-3 file:py-2 file:text-cc-text-secondary hover:file:text-cc-text-primary"
+                        >
                         @error('picture')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="video" class="block text-sm font-medium text-slate-200">Content Video</label>
-                        <input type="file" name="video" id="video" accept="video/*" class="mt-1 block w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 file:mr-3 file:rounded-md file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-slate-200 hover:file:bg-slate-700">
+                    <div class="cc-stack-2">
+                        <label for="video" class="text-sm font-medium text-cc-text-secondary">Trailer / demo clip</label>
+                        <input
+                            type="file"
+                            name="video"
+                            id="video"
+                            accept="video/mp4,video/*"
+                            class="cc-input w-full text-sm file:mr-3 file:rounded-sm file:border-0 file:bg-cc-bg-elevated file:px-3 file:py-2 file:text-cc-text-secondary hover:file:text-cc-text-primary"
+                        >
                         @error('video')
-                            <p class="mt-1 text-sm text-rose-300">{{ $message }}</p>
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
+            </section>
 
-                    <div class="pt-2">
-                        <button type="submit" class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-950">
-                            Add Content
-                        </button>
-                    </div>
-                </form>
+            <div class="flex flex-wrap items-center gap-3">
+                <x-ui.button type="submit" variant="primary">Publish content</x-ui.button>
+                <x-ui.button :href="route('dashboard')" variant="ghost">Cancel</x-ui.button>
             </div>
-        </div>
-    </div>
+        </form>
+    </section>
 </x-app-layout>
