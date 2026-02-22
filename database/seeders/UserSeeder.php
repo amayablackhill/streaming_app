@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        $now = now();
         $users = [
             [
                 'username' => 'Pau',
@@ -38,14 +39,16 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            DB::table('users')->insert([
-                'username' => $user['username'],
-                'password' => $user['password'],
-                'email' => $user['email'],
-                'role_id' => $user['role_id'],
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            DB::table('users')->updateOrInsert(
+                ['email' => $user['email']],
+                [
+                    'username' => $user['username'],
+                    'password' => $user['password'],
+                    'role_id' => $user['role_id'],
+                    'updated_at' => $now,
+                    'created_at' => $now,
+                ]
+            );
         }
     }
 }
