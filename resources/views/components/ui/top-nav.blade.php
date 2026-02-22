@@ -13,6 +13,7 @@
     ];
 
     $adminLinks = [
+        ['label' => 'Admin', 'route' => 'admin.home', 'patterns' => ['admin.home']],
         ['label' => 'Add Content', 'route' => 'content.add', 'patterns' => ['content.add', 'content.edit', 'content.update']],
         ['label' => 'Movies Table', 'route' => 'movies.table', 'patterns' => ['movies.table']],
         ['label' => 'Series Table', 'route' => 'series.table', 'patterns' => ['series.table', 'seasons.*', 'episodes.*', 'video-assets.*']],

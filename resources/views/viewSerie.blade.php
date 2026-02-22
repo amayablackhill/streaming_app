@@ -92,6 +92,14 @@
                         <x-ui.badge tone="premium">Rating {{ $ratingLabel }}</x-ui.badge>
                     @endif
                 </div>
+
+                @if ($adminActionHref)
+                    <div class="flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
+                        <x-ui.badge tone="premium">Admin controls</x-ui.badge>
+                        <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
+                        <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
+                    </div>
+                @endif
             </section>
 
             <aside class="cc-surface cc-stack-4 p-4 sm:p-5">

@@ -85,6 +85,12 @@
                             <span class="material-symbols-outlined text-base">bookmark</span>
                             Explore Catalog
                         </x-ui.button>
+                        @if ($adminActionHref)
+                            <x-ui.button :href="$adminActionHref" variant="ghost" size="lg" class="border border-white/30 text-white hover:border-white hover:bg-white/10">
+                                <span class="material-symbols-outlined text-base">dashboard</span>
+                                Curate Catalog
+                            </x-ui.button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -102,6 +108,10 @@
                     <x-ui.badge tone="neutral">{{ $contents->count() }} total</x-ui.badge>
                     <x-ui.badge tone="neutral">{{ $movies->count() }} films</x-ui.badge>
                     <x-ui.badge tone="neutral">{{ $series->count() }} series</x-ui.badge>
+                    @if ($adminActionHref)
+                        <x-ui.button :href="$adminActionHref" variant="ghost" size="sm">Admin</x-ui.button>
+                        <x-ui.button :href="route('content.add')" variant="secondary" size="sm">Add Content</x-ui.button>
+                    @endif
                 </div>
             </header>
 

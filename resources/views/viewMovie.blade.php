@@ -36,6 +36,7 @@
         );
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
         $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
+        $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
     @endphp
 
     <article class="min-h-[calc(100vh-4rem)] bg-cc-bg-primary">
@@ -102,6 +103,14 @@
                             <span class="material-symbols-outlined text-base">share</span>
                         </button>
                     </div>
+
+                    @if ($adminActionEnabled)
+                        <section class="mb-8 flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
+                            <x-ui.badge tone="premium">Admin controls</x-ui.badge>
+                            <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit movie</x-ui.button>
+                            <x-ui.button :href="route('admin.home')" variant="ghost" size="sm">Admin panel</x-ui.button>
+                        </section>
+                    @endif
 
                     <article class="space-y-5">
                         <p class="font-serif text-xl italic leading-relaxed text-cc-text-primary">

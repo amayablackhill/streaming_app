@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+        $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
+    @endphp
     <section class="cc-stack-6">
         <header class="cc-stack-2">
             <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Curated Search</p>
@@ -39,9 +42,15 @@
                         {{ $results->total() }} resultados para
                         <span class="font-medium text-cc-text-primary">"{{ $query }}"</span>
                     </p>
-                    <x-ui.badge tone="neutral">
-                        Page {{ $results->currentPage() }} / {{ $results->lastPage() }}
-                    </x-ui.badge>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <x-ui.badge tone="neutral">
+                            Page {{ $results->currentPage() }} / {{ $results->lastPage() }}
+                        </x-ui.badge>
+                        @if ($adminActionEnabled)
+                            <x-ui.button :href="route('admin.home')" variant="ghost" size="sm">Admin</x-ui.button>
+                            <x-ui.button :href="route('content.add')" variant="secondary" size="sm">Add Content</x-ui.button>
+                        @endif
+                    </div>
                 </header>
 
                 <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
@@ -64,6 +73,15 @@
                             :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
                             :meta="$meta"
                         />
+
+                        @if ($adminActionEnabled)
+                            <div class="mt-2 flex flex-wrap items-center gap-2">
+                                <x-ui.button :href="route('content.edit', $content->id)" variant="ghost" size="sm">Edit</x-ui.button>
+                                @if ($content->type === 'serie')
+                                    <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Seasons</x-ui.button>
+                                @endif
+                            </div>
+                        @endif
                     @endforeach
                 </div>
 
