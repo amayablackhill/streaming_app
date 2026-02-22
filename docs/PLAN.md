@@ -74,7 +74,7 @@ Demo full-stack deployable (Railway) con:
 - [x] Crear componentes base reutilizables (`card`, `badge`, `button`, `input`, `alert`, `empty-state`)
 
 ## Catalogo publico
-- [ ] Rehacer `content-list.blade.php` con grid/cards limpias y skeleton loading simple
+- [x] Rehacer `content-list.blade.php` con grid/cards limpias y skeleton loading simple
 - [ ] Rehacer `viewMovie.blade.php` enfocando trailer/embed + metadata legible
 - [ ] Rehacer `viewSerie.blade.php` con lista de temporadas/episodios clara y CTA de reproduccion
 
