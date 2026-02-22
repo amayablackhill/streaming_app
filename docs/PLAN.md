@@ -15,6 +15,7 @@ Demo full-stack deployable (Railway) con:
 
 ## Arquitectura
 - [x] Rutas limpias (sin logica en web.php)
+- [x] Limpieza legacy SPA/dead pages (sin `/dashboard#/`, sin endpoints web/api heredados, sin vistas rotas)
 - [x] Dividir God Controller
 - [x] Eliminar role_id === 1 y User::isAdmin()
 
