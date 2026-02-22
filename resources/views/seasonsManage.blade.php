@@ -19,9 +19,9 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <x-ui.button :href="route('series.table')" variant="ghost" size="sm">Back to series table</x-ui.button>
-                <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
+            <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                <x-ui.button :href="route('series.table')" variant="ghost" size="sm" class="w-full sm:w-auto">Back to series table</x-ui.button>
+                <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm" class="w-full sm:w-auto">Edit series</x-ui.button>
             </div>
         </header>
 
@@ -131,13 +131,13 @@
                                     </div>
                                 </div>
 
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <x-ui.button :href="route('episodes.create', $season->id)" variant="secondary" size="sm">Add episode</x-ui.button>
-                                    <x-ui.button type="button" variant="ghost" size="sm" @click="open = !open" x-text="open ? 'Collapse' : 'Expand'">Collapse</x-ui.button>
+                                <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                                    <x-ui.button :href="route('episodes.create', $season->id)" variant="secondary" size="sm" class="w-full sm:w-auto">Add episode</x-ui.button>
+                                    <x-ui.button type="button" variant="ghost" size="sm" class="w-full sm:w-auto" @click="open = !open" x-text="open ? 'Collapse' : 'Expand'">Collapse</x-ui.button>
                                     <form action="{{ route('seasons.destroy', $season->id) }}" method="POST" onsubmit="return confirm('Delete this season?')">
                                         @csrf
                                         @method('DELETE')
-                                        <x-ui.button type="submit" variant="danger" size="sm">Delete</x-ui.button>
+                                        <x-ui.button type="submit" variant="danger" size="sm" class="w-full sm:w-auto">Delete</x-ui.button>
                                     </form>
                                 </div>
                             </header>
@@ -162,13 +162,13 @@
                                     </x-ui.alert>
                                 @else
                                     <div class="overflow-x-auto">
-                                        <table class="min-w-full divide-y divide-cc-border text-sm">
+                                        <table class="min-w-[40rem] divide-y divide-cc-border text-sm sm:min-w-full">
                                             <thead class="bg-cc-bg-surface/70">
                                                 <tr class="text-left text-xs uppercase tracking-label text-cc-text-muted">
                                                     <th class="px-3 py-2">Episode</th>
                                                     <th class="px-3 py-2">Title</th>
-                                                    <th class="px-3 py-2">Duration</th>
-                                                    <th class="px-3 py-2">Release</th>
+                                                    <th class="hidden px-3 py-2 sm:table-cell">Duration</th>
+                                                    <th class="hidden px-3 py-2 md:table-cell">Release</th>
                                                     <th class="px-3 py-2">Actions</th>
                                                 </tr>
                                             </thead>
@@ -177,12 +177,12 @@
                                                     <tr class="hover:bg-cc-bg-surface/60 transition-colors cc-motion-base">
                                                         <td class="px-3 py-2 text-cc-text-secondary">{{ $episode->episode_number }}</td>
                                                         <td class="px-3 py-2 text-cc-text-primary">{{ $episode->title }}</td>
-                                                        <td class="px-3 py-2 text-cc-text-secondary">{{ $episode->duration ? $episode->duration . ' min' : 'N/A' }}</td>
-                                                        <td class="px-3 py-2 text-cc-text-secondary">{{ $episode->release_date ?? 'N/A' }}</td>
+                                                        <td class="hidden px-3 py-2 text-cc-text-secondary sm:table-cell">{{ $episode->duration ? $episode->duration . ' min' : 'N/A' }}</td>
+                                                        <td class="hidden px-3 py-2 text-cc-text-secondary md:table-cell">{{ $episode->release_date ?? 'N/A' }}</td>
                                                         <td class="px-3 py-2">
                                                             <div class="flex flex-wrap items-center gap-2">
-                                                                <x-ui.button :href="route('episodes.watch', [$content->id, $season->id, $episode->id])" variant="ghost" size="sm">Watch</x-ui.button>
-                                                                <x-ui.button :href="route('episodes.edit', [$season->id, $episode->id])" variant="secondary" size="sm">Edit</x-ui.button>
+                                                                <x-ui.button :href="route('episodes.watch', [$content->id, $season->id, $episode->id])" variant="ghost" size="sm" class="w-full sm:w-auto">Watch</x-ui.button>
+                                                                <x-ui.button :href="route('episodes.edit', [$season->id, $episode->id])" variant="secondary" size="sm" class="w-full sm:w-auto">Edit</x-ui.button>
                                                             </div>
                                                         </td>
                                                     </tr>

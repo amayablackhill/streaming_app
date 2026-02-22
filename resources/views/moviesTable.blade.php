@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <x-ui.button :href="route('content.add')" variant="secondary" size="sm">
+            <x-ui.button :href="route('content.add')" variant="secondary" size="sm" class="w-full sm:w-auto">
                 Add new content
             </x-ui.button>
         </header>
@@ -62,13 +62,13 @@
         @else
             <section class="cc-surface overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-cc-border text-sm">
+                    <table class="min-w-[40rem] divide-y divide-cc-border text-sm sm:min-w-full">
                         <thead class="bg-cc-bg-elevated/70">
                             <tr class="text-left text-xs uppercase tracking-label text-cc-text-muted">
                                 <th class="px-4 py-3">Title</th>
-                                <th class="px-4 py-3">Release</th>
-                                <th class="px-4 py-3">Genre</th>
-                                <th class="px-4 py-3">Rating</th>
+                                <th class="hidden px-4 py-3 sm:table-cell">Release</th>
+                                <th class="hidden px-4 py-3 md:table-cell">Genre</th>
+                                <th class="hidden px-4 py-3 sm:table-cell">Rating</th>
                                 <th class="px-4 py-3">Actions</th>
                             </tr>
                         </thead>
@@ -86,19 +86,19 @@
                                         <p class="font-medium text-cc-text-primary">{{ $movie->title }}</p>
                                         <p class="mt-1 text-xs text-cc-text-muted">ID {{ $movie->id }}</p>
                                     </td>
-                                    <td class="px-4 py-3 align-top text-cc-text-secondary">{{ $movie->release_date }}</td>
-                                    <td class="px-4 py-3 align-top text-cc-text-secondary">{{ $genreName }}</td>
-                                    <td class="px-4 py-3 align-top">
+                                    <td class="hidden px-4 py-3 align-top text-cc-text-secondary sm:table-cell">{{ $movie->release_date }}</td>
+                                    <td class="hidden px-4 py-3 align-top text-cc-text-secondary md:table-cell">{{ $genreName }}</td>
+                                    <td class="hidden px-4 py-3 align-top sm:table-cell">
                                         <x-ui.badge tone="neutral">{{ number_format((float) $rating, 1) }}</x-ui.badge>
                                     </td>
                                     <td class="px-4 py-3 align-top">
                                         <div class="flex flex-wrap items-center gap-2">
-                                            <x-ui.button :href="url('/movies/' . $movie->id)" variant="ghost" size="sm">View</x-ui.button>
-                                            <x-ui.button :href="route('content.edit', $movie->id)" variant="secondary" size="sm">Edit</x-ui.button>
+                                            <x-ui.button :href="url('/movies/' . $movie->id)" variant="ghost" size="sm" class="w-full sm:w-auto">View</x-ui.button>
+                                            <x-ui.button :href="route('content.edit', $movie->id)" variant="secondary" size="sm" class="w-full sm:w-auto">Edit</x-ui.button>
                                             <form action="{{ route('content.destroy', $movie->id) }}" method="POST" onsubmit="return confirm('Delete this movie?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <x-ui.button type="submit" variant="danger" size="sm">Delete</x-ui.button>
+                                                <x-ui.button type="submit" variant="danger" size="sm" class="w-full sm:w-auto">Delete</x-ui.button>
                                             </form>
                                         </div>
                                     </td>

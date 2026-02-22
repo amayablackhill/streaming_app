@@ -86,7 +86,7 @@ Demo full-stack deployable (Railway) con:
 ## Calidad de interfaz
 - [x] Normalizar jerarquia tipografica y espaciados en todas las vistas Blade activas
 - [x] Eliminar estilos inline y CSS legacy no usado; mover a utilidades Tailwind/componentes
-- [ ] Asegurar responsive real (mobile-first) para dashboard, catalogo y admin
+- [x] Asegurar responsive real (mobile-first) para dashboard, catalogo y admin
 - [ ] Pasar accesibilidad minima (focus visible, contraste AA aproximado, labels/aria)
 
 ## Entrega visual para portfolio
