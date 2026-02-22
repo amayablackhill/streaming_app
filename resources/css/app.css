@@ -18,6 +18,16 @@
     --cc-duration-slow: 250ms;
     --cc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --cc-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --cc-space-1: 0.25rem;
+    --cc-space-2: 0.5rem;
+    --cc-space-3: 0.75rem;
+    --cc-space-4: 1rem;
+    --cc-space-6: 1.5rem;
+    --cc-space-8: 2rem;
+    --cc-space-10: 2.5rem;
+    --cc-space-12: 3rem;
+    --cc-shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.04);
+    --cc-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.02);
     --swiper-theme-color: var(--cc-accent);
 }
 
@@ -67,12 +77,14 @@
         background-color: var(--cc-bg-surface);
         border: 1px solid var(--cc-border);
         border-radius: var(--cc-radius-md);
+        box-shadow: var(--cc-shadow-subtle);
     }
 
     .cc-elevated {
         background-color: var(--cc-bg-elevated);
         border: 1px solid var(--cc-border);
         border-radius: var(--cc-radius-md);
+        box-shadow: var(--cc-shadow-subtle), var(--cc-shadow-inset);
     }
 
     .cc-input {
@@ -135,6 +147,24 @@
         right: 0;
         background: linear-gradient(to left, var(--cc-bg-primary), transparent);
     }
+
+    .cc-divider {
+        border-top: 1px solid var(--cc-border);
+    }
+
+    .cc-title-display {
+        font-family: "Cormorant Garamond", "Times New Roman", serif;
+        font-size: 2.5rem;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .cc-title-section {
+        font-family: "Cormorant Garamond", "Times New Roman", serif;
+        font-size: 1.75rem;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+    }
 }
 
 @layer utilities {
@@ -155,6 +185,18 @@
 
     .cc-motion-exit {
         transition-timing-function: var(--cc-ease-in-out);
+    }
+
+    .cc-stack-2 > * + * {
+        margin-top: var(--cc-space-2);
+    }
+
+    .cc-stack-4 > * + * {
+        margin-top: var(--cc-space-4);
+    }
+
+    .cc-stack-6 > * + * {
+        margin-top: var(--cc-space-6);
     }
 }
 

@@ -69,7 +69,7 @@ Demo full-stack deployable (Railway) con:
 # P3 - UI Overhaul (Rediseño Total)
 
 ## Fundacion visual
-- [ ] Definir design tokens globales (color, spacing, radius, shadows, typography)
+- [x] Definir design tokens globales (color, spacing, radius, shadows, typography)
 - [ ] Unificar `app.blade.php`, `guest.blade.php` y `navigation.blade.php` bajo un solo sistema visual
 - [ ] Crear componentes base reutilizables (`card`, `badge`, `button`, `input`, `alert`, `empty-state`)
 

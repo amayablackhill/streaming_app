@@ -40,9 +40,34 @@ module.exports = {
                 lg: '4px',
                 xl: '4px',
             },
+            spacing: {
+                'cc-1': '0.25rem',
+                'cc-2': '0.5rem',
+                'cc-3': '0.75rem',
+                'cc-4': '1rem',
+                'cc-6': '1.5rem',
+                'cc-8': '2rem',
+                'cc-10': '2.5rem',
+                'cc-12': '3rem',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
                 serif: ['"Cormorant Garamond"', '"Iowan Old Style"', '"Times New Roman"', 'serif'],
+            },
+            fontSize: {
+                'cc-display': ['2.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+                'cc-title': ['1.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+                'cc-subtitle': ['1.25rem', { lineHeight: '1.3' }],
+                'cc-body': ['1rem', { lineHeight: '1.6' }],
+                'cc-caption': ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.08em' }],
+            },
+            lineHeight: {
+                editorial: '1.6',
+                tightish: '1.25',
+            },
+            letterSpacing: {
+                editorial: '-0.01em',
+                label: '0.08em',
             },
             transitionDuration: {
                 150: '150ms',
@@ -54,6 +79,7 @@ module.exports = {
             },
             boxShadow: {
                 subtle: '0 1px 0 rgba(255,255,255,0.04)',
+                inset: 'inset 0 1px 0 rgba(255,255,255,0.02)',
             },
         },
     },
