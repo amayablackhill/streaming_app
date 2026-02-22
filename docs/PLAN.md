@@ -59,6 +59,7 @@ Demo full-stack deployable (Railway) con:
 ## P1 - UI Sprint Mockup Integration
 
 - [x] UIS-01 Home base: logo exacto del mockup + hero editorial + footer minimal
+- [x] UIS-01a Ajuste UX: quitar icono `movie_filter` del logo y unificar Top Nav global en Home
 - [x] UIS-02 Buscador `/search?q=` con paginacion y empty state
 - [ ] UIS-03 Hero alimentado por `featured` real en DB (fallback controlado)
 - [ ] UIS-04 Rails curatoriales con `x-ui.rail` en Home (sin look retail)

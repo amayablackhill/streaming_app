@@ -49,29 +49,6 @@
                 <div class="absolute inset-0 cc-hero-gradient"></div>
             </div>
 
-            <nav class="absolute left-0 top-0 z-50 flex w-full items-center justify-between px-6 py-8 md:px-12 lg:px-16" aria-label="Home">
-                <x-layout.logo :href="route('home')" />
-
-                <div class="hidden items-center gap-6 md:flex">
-                    <a href="{{ route('content.movies.list') }}" class="text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-200 hover:text-cc-accent">Archive</a>
-                    <a href="{{ route('content.series.list') }}" class="text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-200 hover:text-cc-accent">Programming</a>
-                    @auth
-                        <a href="{{ route('profile.edit') }}" class="text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-200 hover:text-cc-accent">Profile</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-200 hover:text-cc-accent">Access</a>
-                    @endauth
-
-                    <form action="{{ route('search') }}" method="GET" role="search">
-                        <label for="home-search" class="sr-only">Search catalog</label>
-                        <x-ui.input id="home-search" name="q" type="search" :value="request('q')" placeholder="Search" class="h-9 w-40 bg-cc-bg-primary/50 text-xs" />
-                    </form>
-                </div>
-
-                <button type="button" class="text-cc-text-primary md:hidden" aria-label="Menu">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
-            </nav>
-
             <div class="relative z-10 mx-auto w-full max-w-7xl px-6 pb-20 md:px-12 md:pb-28 lg:px-16">
                 <div class="max-w-2xl">
                     <span class="mb-6 block text-[10px] font-bold uppercase tracking-[0.3em] text-cc-accent md:text-xs">Feature Presentation</span>
