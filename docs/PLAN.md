@@ -52,7 +52,7 @@ Demo full-stack deployable (Railway) con:
 
 - [x] UIF-01 Design tokens Cineclub en `tailwind.config.js` + base CSS en `resources/css/app.css`
 - [x] UIF-02 Componentes atomicos `resources/views/components/ui/{button,input,badge,card-film,modal}.blade.php`
-- [ ] UIF-03 Layout shells `editorial-shell`, `admin-shell`, `auth-shell` y `top-nav`
+- [x] UIF-03 Layout shells `editorial-shell`, `admin-shell`, `auth-shell` y `top-nav`
 - [ ] UIF-04 Componente `x-ui.rail` con `overflow-x` + `scroll-snap` (sin autoplay)
 - [ ] UIF-05 Motion system consistente (150-250ms, ease-out/ease-in-out) aplicado a componentes base
 

@@ -14,23 +14,19 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
-        <div class="min-h-screen bg-slate-950">
-            @include('layouts.navigation')
+    <body class="min-h-screen bg-cc-bg-primary text-cc-text-primary font-sans antialiased">
+        @php
+            $isAdminRoute = request()->is('admin') || request()->is('admin/*');
+        @endphp
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
-
-            <!-- Page Content -->
-            <main class="pb-10">
+        @if ($isAdminRoute)
+            <x-ui.admin-shell :header="$header ?? null">
                 {{ $slot }}
-            </main>
-        </div>
+            </x-ui.admin-shell>
+        @else
+            <x-ui.editorial-shell :header="$header ?? null">
+                {{ $slot }}
+            </x-ui.editorial-shell>
+        @endif
     </body>
 </html>
