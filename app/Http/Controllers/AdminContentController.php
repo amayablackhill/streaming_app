@@ -29,7 +29,7 @@ class AdminContentController extends Controller
                 'rating' => $request->rating ?? null,
                 'duration' => $request->duration,
                 'type' => $request->type,
-                'picture' => $this->handleImageUpload($request),
+                'picture' => $this->handleImageUpload($request, $request->type),
                 'video' => null,
                 'is_featured' => $request->boolean('is_featured') && $request->type === 'film',
             ]);
@@ -50,7 +50,7 @@ class AdminContentController extends Controller
             }
 
             return redirect()
-                ->route('content.add')
+                ->route($this->catalogTableRoute($content->type))
                 ->with('success', __('Content created successfully'))
                 ->with('video_asset_id', $videoAsset?->id);
         });
@@ -82,7 +82,7 @@ class AdminContentController extends Controller
                 'rating' => $request->rating ?? null,
                 'type' => $content->type,
                 'duration' => $request->duration,
-                'picture' => $request->hasFile('picture') ? $this->handleImageUpload($request) : $content->picture,
+                'picture' => $request->hasFile('picture') ? $this->handleImageUpload($request, $content->type) : $content->picture,
                 'video' => $videoAsset?->original_filename ?? $content->video,
                 'is_featured' => $isFeatured,
             ]);
@@ -94,7 +94,10 @@ class AdminContentController extends Controller
                     ->update(['is_featured' => false]);
             }
 
-            return redirect()->route('admin.home')->with('success', __(':movie updated successfully', ['movie' => $content->title]));
+            return redirect()
+                ->route($this->catalogTableRoute($content->type))
+                ->with('success', __(':title updated successfully', ['title' => $content->title]))
+                ->with('video_asset_id', $videoAsset?->id);
         });
     }
 
@@ -102,12 +105,16 @@ class AdminContentController extends Controller
     {
         $content = Content::findOrFail($id);
         $this->authorize('delete', $content);
+        $redirectRoute = $this->catalogTableRoute($content->type);
+        $title = $content->title;
         $content->delete();
 
-        return redirect()->route('admin.home')->with('success', __('Movie deleted successfully'));
+        return redirect()
+            ->route($redirectRoute)
+            ->with('success', __(':title deleted successfully', ['title' => $title]));
     }
 
-    private function handleImageUpload($request): ?string
+    private function handleImageUpload($request, ?string $contentType = null): ?string
     {
         if (!$request->hasFile('picture')) {
             return null;
@@ -115,7 +122,8 @@ class AdminContentController extends Controller
 
         $file = $request->file('picture');
         $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-        $where = $request->get('type') === 'film' ? 'movies' : ($request->get('type') === 'serie' ? 'series' : 'episodes');
+        $type = $request->get('type') ?: $contentType;
+        $where = $type === 'film' ? 'movies' : ($type === 'serie' ? 'series' : 'episodes');
 
         $file->storeAs('public/'.$where, $filename);
 
@@ -157,5 +165,10 @@ class AdminContentController extends Controller
             new GenerateThumbnailsJob($videoAsset->id),
             new CleanupSourceJob($videoAsset->id),
         ])->onQueue('video')->dispatch();
+    }
+
+    private function catalogTableRoute(string $type): string
+    {
+        return $type === 'serie' ? 'series.table' : 'movies.table';
     }
 }

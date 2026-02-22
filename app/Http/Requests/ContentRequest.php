@@ -9,7 +9,19 @@ class ContentRequest extends FormRequest
 {
     public function authorize()
     {
-        return (bool) auth()->user()?->can('create', Content::class);
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+
+        if ($this->routeIs('content.update')) {
+            $contentId = $this->route('id');
+            $content = $contentId ? Content::find($contentId) : null;
+
+            return $content ? $user->can('update', $content) : $user->can('create', Content::class);
+        }
+
+        return (bool) $user->can('create', Content::class);
     }
 
     public function rules()
@@ -22,7 +34,7 @@ class ContentRequest extends FormRequest
             'director' => 'required|string|max:255',
             'genre_id' => 'required|exists:genres,id',
             'rating' => 'nullable|numeric|between:0,100',
-            'type' => 'nullable|string',
+            'type' => 'required|string|in:film,serie',
             'is_featured' => 'nullable|boolean',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
             'video' => 'nullable|mimetypes:video/mp4|max:25600',

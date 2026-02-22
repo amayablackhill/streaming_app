@@ -93,7 +93,7 @@ Demo full-stack deployable (Railway) con:
 
 - [x] ADM-01 Normalizar roles Spatie + comando `app:make-admin {email}` (sin checks por `role_id`)
 - [x] ADM-02 Desbloqueo UI admin consistente (nav + botones contextuales solo admin)
-- [ ] ADM-03 Flujo CRUD admin unificado (movies/series create/edit/delete)
+- [x] ADM-03 Flujo CRUD admin unificado (movies/series create/edit/delete)
 - [ ] ADM-04 Flujo temporadas/episodios robusto (create/edit/delete sin rutas huerfanas)
 - [ ] ADM-05 Tests de permisos y visibilidad admin en vistas clave
 

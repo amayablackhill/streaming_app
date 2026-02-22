@@ -27,6 +27,18 @@
             </x-ui.button>
         </header>
 
+        @if (session('success'))
+            <x-ui.alert tone="success" :title="session('success')" />
+        @endif
+
+        @if (session('video_asset_id'))
+            <x-ui.alert tone="info" title="Video pipeline running">
+                <x-ui.button :href="route('video-assets.show', session('video_asset_id'))" variant="secondary" size="sm">
+                    Open status page
+                </x-ui.button>
+            </x-ui.alert>
+        @endif
+
         <section class="cc-surface cc-stack-4 p-4 sm:p-5">
             <header class="cc-stack-2">
                 <h2 class="cc-title-section">Filters</h2>
