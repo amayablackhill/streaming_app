@@ -23,6 +23,7 @@ class ContentRequest extends FormRequest
             'genre_id' => 'required|exists:genres,id',
             'rating' => 'nullable|numeric|between:0,100',
             'type' => 'nullable|string',
+            'is_featured' => 'nullable|boolean',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
             'video' => 'nullable|mimetypes:video/mp4|max:25600',
         ];

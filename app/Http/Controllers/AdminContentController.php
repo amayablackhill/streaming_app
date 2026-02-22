@@ -31,7 +31,15 @@ class AdminContentController extends Controller
                 'type' => $request->type,
                 'picture' => $this->handleImageUpload($request),
                 'video' => null,
+                'is_featured' => $request->boolean('is_featured') && $request->type === 'film',
             ]);
+
+            if ($content->is_featured) {
+                Content::query()
+                    ->where('type', 'film')
+                    ->where('id', '!=', $content->id)
+                    ->update(['is_featured' => false]);
+            }
 
             $videoAsset = $this->queueVideoProcessing($request, $content);
             if ($videoAsset) {
@@ -61,6 +69,10 @@ class AdminContentController extends Controller
                 });
             }
 
+            $isFeatured = $request->has('is_featured')
+                ? ($request->boolean('is_featured') && $content->type === 'film')
+                : (bool) $content->is_featured;
+
             $content->update([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -72,7 +84,15 @@ class AdminContentController extends Controller
                 'duration' => $request->duration,
                 'picture' => $request->hasFile('picture') ? $this->handleImageUpload($request) : $content->picture,
                 'video' => $videoAsset?->original_filename ?? $content->video,
+                'is_featured' => $isFeatured,
             ]);
+
+            if ($isFeatured && $content->type === 'film') {
+                Content::query()
+                    ->where('type', 'film')
+                    ->where('id', '!=', $content->id)
+                    ->update(['is_featured' => false]);
+            }
 
             return redirect()->route('dashboard')->with('success', __(':movie updated successfully', ['movie' => $content->title]));
         });

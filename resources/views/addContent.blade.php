@@ -88,6 +88,20 @@
                         <p class="text-xs text-rose-300">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="cc-stack-2">
+                    <label class="inline-flex items-center gap-2 text-sm text-cc-text-secondary">
+                        <input
+                            type="checkbox"
+                            name="is_featured"
+                            value="1"
+                            @checked(old('is_featured'))
+                            class="rounded-sm border-cc-border bg-cc-bg-elevated text-cc-accent focus:ring-0"
+                        >
+                        <span>Set as featured film on Home hero</span>
+                    </label>
+                    <p class="text-xs text-cc-text-muted">If enabled, this film becomes the main spotlight in Home.</p>
+                </div>
             </section>
 
             <section class="cc-surface cc-stack-4 p-4 sm:p-5">

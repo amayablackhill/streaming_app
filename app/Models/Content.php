@@ -21,7 +21,7 @@ class Content extends Model
         'type',
         'picture',
         'video',
-        'type'
+        'is_featured',
     ];
 
     public function genre()

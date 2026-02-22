@@ -17,7 +17,9 @@
                 ? 'Serialized stories selected for visual language and storytelling.'
                 : 'Discover films and series in an editorial, dark-first experience.');
 
-        $featuredMovie = $movies->sortByDesc(fn ($movie) => (float) ($movie->rating ?? 0))->first() ?? $movies->first();
+        $featuredMovie = $movies->firstWhere('is_featured', true)
+            ?? $movies->sortByDesc(fn ($movie) => (float) ($movie->rating ?? 0))->first()
+            ?? $movies->first();
 
         $featuredPoster = null;
         $featuredYear = 'N/A';
