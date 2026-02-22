@@ -1,0 +1,103 @@
+<x-app-layout>
+    <section class="cc-stack-6">
+        <header class="cc-stack-2">
+            <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Curated Search</p>
+            <h1 class="cc-title-display">Search Catalog</h1>
+            <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
+                Explore films and series by title, director, year, or synopsis.
+            </p>
+        </header>
+
+        <section class="cc-surface p-4 sm:p-5">
+            <form action="{{ route('search') }}" method="GET" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <label for="search-q" class="sr-only">Search catalog</label>
+                <x-ui.input
+                    id="search-q"
+                    name="q"
+                    type="search"
+                    :value="$query"
+                    placeholder="Search by title, director, year..."
+                    class="w-full"
+                />
+                <x-ui.button type="submit" variant="secondary" class="w-full sm:w-auto">
+                    Search
+                </x-ui.button>
+            </form>
+        </section>
+
+        @if ($query === '')
+            <x-ui.empty-state
+                title="Empieza con un titulo"
+                description="Escribe el nombre de una pelicula o serie para descubrir resultados curados."
+                :action-label="'Explore home'"
+                :action-href="route('home')"
+            />
+        @elseif ($results && $results->isNotEmpty())
+            <section class="cc-stack-4">
+                <header class="flex flex-wrap items-center justify-between gap-3">
+                    <p class="text-sm text-cc-text-secondary">
+                        {{ $results->total() }} resultados para
+                        <span class="font-medium text-cc-text-primary">"{{ $query }}"</span>
+                    </p>
+                    <x-ui.badge tone="neutral">
+                        Page {{ $results->currentPage() }} / {{ $results->lastPage() }}
+                    </x-ui.badge>
+                </header>
+
+                <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                    @foreach ($results as $content)
+                        @php
+                            $detailUrl = url('/' . ($content->type === 'serie' ? 'series' : 'movies') . '/' . $content->id);
+                            $posterDir = $content->type === 'film' ? 'movies' : 'series';
+                            $posterUrl = $content->picture
+                                ? asset('storage/' . $posterDir . '/' . $content->picture)
+                                : asset('storage/logo/netflick_logo_definitive.png');
+                            $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
+                            $meta = $content->director ?: optional($content->genre)->name;
+                        @endphp
+
+                        <x-ui.card-film
+                            :title="$content->title"
+                            :href="$detailUrl"
+                            :image="$posterUrl"
+                            :year="$releaseYear"
+                            :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
+                            :meta="$meta"
+                        />
+                    @endforeach
+                </div>
+
+                @if ($results->hasPages())
+                    <nav class="flex flex-wrap items-center justify-between gap-3 border-t border-cc-border pt-4" aria-label="Search results pagination">
+                        @if ($results->onFirstPage())
+                            <span class="text-sm text-cc-text-muted">Previous</span>
+                        @else
+                            <a href="{{ $results->previousPageUrl() }}" class="text-sm underline decoration-cc-border underline-offset-4 transition-colors cc-motion-base hover:text-cc-text-primary">
+                                Previous
+                            </a>
+                        @endif
+
+                        <p class="text-xs uppercase tracking-label text-cc-text-muted">
+                            Showing {{ $results->firstItem() }}-{{ $results->lastItem() }} of {{ $results->total() }}
+                        </p>
+
+                        @if ($results->hasMorePages())
+                            <a href="{{ $results->nextPageUrl() }}" class="text-sm underline decoration-cc-border underline-offset-4 transition-colors cc-motion-base hover:text-cc-text-primary">
+                                Next
+                            </a>
+                        @else
+                            <span class="text-sm text-cc-text-muted">Next</span>
+                        @endif
+                    </nav>
+                @endif
+            </section>
+        @else
+            <x-ui.empty-state
+                title="No hemos encontrado nada"
+                description="No hemos encontrado nada. Prueba con otro titulo o explora la seleccion curada."
+                :action-label="'Explore curated home'"
+                :action-href="route('home')"
+            />
+        @endif
+    </section>
+</x-app-layout>

@@ -28,6 +28,7 @@ Route::get('/series/{id}', [CatalogController::class, 'showSeries']);
 
 Route::get('/movies', [CatalogController::class, 'movies'])->name('content.movies.list');
 Route::get('/series', [CatalogController::class, 'series'])->name('content.series.list');
+Route::get('/search', [CatalogController::class, 'search'])->name('search');
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/movies', [AdminPageController::class, 'moviesTable'])->name('movies.table');

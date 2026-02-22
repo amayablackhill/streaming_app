@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Content;
 use App\Models\Episode;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {
@@ -51,6 +52,31 @@ class CatalogController extends Controller
         $contents = Content::where('type', 'serie')->get();
 
         return view('content-list', compact('contents'));
+    }
+
+    public function search(Request $request): View
+    {
+        $query = trim((string) $request->query('q', ''));
+        $results = null;
+
+        if ($query !== '') {
+            $results = Content::query()
+                ->where(function ($builder) use ($query): void {
+                    $builder
+                        ->where('title', 'like', '%' . $query . '%')
+                        ->orWhere('director', 'like', '%' . $query . '%')
+                        ->orWhere('description', 'like', '%' . $query . '%')
+                        ->orWhere('release_date', 'like', '%' . $query . '%');
+                })
+                ->orderByDesc('release_date')
+                ->paginate(12)
+                ->withQueryString();
+        }
+
+        return view('search', [
+            'query' => $query,
+            'results' => $results,
+        ]);
     }
 
     public function watchEpisode(int $id, int $seasonId, int $episodeId): View

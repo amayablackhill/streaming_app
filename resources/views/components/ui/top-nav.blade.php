@@ -7,7 +7,7 @@
     $isAdmin = $user && method_exists($user, 'canAccessAdminPanel') && $user->canAccessAdminPanel();
 
     $baseLinks = [
-        ['label' => 'Home', 'route' => 'dashboard', 'patterns' => ['dashboard']],
+        ['label' => 'Home', 'route' => 'home', 'patterns' => ['home', 'search']],
         ['label' => 'Movies', 'route' => 'content.movies.list', 'patterns' => ['content.movies.list', 'movies.*']],
         ['label' => 'Series', 'route' => 'content.series.list', 'patterns' => ['content.series.list', 'series.*', 'episodes.watch']],
     ];
@@ -47,6 +47,25 @@
         </div>
 
         <div class="hidden items-center gap-2 md:flex">
+            <form action="{{ route('search') }}" method="GET" role="search" class="hidden lg:flex">
+                <label for="top-nav-search" class="sr-only">Search catalog</label>
+                <div class="relative">
+                    <x-ui.input
+                        id="top-nav-search"
+                        name="q"
+                        type="search"
+                        :value="request('q')"
+                        placeholder="Search"
+                        class="h-9 w-44 bg-cc-bg-primary/60 pr-8"
+                    />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-cc-text-muted" aria-hidden="true">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="m21 21-4.2-4.2m1.2-4.8a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z" />
+                        </svg>
+                    </span>
+                </div>
+            </form>
+
             @auth
                 <x-ui.badge :tone="$isAdmin ? 'premium' : 'neutral'">
                     {{ $isAdmin ? 'curator' : 'member' }}
@@ -92,6 +111,18 @@
         id="mobile-nav-menu"
         class="border-t border-cc-border bg-cc-bg-surface/95 px-4 py-3 md:hidden"
     >
+        <form action="{{ route('search') }}" method="GET" role="search" class="mb-3 border-b border-cc-border pb-3">
+            <label for="top-nav-search-mobile" class="sr-only">Search catalog</label>
+            <x-ui.input
+                id="top-nav-search-mobile"
+                name="q"
+                type="search"
+                :value="request('q')"
+                placeholder="Search catalog..."
+                class="w-full"
+            />
+        </form>
+
         <div class="grid gap-1">
             @foreach ($links as $link)
                 @php
