@@ -71,7 +71,7 @@ Demo full-stack deployable (Railway) con:
 ## Fundacion visual
 - [x] Definir design tokens globales (color, spacing, radius, shadows, typography)
 - [x] Unificar `app.blade.php`, `guest.blade.php` y `navigation.blade.php` bajo un solo sistema visual
-- [ ] Crear componentes base reutilizables (`card`, `badge`, `button`, `input`, `alert`, `empty-state`)
+- [x] Crear componentes base reutilizables (`card`, `badge`, `button`, `input`, `alert`, `empty-state`)
 
 ## Catalogo publico
 - [ ] Rehacer `content-list.blade.php` con grid/cards limpias y skeleton loading simple
