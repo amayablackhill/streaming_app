@@ -105,7 +105,7 @@
             </div>
         </div>
 
-        <div class="hidden items-center gap-2 md:flex">
+        <div class="hidden items-center gap-6 md:flex">
             <form action="{{ route('search') }}" method="GET" role="search" class="hidden items-center lg:flex">
                 <label for="top-nav-search" class="sr-only">Search catalog</label>
                 <div class="relative">
