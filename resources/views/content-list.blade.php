@@ -68,7 +68,6 @@
 
             <div class="relative z-10 mx-auto w-full max-w-7xl px-6 pb-20 md:px-12 md:pb-28 lg:px-16">
                 <div class="max-w-2xl">
-                    <span class="mb-6 block text-[10px] font-bold uppercase tracking-[0.3em] text-cc-accent md:text-xs">Feature Presentation</span>
                     <h1 class="-ml-1 mb-8 font-serif text-6xl leading-none text-white sm:text-7xl md:text-8xl lg:text-9xl">
                         {{ $featuredMovie->title }}
                     </h1>
@@ -83,9 +82,7 @@
                         @endif
                     </div>
 
-                    <p class="mb-10 max-w-xl font-serif text-xl italic leading-relaxed text-cc-text-primary md:text-2xl">
-                        {{ $featuredMovie->description ?: 'A curated spotlight from the Cineclub archive.' }}
-                    </p>
+
 
                     <div class="flex flex-wrap gap-4">
                         <x-ui.button :href="url('/movies/' . $featuredMovie->id)" variant="secondary" size="lg" class="border-white bg-white text-cc-bg-primary hover:bg-cc-accent hover:text-white">
@@ -215,11 +212,7 @@
     @if ($isHomeView)
         <footer class="mx-6 mb-8 border border-cc-border bg-cc-bg-surface py-16 md:mx-12 lg:mx-16">
             <div class="mx-auto max-w-2xl px-6 text-center">
-                <h3 class="mb-6 font-serif text-4xl text-white md:text-5xl">Join the club.</h3>
-                <p class="mb-10 font-serif text-lg italic text-cc-text-secondary">
-                    Weekly curation of the finest cinema delivered to your inbox. No algorithms, just taste.
-                </p>
-                <div class="mb-10 flex flex-col gap-0 sm:flex-row">
+                <div class="mb-8 flex flex-col gap-0 sm:flex-row">
                     <input type="email" placeholder="EMAIL ADDRESS" class="cc-input flex-1 border-white/10 bg-cc-bg-primary/50 px-6 py-4 text-sm uppercase tracking-[0.16em] text-white placeholder:text-white/30 focus-visible:border-cc-accent">
                     <button type="button" class="bg-white px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cc-bg-primary transition-colors hover:bg-cc-accent hover:text-white">
                         Subscribe
