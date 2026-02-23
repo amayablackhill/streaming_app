@@ -102,6 +102,71 @@ class TmdbImportServiceTest extends TestCase
         $this->assertDatabaseCount('contents', 1);
     }
 
+    public function test_tv_import_creates_seasons_and_is_idempotent(): void
+    {
+        config()->set('services.tmdb.token', 'test-token');
+
+        Http::fake([
+            'https://api.themoviedb.org/3/tv/222/videos*' => Http::response([
+                'results' => [
+                    ['site' => 'YouTube', 'type' => 'Trailer', 'official' => true, 'key' => 'tvTrailer222'],
+                ],
+            ], 200),
+            'https://api.themoviedb.org/3/tv/222*' => Http::response([
+                'id' => 222,
+                'name' => 'Dark Matter',
+                'first_air_date' => '2024-07-10',
+                'episode_run_time' => [52],
+                'vote_average' => 8.3,
+                'vote_count' => 2000,
+                'overview' => 'A science fiction series.',
+                'poster_path' => '/series-poster.jpg',
+                'backdrop_path' => '/series-backdrop.jpg',
+                'genres' => [['id' => 18, 'name' => 'Drama']],
+                'seasons' => [
+                    [
+                        'id' => 5201,
+                        'season_number' => 1,
+                        'air_date' => '2024-07-10',
+                        'poster_path' => '/season-1.jpg',
+                        'overview' => 'Season one overview.',
+                        'episode_count' => 8,
+                    ],
+                    [
+                        'id' => 5202,
+                        'season_number' => 2,
+                        'air_date' => '2025-02-02',
+                        'poster_path' => '/season-2.jpg',
+                        'overview' => 'Season two overview.',
+                        'episode_count' => 10,
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        $service = app(TmdbImportService::class);
+        $content = $service->importByTmdb('tv', 222);
+        $service->importByTmdb('tv', 222);
+
+        $this->assertSame('serie', $content->fresh()->type);
+        $this->assertDatabaseHas('contents', [
+            'id' => $content->id,
+            'tmdb_id' => 222,
+            'tmdb_type' => 'tv',
+        ]);
+        $this->assertDatabaseCount('seasons', 2);
+        $this->assertDatabaseHas('seasons', [
+            'serie_id' => $content->id,
+            'season_number' => 1,
+            'tmdb_id' => 5201,
+        ]);
+        $this->assertDatabaseHas('seasons', [
+            'serie_id' => $content->id,
+            'season_number' => 2,
+            'tmdb_id' => 5202,
+        ]);
+    }
+
     public function test_search_uses_http_fake_and_cache(): void
     {
         config()->set('services.tmdb.token', 'test-token');

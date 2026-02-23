@@ -112,6 +112,11 @@ If `TMDB_TOKEN` is empty:
 2. Search by title and choose type (`movie` or `tv`)
 3. Click `Import` on a result
 4. App creates/updates local content by unique key `(tmdb_type, tmdb_id)`
+5. For `tv` imports, seasons are upserted immediately and episodes are queued in background jobs (idempotent per season/episode).
+
+Manual TV episodes sync from admin:
+- Open a series detail as admin and use `Import episodes` or `Import all seasons`.
+- Jobs run on `default` queue and can be retried safely.
 
 ### 3) Manual sync command
 Refresh stale TMDB-linked records (`tmdb_last_synced_at <= 30 days`):
