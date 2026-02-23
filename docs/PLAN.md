@@ -128,7 +128,7 @@ Demo full-stack deployable (Railway) con:
 
 # P1 - UI Polish & Consistency Sprint
 
-- [ ] UP-01 Search bar spacing (top nav)
+- [x] UP-01 Search bar spacing (top nav)
 - [ ] UP-02 Watch episode spacing + buttons (description no debe romper layout)
 - [ ] UP-03 Footer minimalista consistente, visible solo en páginas públicas (no auth/admin)
 - [x] UP-04 Eliminar “Join the club” y cerrar huecos

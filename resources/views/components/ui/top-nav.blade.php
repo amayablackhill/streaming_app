@@ -106,7 +106,7 @@
         </div>
 
         <div class="hidden items-center gap-2 md:flex">
-            <form action="{{ route('search') }}" method="GET" role="search" class="hidden lg:flex">
+            <form action="{{ route('search') }}" method="GET" role="search" class="hidden items-center lg:flex">
                 <label for="top-nav-search" class="sr-only">Search catalog</label>
                 <div class="relative">
                     <x-ui.input
@@ -115,9 +115,9 @@
                         type="search"
                         :value="request('q')"
                         placeholder="Search"
-                        class="h-9 w-44 bg-cc-bg-primary/60 pr-8"
+                        class="h-10 w-52 bg-cc-bg-primary/60 pl-3.5 pr-9 text-[13px] leading-none placeholder:text-cc-text-muted/90"
                     />
-                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-cc-text-muted" aria-hidden="true">
+                    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-cc-text-muted" aria-hidden="true">
                         <x-ui.icon name="search" class="h-4 w-4" />
                     </span>
                 </div>
@@ -174,7 +174,7 @@
                 type="search"
                 :value="request('q')"
                 placeholder="Search catalog..."
-                class="w-full"
+                class="h-10 w-full px-3.5 text-[13px] placeholder:text-cc-text-muted/90"
             />
         </form>
 
