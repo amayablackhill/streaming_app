@@ -54,7 +54,7 @@
                     </div>
                 </header>
 
-                <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                     @foreach ($results as $content)
                         @php
                             $detailUrl = url('/' . ($content->type === 'serie' ? 'series' : 'movies') . '/' . $content->id);
@@ -69,6 +69,7 @@
                             :year="$releaseYear"
                             :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
                             :meta="$meta"
+                            full-width
                         />
 
                         @if ($adminActionEnabled)

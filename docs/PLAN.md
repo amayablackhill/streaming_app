@@ -203,7 +203,7 @@ Demo full-stack deployable (Railway) con:
 # P1 - Mobile Optimization Sprint
 
 - [x] MO-01 Mobile Density Mode (sin zoom CSS): ajustes de densidad en mobile (font-size base, paddings y spacing)
-- [ ] MO-02 Grids moviles en `/movies`, `/series` y `/search` (mas contenido visible, ratio 2:3 estable)
+- [x] MO-02 Grids moviles en `/movies`, `/series` y `/search` (mas contenido visible, ratio 2:3 estable)
 - [ ] MO-03 Hero mobile cropping control (altura + object-position sin tocar desktop)
 - [ ] MO-04 Mobile navigation ergonomics (compacta, usable, sin solapes)
 - [ ] MO-05 Posters responsive optimization (mobile w342 / desktop w500)

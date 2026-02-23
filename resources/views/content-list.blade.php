@@ -148,7 +148,7 @@
         @endunless
 
         <div class="mt-6" x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 180)">
-            <div x-show="loading" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="status" aria-live="polite" aria-label="Loading catalog">
+            <div x-show="loading" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" role="status" aria-live="polite" aria-label="Loading catalog">
                 @foreach (range(1, 8) as $item)
                     <article class="cc-surface overflow-hidden animate-pulse">
                         <div class="aspect-[2/3] bg-cc-bg-elevated"></div>
@@ -204,7 +204,7 @@
                                     @endforeach
                                 </x-ui.rail>
                             @else
-                                <div class="flex flex-wrap gap-4">
+                                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                                     @foreach ($section['items'] as $content)
                                         @php
                                             $detailUrl = url('/' . ($content->type === 'serie' ? 'series' : 'movies') . '/' . $content->id);
@@ -219,6 +219,7 @@
                                             :year="$releaseYear"
                                             :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
                                             :meta="$meta"
+                                            full-width
                                         />
                                     @endforeach
                                 </div>
