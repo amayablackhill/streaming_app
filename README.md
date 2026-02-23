@@ -128,6 +128,56 @@ Refresh stale TMDB-linked records (`tmdb_last_synced_at <= 30 days`):
 Images use TMDB CDN paths (`poster_path`, `backdrop_path`) directly.
 No poster/backdrop files are downloaded during import.
 
+## Curated import (CSV/JSON)
+Import curated rails/lists from local files with idempotent upserts:
+
+```bash
+./vendor/bin/sail artisan curated:import storage/app/curated/home.csv
+```
+
+Useful options:
+```bash
+./vendor/bin/sail artisan curated:import storage/app/curated/home.csv --dry-run
+./vendor/bin/sail artisan curated:import storage/app/curated/home.json --slug=home-curated --name="Home Curated"
+./vendor/bin/sail artisan curated:import storage/app/curated/home.csv --default-type=movie
+```
+
+Supported formats:
+- CSV: headers in snake_case.
+- JSON: array of items, or object with `{ "list": {...}, "items": [...] }`.
+
+### CSV example
+```csv
+rank,title,year,tmdb_type,tmdb_id,content_id
+1,La Haine,1995,movie,406,
+2,Perfect Days,2023,movie,976893,
+3,,,,,12
+```
+
+Resolution priority per row:
+1. `content_id` (local content)
+2. `tmdb_id` + `tmdb_type` (`movie|tv`)
+3. `title` (+ optional `year`) via TMDB search
+
+### JSON example (with list metadata)
+```json
+{
+  "list": {
+    "slug": "home-curated",
+    "name": "Home Curated",
+    "description": "Editorial picks for homepage rails"
+  },
+  "items": [
+    { "rank": 1, "tmdb_type": "movie", "tmdb_id": 406 },
+    { "rank": 2, "title": "Perfect Days", "year": 2023, "tmdb_type": "movie" },
+    { "rank": 3, "content_id": 12 }
+  ]
+}
+```
+
+Output includes summary, unresolved rows, and ambiguous matches.
+`TMDB_TOKEN` is only required when resolving TMDB rows (`tmdb_id` or `title` lookup).
+
 ## Demo seed command (local-first)
 This command sets a clean, consistent demo catalog for portfolio screenshots and recruiter walkthroughs.
 
