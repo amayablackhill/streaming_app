@@ -1,4 +1,4 @@
-<footer class="mt-14 border-t border-cc-border/80 bg-cc-bg-surface/40">
+<footer class="cc-safe-bottom cc-safe-x mt-14 border-t border-cc-border/80 bg-cc-bg-surface/40">
     <div class="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-[10px] uppercase tracking-[0.26em] text-cc-text-muted">Cineclub Curated Archive</p>

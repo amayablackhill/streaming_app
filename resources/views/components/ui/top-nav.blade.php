@@ -35,7 +35,7 @@
 <nav
     x-data="{ open: false, adminMenuOpen: false, adminMobileOpen: false }"
     @keydown.escape.window="adminMenuOpen = false; adminMobileOpen = false"
-    class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}"
+    class="cc-safe-top cc-safe-x sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}"
     aria-label="Primary"
 >
     <div class="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-3 sm:h-16 sm:px-6 lg:px-8">
