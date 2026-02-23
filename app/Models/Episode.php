@@ -11,13 +11,22 @@ class Episode extends Model
 
     protected $fillable = [
         'season_id',
+        'tmdb_id',
         'episode_number',
         'title',
         'duration',
+        'runtime_minutes',
         'release_date',
         'plot',
         'cover_path',
-        'episode_path'
+        'still_path',
+        'tmdb_last_synced_at',
+        'episode_path',
+    ];
+
+    protected $casts = [
+        'release_date' => 'date',
+        'tmdb_last_synced_at' => 'datetime',
     ];
 
     /**

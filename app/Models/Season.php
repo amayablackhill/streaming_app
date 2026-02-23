@@ -11,10 +11,18 @@ class Season extends Model
 
     protected $fillable = [
         'serie_id',
+        'tmdb_id',
         'season_number',
+        'episode_count',
         'release_date',
         'poster_path',
-        'overview'
+        'overview',
+        'tmdb_last_synced_at',
+    ];
+
+    protected $casts = [
+        'release_date' => 'date',
+        'tmdb_last_synced_at' => 'datetime',
     ];
 
     /**

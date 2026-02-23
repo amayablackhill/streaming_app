@@ -34,6 +34,7 @@ return [
     'tmdb' => [
         'token' => env('TMDB_TOKEN'),
         'language' => env('TMDB_LANGUAGE', 'en-US'),
+        'tv_import_season_limit' => (int) env('TMDB_TV_SEASONS_IMPORT_LIMIT', 0),
     ],
 
 ];
