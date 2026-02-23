@@ -11,7 +11,7 @@
     ) && ! $isEpisodeWatch;
 @endphp
 
-<div class="min-h-screen bg-cc-bg-primary text-cc-text-primary">
+<div class="flex min-h-screen flex-col bg-cc-bg-primary text-cc-text-primary">
     <x-ui.top-nav context="editorial" />
 
     @if ($header)
@@ -22,7 +22,7 @@
         </header>
     @endif
 
-    <main class="w-full">
+    <main class="w-full flex-1">
         {{ $slot }}
     </main>
 
