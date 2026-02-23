@@ -9,8 +9,8 @@
     'badgeTone' => 'neutral',
 ])
 
-<article class="group cc-card-film cc-surface overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40">
-    <a href="{{ $href }}" class="block">
+<article class="group cc-card-film cc-surface h-full overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40">
+    <a href="{{ $href }}" class="flex h-full flex-col">
         <div class="relative aspect-[2/3] overflow-hidden bg-cc-bg-elevated">
             @if ($image)
                 <img
@@ -34,18 +34,18 @@
             @endif
         </div>
 
-        <div class="space-y-2 p-3">
+        <div class="flex flex-1 flex-col gap-2 p-3">
             @if ($eyebrow)
                 <p class="text-[11px] uppercase tracking-[0.1em] text-cc-text-muted">{{ $eyebrow }}</p>
             @endif
 
-            <h3 class="font-serif text-lg leading-tight text-cc-text-primary">{{ $title }}</h3>
+            <h3 class="cc-card-title font-serif text-lg leading-tight text-cc-text-primary">{{ $title }}</h3>
 
-            <div class="flex items-center justify-between gap-2 text-xs text-cc-text-muted">
+            <div class="mt-auto flex items-center justify-between gap-2 text-xs text-cc-text-muted">
                 <span>{{ $year ?? 'N/A' }}</span>
 
                 @if ($meta)
-                    <span>{{ $meta }}</span>
+                    <span class="truncate">{{ $meta }}</span>
                 @endif
             </div>
 

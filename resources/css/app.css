@@ -113,6 +113,15 @@
         }
     }
 
+    .cc-card-title {
+        min-height: 3.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .cc-card-media-fallback {
         position: absolute;
         inset: 0;
