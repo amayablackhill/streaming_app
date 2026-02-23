@@ -17,9 +17,24 @@
                 ? 'Serialized stories selected for visual language and storytelling.'
                 : 'Discover films and series in an editorial, dark-first experience.');
 
-        $featuredMovie = $movies->firstWhere('is_featured', true)
-            ?? $movies->sortByDesc(fn ($movie) => (float) ($movie->rating ?? 0))->first()
-            ?? $movies->first();
+        $heroCandidates = $movies
+            ->filter(fn ($movie) => filled($movie->backdrop_url) || filled($movie->poster_url))
+            ->values();
+
+        if ($isHomeView) {
+            $featuredHeroCandidates = $heroCandidates
+                ->where('is_featured', true)
+                ->values();
+
+            $selectionPool = $featuredHeroCandidates->isNotEmpty() ? $featuredHeroCandidates : $heroCandidates;
+            $featuredMovie = $selectionPool->shuffle()->first()
+                ?? $movies->shuffle()->first()
+                ?? $movies->first();
+        } else {
+            $featuredMovie = $movies->firstWhere('is_featured', true)
+                ?? $movies->sortByDesc(fn ($movie) => (float) ($movie->rating ?? 0))->first()
+                ?? $movies->first();
+        }
 
         $featuredBackdrop = null;
         $featuredYear = 'N/A';
