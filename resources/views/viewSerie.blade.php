@@ -68,9 +68,9 @@
         ];
     @endphp
 
-    <article class="min-h-[calc(100vh-4rem)] bg-cc-bg-primary">
-        <main class="flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row lg:items-start">
-            <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-[45%] lg:self-start">
+    <article class="bg-cc-bg-primary lg:h-[calc(100vh-4rem)]">
+        <main class="flex flex-col lg:h-full lg:flex-row lg:items-stretch lg:overflow-hidden">
+            <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:h-full lg:w-[45%] lg:shrink-0">
                 <div class="absolute inset-0 bg-gradient-to-t from-cc-bg-primary via-transparent to-transparent opacity-65 lg:opacity-35"></div>
                 @if ($backdropUrl)
                     <img
@@ -94,8 +94,8 @@
                 </div>
             </section>
 
-            <section class="w-full bg-cc-bg-primary lg:w-[55%]">
-                <div class="mx-auto flex h-full w-full max-w-3xl flex-col px-5 py-10 sm:px-8 lg:px-12 lg:py-16">
+            <section class="w-full bg-cc-bg-primary lg:h-full lg:w-[55%] lg:overflow-y-auto lg:overscroll-contain">
+                <div class="mx-auto flex w-full max-w-3xl flex-col px-5 py-10 sm:px-8 lg:px-12 lg:py-16">
                     <x-ui.breadcrumbs :items="$breadcrumbs" class="mb-5" />
 
                     @if (session('status'))
@@ -179,9 +179,9 @@
                         <section class="mb-8 rounded-sm border border-cc-border bg-cc-bg-surface p-4">
                             <h2 class="text-xs font-bold uppercase tracking-[0.16em] text-cc-text-muted">Admin Controls</h2>
 
-                            <div class="mt-3 flex flex-wrap items-center justify-end gap-2">
+                            <div class="mt-3 flex flex-wrap items-center gap-2">
                                 <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
-                                <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
+                                <x-ui.button :href="route('content.edit', $content->id)" variant="ghost" size="sm">Edit series</x-ui.button>
                                 @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
                                     <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
                                         @csrf
@@ -195,8 +195,7 @@
                                 @endif
                             </div>
 
-                            <div class="mt-3 flex flex-wrap items-center gap-2 border-t border-cc-border pt-3">
-                                <x-ui.badge tone="premium">Role admin</x-ui.badge>
+                            <div class="mt-3 flex flex-wrap items-center gap-2 border-t border-cc-border pt-4">
                                 <x-ui.badge tone="neutral">Type Series</x-ui.badge>
                                 @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
                                     <x-ui.badge tone="neutral">{{ $seasons->count() }} TMDB seasons</x-ui.badge>
