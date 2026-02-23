@@ -214,23 +214,4 @@
             </div>
         </div>
     </section>
-
-    @if ($isHomeView)
-        <footer class="mx-6 mb-8 border border-cc-border bg-cc-bg-surface py-16 md:mx-12 lg:mx-16">
-            <div class="mx-auto max-w-2xl px-6 text-center">
-                <div class="mb-8 flex flex-col gap-0 sm:flex-row">
-                    <input type="email" placeholder="EMAIL ADDRESS" class="cc-input flex-1 border-white/10 bg-cc-bg-primary/50 px-6 py-4 text-sm uppercase tracking-[0.16em] text-white placeholder:text-white/30 focus-visible:border-cc-accent">
-                    <button type="button" class="bg-white px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-cc-bg-primary transition-colors hover:bg-cc-accent hover:text-white">
-                        Subscribe
-                    </button>
-                </div>
-                <div class="mb-8 flex flex-wrap justify-center gap-8">
-                    <a href="#" class="text-[10px] font-bold uppercase tracking-[0.2em] text-cc-text-muted transition-colors hover:text-white">About</a>
-                    <a href="#" class="text-[10px] font-bold uppercase tracking-[0.2em] text-cc-text-muted transition-colors hover:text-white">Credits</a>
-                    <a href="https://github.com" target="_blank" rel="noopener" class="text-[10px] font-bold uppercase tracking-[0.2em] text-cc-text-muted transition-colors hover:text-white">GitHub</a>
-                </div>
-                <p class="text-[10px] uppercase tracking-[0.3em] text-white/20">Cineclub Curated Archive</p>
-            </div>
-        </FOOTER>
-    @endif
 </x-app-layout>

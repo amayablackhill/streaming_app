@@ -130,7 +130,7 @@ Demo full-stack deployable (Railway) con:
 
 - [x] UP-01 Search bar spacing (top nav)
 - [x] UP-02 Watch episode spacing + buttons (description no debe romper layout)
-- [ ] UP-03 Footer minimalista consistente, visible solo en páginas públicas (no auth/admin)
+- [x] UP-03 Footer minimalista consistente, visible solo en páginas públicas (no auth/admin)
 - [x] UP-04 Eliminar “Join the club” y cerrar huecos
 - [ ] UP-05 Hero cycling (preferencia: server-side random per request; opcional 30s con transición)
 - [x] UP-06 Corregir counts en `/movies` y `/series` (mostrar solo total relevante)

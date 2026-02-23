@@ -2,6 +2,15 @@
     'header' => null,
 ])
 
+@php
+    $isEpisodeWatch = request()->routeIs('episodes.watch');
+    $showPublicFooter = (
+        request()->routeIs('home', 'search', 'content.movies.list', 'content.series.list')
+        || request()->is('movies/*')
+        || request()->is('series/*')
+    ) && ! $isEpisodeWatch;
+@endphp
+
 <div class="min-h-screen bg-cc-bg-primary text-cc-text-primary">
     <x-ui.top-nav context="editorial" />
 
@@ -16,4 +25,8 @@
     <main class="w-full">
         {{ $slot }}
     </main>
+
+    @if ($showPublicFooter)
+        <x-ui.public-footer />
+    @endif
 </div>
