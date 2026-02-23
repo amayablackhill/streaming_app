@@ -145,7 +145,7 @@ Demo full-stack deployable (Railway) con:
 - [x] LC-02 Arreglar vista `watchEpisode` (padding/sangria, spacing e interlineados)
 - [ ] LC-03 Refactor de copy en vistas: "movie" -> "film" (solo UI visible; rutas se mantienen)
 - [x] LC-04 Arreglar cards film/series: bloque de datos sticky abajo, clamp de titulo, no baile por longitud
-- [ ] LC-05 Reordenar synopsis/description: mas pequena, sin cursivas, colocada entre botones y metadata
+- [x] LC-05 Reordenar synopsis/description: mas pequena, sin cursivas, colocada entre botones y metadata
 
 ---
 

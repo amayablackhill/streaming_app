@@ -109,18 +109,6 @@
                     <div class="mb-8 hidden items-start justify-between gap-6 lg:flex">
                         <div>
                             <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
-                            <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-cc-text-secondary">
-                                <span class="text-cc-text-primary">{{ $content->director ?: 'Unknown Creator' }}</span>
-                                <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
-                                <span>{{ $releaseYear }}</span>
-                                <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
-                                <span>{{ $genreName }}</span>
-                                @if ($ratingLabel)
-                                    <span class="rounded-sm border border-cc-border px-2 py-0.5 text-[11px] uppercase tracking-[0.08em] text-cc-text-primary">
-                                        Rating {{ $ratingLabel }}
-                                    </span>
-                                @endif
-                            </div>
                         </div>
 
                         <div class="w-36 shrink-0 overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
@@ -167,6 +155,26 @@
                         </a>
                     </div>
 
+                    <section class="mb-6">
+                        <h2 class="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-cc-text-muted">Metadata</h2>
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <x-ui.badge tone="neutral">{{ $content->director ?: 'Unknown Creator' }}</x-ui.badge>
+                            <x-ui.badge tone="neutral">{{ $releaseYear }}</x-ui.badge>
+                            <x-ui.badge tone="neutral">{{ $genreName }}</x-ui.badge>
+                            <x-ui.badge tone="neutral">{{ $seasons->count() }} seasons</x-ui.badge>
+                            <x-ui.badge tone="neutral">{{ $episodesCount }} episodes</x-ui.badge>
+                            @if ($ratingLabel)
+                                <x-ui.badge tone="neutral">Rating {{ $ratingLabel }}</x-ui.badge>
+                            @endif
+                        </div>
+                    </section>
+
+                    <article class="mb-8">
+                        <p class="max-w-2xl text-sm leading-7 text-cc-text-secondary">
+                            {{ $overviewText }}
+                        </p>
+                    </article>
+
                     @if ($adminActionEnabled)
                         <section class="mb-8 flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
                             <x-ui.badge tone="premium">Admin controls</x-ui.badge>
@@ -188,12 +196,6 @@
                             @endif
                         </section>
                     @endif
-
-                    <article class="space-y-5">
-                        <p class="font-serif text-xl italic leading-relaxed text-cc-text-primary">
-                            {{ $overviewText }}
-                        </p>
-                    </article>
 
                     <section id="player" class="mt-10 overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
                         <div class="aspect-video bg-black">
