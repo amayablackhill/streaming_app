@@ -51,7 +51,7 @@
 
     <article class="bg-cc-bg-primary lg:h-[calc(100vh-4rem)]">
         <main class="flex flex-col lg:h-full lg:flex-row lg:items-stretch lg:overflow-hidden">
-            <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:h-full lg:w-[45%] lg:shrink-0">
+            <section class="relative h-[46vh] w-full overflow-hidden bg-cc-bg-elevated sm:h-[52vh] lg:h-full lg:w-[45%] lg:shrink-0">
                 <div class="absolute inset-0 bg-gradient-to-t from-cc-bg-primary via-transparent to-transparent opacity-65 lg:opacity-35"></div>
                 @if ($backdropUrl)
                     <img
@@ -61,7 +61,7 @@
                         draggable="false"
                         width="1920"
                         height="1080"
-                        class="h-full w-full select-none object-cover"
+                        class="h-full w-full select-none object-cover object-[center_20%] sm:object-cover"
                     >
                 @else
                     <div class="flex h-full w-full items-center justify-center bg-cc-bg-elevated text-center text-sm text-cc-text-muted">
@@ -70,13 +70,13 @@
                 @endif
 
                 <div class="absolute bottom-0 left-0 z-10 w-full bg-gradient-to-t from-cc-bg-primary to-transparent p-5 lg:hidden">
-                    <h1 class="font-serif text-3xl text-white">{{ $content->title }}</h1>
+                    <h1 class="font-serif text-4xl text-white">{{ $content->title }}</h1>
                     <p class="mt-1 text-sm text-cc-accent">{{ $releaseYear }}  -  {{ $content->director ?: 'Unknown Director' }}</p>
                 </div>
             </section>
 
             <section class="w-full bg-cc-bg-primary lg:h-full lg:w-[55%] lg:overflow-y-auto lg:overscroll-contain">
-                <div class="mx-auto flex w-full max-w-3xl flex-col px-5 py-10 sm:px-8 lg:px-12 lg:py-16">
+                <div class="mx-auto flex w-full max-w-3xl flex-col px-4 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-16">
                     <x-ui.breadcrumbs :items="$breadcrumbs" class="mb-5" />
 
                     @if (session('status'))

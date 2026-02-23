@@ -7,9 +7,14 @@
     'meta' => null,
     'badgeLabel' => null,
     'badgeTone' => 'neutral',
+    'fullWidth' => false,
 ])
 
-<article class="group cc-card-film cc-surface h-full overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40">
+<article @class([
+    'group cc-surface h-full overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40',
+    'cc-card-film' => ! $fullWidth,
+    'w-full min-w-0' => $fullWidth,
+])>
     <a href="{{ $href }}" class="flex h-full flex-col">
         <div class="relative aspect-[2/3] overflow-hidden bg-cc-bg-elevated">
             @if ($image)
