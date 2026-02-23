@@ -113,9 +113,15 @@
                 <p class="max-w-3xl text-sm text-cc-text-secondary leading-editorial">{{ $pageDescription }}</p>
 
                 <div class="flex flex-wrap items-center gap-2 pt-1">
-                    <x-ui.badge tone="neutral">{{ $contents->count() }} total</x-ui.badge>
-                    <x-ui.badge tone="neutral">{{ $movies->count() }} films</x-ui.badge>
-                    <x-ui.badge tone="neutral">{{ $series->count() }} series</x-ui.badge>
+                    @if ($isMoviesView)
+                        <x-ui.badge tone="neutral">Total {{ $movies->count() }} movies</x-ui.badge>
+                    @elseif ($isSeriesView)
+                        <x-ui.badge tone="neutral">Total {{ $series->count() }} series</x-ui.badge>
+                    @else
+                        <x-ui.badge tone="neutral">{{ $contents->count() }} total</x-ui.badge>
+                        <x-ui.badge tone="neutral">{{ $movies->count() }} films</x-ui.badge>
+                        <x-ui.badge tone="neutral">{{ $series->count() }} series</x-ui.badge>
+                    @endif
                     @if ($adminActionHref)
                         <x-ui.button :href="$adminActionHref" variant="ghost" size="sm">Admin</x-ui.button>
                         <x-ui.button :href="route('content.add')" variant="secondary" size="sm">Add Content</x-ui.button>

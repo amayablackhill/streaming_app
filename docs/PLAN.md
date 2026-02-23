@@ -133,7 +133,7 @@ Demo full-stack deployable (Railway) con:
 - [ ] UP-03 Footer minimalista consistente, visible solo en páginas públicas (no auth/admin)
 - [x] UP-04 Eliminar “Join the club” y cerrar huecos
 - [ ] UP-05 Hero cycling (preferencia: server-side random per request; opcional 30s con transición)
-- [ ] UP-06 Corregir counts en `/movies` y `/series` (mostrar solo total relevante)
+- [x] UP-06 Corregir counts en `/movies` y `/series` (mostrar solo total relevante)
 - [ ] UP-07 Unificar tamaños de spans/botones en admin/edit (usar componentes, mismo height/padding/font)
 - [x] UP-08 Eliminar labels “Editorial / Film Detail” y “Editorial / Series Detail”
 
