@@ -41,7 +41,7 @@
                 <header class="flex flex-wrap items-center justify-between gap-3">
                     <p class="text-sm text-cc-text-secondary">
                         {{ $results->total() }} resultados para
-                        <span class="font-medium text-cc-text-primary break-all">"{{ $query }}"</span>
+                        <span class="font-medium text-cc-text-primary">"{{ $query }}"</span>
                     </p>
                     <div class="flex flex-wrap items-center gap-2">
                         <x-ui.badge tone="neutral">

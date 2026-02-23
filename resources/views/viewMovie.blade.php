@@ -76,7 +76,7 @@
                 @endif
 
                 <div class="absolute bottom-0 left-0 z-10 w-full bg-gradient-to-t from-cc-bg-primary to-transparent p-5 lg:hidden">
-                    <h1 class="font-serif text-4xl text-white [overflow-wrap:anywhere]">{{ $content->title }}</h1>
+                    <h1 class="font-serif text-4xl text-white">{{ $content->title }}</h1>
                     <p class="mt-1 text-sm text-cc-accent">{{ $releaseYear }}  -  {{ $content->director ?: 'Unknown Director' }}</p>
                 </div>
             </section>
@@ -95,7 +95,7 @@
 
                     <div class="mb-6 hidden border-b border-cc-border pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-start lg:gap-8">
                         <div class="min-w-0">
-                            <h1 class="font-serif text-6xl leading-[1.05] text-white [overflow-wrap:anywhere] xl:text-7xl">{{ $content->title }}</h1>
+                            <h1 class="font-serif text-6xl leading-[1.05] text-white xl:text-7xl">{{ $content->title }}</h1>
                         </div>
 
                         <div class="w-full max-w-[15rem] justify-self-end overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
