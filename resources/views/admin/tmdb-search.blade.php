@@ -47,18 +47,23 @@
 
                 <div class="cc-stack-2">
                     <label for="tmdb-type" class="text-xs uppercase tracking-[0.12em] text-cc-text-muted">Type</label>
-                    <select
-                        id="tmdb-type"
-                        name="type"
-                        @class([
-                            'h-10 rounded-sm border bg-cc-bg-primary px-3 text-sm',
-                            'border-cc-border text-cc-text-primary',
-                        ])
-                        @disabled(!$tmdbEnabled)
-                    >
-                        <option value="movie" @selected($type === 'movie')>Film</option>
-                        <option value="tv" @selected($type === 'tv')>TV</option>
-                    </select>
+                    <div class="relative">
+                        <select
+                            id="tmdb-type"
+                            name="type"
+                            @class([
+                                'cc-input h-10 w-full appearance-none bg-cc-bg-primary pl-3 pr-9 text-sm text-cc-text-primary',
+                                'disabled:cursor-not-allowed disabled:opacity-60',
+                            ])
+                            @disabled(!$tmdbEnabled)
+                        >
+                            <option value="movie" @selected($type === 'movie')>Film</option>
+                            <option value="tv" @selected($type === 'tv')>TV</option>
+                        </select>
+                        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-cc-text-muted" aria-hidden="true">
+                            <x-ui.icon name="arrow-right" class="h-3.5 w-3.5 rotate-90" />
+                        </span>
+                    </div>
                 </div>
 
                 <div>
