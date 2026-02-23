@@ -139,6 +139,16 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
+# P1 - Layout Consistency Sprint
+
+- [x] LC-01 Arreglar vista `/search` (padding/sangria, container, spacing coherente con catalogo)
+- [x] LC-02 Arreglar vista `watchEpisode` (padding/sangria, spacing e interlineados)
+- [ ] LC-03 Refactor de copy en vistas: "movie" -> "film" (solo UI visible; rutas se mantienen)
+- [ ] LC-04 Arreglar cards film/series: bloque de datos sticky abajo, clamp de titulo, no baile por longitud
+- [ ] LC-05 Reordenar synopsis/description: mas pequena, sin cursivas, colocada entre botones y metadata
+
+---
+
 # P3 - UI Overhaul (Rediseño Total)
 
 ## Fundacion visual
@@ -181,10 +191,3 @@ Demo full-stack deployable (Railway) con:
 - [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware `role:admin` + Spatie roles (`hasRole('admin')`), sin fallback legacy.
 ---
 
-# P1 - Layout Consistency Sprint
-
-- [x] LC-01 Arreglar vista `/search` (padding/sangria, container, spacing coherente con catalogo)
-- [ ] LC-02 Arreglar vista `watchEpisode` (padding/sangria, spacing e interlineados)
-- [ ] LC-03 Refactor de copy en vistas: "movie" -> "film" (solo UI visible; rutas se mantienen)
-- [ ] LC-04 Arreglar cards film/series: bloque de datos sticky abajo, clamp de titulo, no baile por longitud
-- [ ] LC-05 Reordenar synopsis/description: mas pequena, sin cursivas, colocada entre botones y metadata
