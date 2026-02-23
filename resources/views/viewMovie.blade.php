@@ -46,8 +46,8 @@
     @endphp
 
     <article class="min-h-[calc(100vh-4rem)] bg-cc-bg-primary">
-        <main class="flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row">
-            <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-[45%]">
+        <main class="flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row lg:items-start">
+            <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-[45%] lg:self-start">
                 <div class="absolute inset-0 bg-gradient-to-t from-cc-bg-primary via-transparent to-transparent opacity-65 lg:opacity-35"></div>
                 @if ($backdropUrl)
                     <img
@@ -57,7 +57,7 @@
                         draggable="false"
                         width="1920"
                         height="1080"
-                        class="h-full w-full select-none object-cover transition-transform duration-[2000ms] ease-soft hover:scale-105"
+                        class="h-full w-full select-none object-cover"
                     >
                 @else
                     <div class="flex h-full w-full items-center justify-center bg-cc-bg-elevated text-center text-sm text-cc-text-muted">
