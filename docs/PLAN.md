@@ -95,7 +95,7 @@ Demo full-stack deployable (Railway) con:
 - [x] ADM-02 Desbloqueo UI admin consistente (nav + botones contextuales solo admin)
 - [x] ADM-03 Flujo CRUD admin unificado (movies/series create/edit/delete)
 - [x] ADM-04 Flujo temporadas/episodios robusto (create/edit/delete sin rutas huerfanas)
-- [ ] ADM-05 Tests de permisos y visibilidad admin en vistas clave
+- [x] ADM-05 Tests de permisos y visibilidad admin en vistas clave
 
 ---
 
