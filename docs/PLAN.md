@@ -205,7 +205,7 @@ Demo full-stack deployable (Railway) con:
 - [x] MO-01 Mobile Density Mode (sin zoom CSS): ajustes de densidad en mobile (font-size base, paddings y spacing)
 - [x] MO-02 Grids moviles en `/movies`, `/series` y `/search` (mas contenido visible, ratio 2:3 estable)
 - [x] MO-03 Hero mobile cropping control (altura + object-position sin tocar desktop)
-- [ ] MO-04 Mobile navigation ergonomics (compacta, usable, sin solapes)
+- [x] MO-04 Mobile navigation ergonomics (compacta, usable, sin solapes)
 - [ ] MO-05 Posters responsive optimization (mobile w342 / desktop w500)
 - [ ] MO-06 Safe area support iOS (notch/home indicator)
 - [ ] MO-07 QA breakpoint pass (sin overflow horizontal ni tap targets degradados)
