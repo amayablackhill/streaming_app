@@ -2,7 +2,8 @@
     @php
         $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
     @endphp
-    <section class="cc-stack-6">
+    <section class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="cc-stack-6">
         <header class="cc-stack-2">
             <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Curated Search</p>
             <h1 class="cc-title-display">Search Catalog</h1>
@@ -113,5 +114,6 @@
                 :action-href="route('home')"
             />
         @endif
+        </div>
     </section>
 </x-app-layout>
