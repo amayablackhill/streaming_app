@@ -89,16 +89,16 @@
 
                     <div class="flex flex-wrap gap-4">
                         <x-ui.button :href="url('/movies/' . $featuredMovie->id)" variant="secondary" size="lg" class="border-white bg-white text-cc-bg-primary hover:bg-cc-accent hover:text-white">
-                            <span class="material-symbols-outlined text-base">play_arrow</span>
+                            <x-ui.icon name="play" class="h-4 w-4" />
                             Watch Film
                         </x-ui.button>
                         <x-ui.button href="#catalog-sections" variant="ghost" size="lg" class="border border-white/30 text-white hover:border-white hover:bg-white/10">
-                            <span class="material-symbols-outlined text-base">bookmark</span>
+                            <x-ui.icon name="bookmark" class="h-4 w-4" />
                             Explore Catalog
                         </x-ui.button>
                         @if ($adminActionHref)
                             <x-ui.button :href="$adminActionHref" variant="ghost" size="lg" class="border border-white/30 text-white hover:border-white hover:bg-white/10">
-                                <span class="material-symbols-outlined text-base">dashboard</span>
+                                <x-ui.icon name="dashboard" class="h-4 w-4" />
                                 Curate Catalog
                             </x-ui.button>
                         @endif

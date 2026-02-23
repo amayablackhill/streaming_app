@@ -105,7 +105,7 @@ Demo full-stack deployable (Railway) con:
 - [x] DM-02 Migraciones `curated_lists` y `curated_list_items` (rank + unique list/content)
 - [x] DM-03 Comando `curated:import` idempotente (CSV/JSON local, unresolved/ambiguous report)
 - [x] DM-05 README con formato CSV/JSON para curated imports
-- [ ] DM-06 Sistema de iconos unico y consistente + aria-label en icon-only buttons
+- [x] DM-06 Sistema de iconos unico y consistente + aria-label en icon-only buttons
 
 ---
 

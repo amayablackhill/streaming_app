@@ -86,7 +86,7 @@
                                 href="#player"
                                 class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-cc-bg-primary transition-all cc-motion-base hover:bg-cc-text-primary"
                             >
-                                <span class="material-symbols-outlined text-base">play_arrow</span>
+                                <x-ui.icon name="play" class="h-4 w-4" />
                                 Watch Film
                             </a>
                         @endif
@@ -95,12 +95,12 @@
                             href="{{ route('content.movies.list') }}"
                             class="inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-cc-text-secondary transition-colors cc-motion-base hover:bg-cc-bg-elevated hover:text-cc-text-primary"
                         >
-                            <span class="material-symbols-outlined text-base">arrow_back</span>
+                            <x-ui.icon name="arrow-left" class="h-4 w-4" />
                             Back to catalog
                         </a>
 
-                        <button type="button" class="ml-auto inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-cc-text-muted transition-colors cc-motion-base hover:text-cc-text-primary">
-                            <span class="material-symbols-outlined text-base">share</span>
+                        <button type="button" aria-label="Share film" class="ml-auto inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-cc-text-muted transition-colors cc-motion-base hover:text-cc-text-primary">
+                            <x-ui.icon name="share" class="h-4 w-4" />
                         </button>
                     </div>
 

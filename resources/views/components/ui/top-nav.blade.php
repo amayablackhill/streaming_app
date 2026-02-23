@@ -61,9 +61,7 @@
                         class="h-9 w-44 bg-cc-bg-primary/60 pr-8"
                     />
                     <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-cc-text-muted" aria-hidden="true">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="m21 21-4.2-4.2m1.2-4.8a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z" />
-                        </svg>
+                        <x-ui.icon name="search" class="h-4 w-4" />
                     </span>
                 </div>
             </form>
@@ -95,10 +93,8 @@
             :aria-expanded="open.toString()"
             aria-controls="mobile-nav-menu"
         >
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path :class="{ 'hidden': open }" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16" />
-                <path :class="{ 'hidden': !open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 6l12 12M18 6L6 18" />
-            </svg>
+            <x-ui.icon x-show="!open" name="menu" class="h-5 w-5" />
+            <x-ui.icon x-show="open" x-cloak name="close" class="h-5 w-5" />
         </button>
     </div>
 

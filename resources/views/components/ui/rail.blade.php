@@ -47,7 +47,7 @@
                     data-cc-embla-prev
                     aria-label="Scroll rail left"
                 >
-                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    <x-ui.icon name="arrow-left" class="h-[18px] w-[18px]" />
                 </button>
                 <button
                     type="button"
@@ -55,10 +55,9 @@
                     data-cc-embla-next
                     aria-label="Scroll rail right"
                 >
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    <x-ui.icon name="arrow-right" class="h-[18px] w-[18px]" />
                 </button>
             </div>
         @endif
     </div>
 </section>
-
