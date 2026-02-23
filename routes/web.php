@@ -53,6 +53,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/health/video-pipeline', VideoPipelineHealthController::class)->name('admin.health.video-pipeline');
     Route::get('/tmdb/search', [TmdbImportController::class, 'search'])->name('admin.tmdb.search');
     Route::post('/tmdb/import', [TmdbImportController::class, 'import'])->name('admin.tmdb.import');
+    Route::post('/tmdb/series/{content}/episodes/import', [TmdbImportController::class, 'importSeriesEpisodes'])->name('admin.tmdb.series.episodes.import');
 
     Route::fallback([AdminPageController::class, 'fallback']);
 });

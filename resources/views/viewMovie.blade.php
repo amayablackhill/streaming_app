@@ -75,6 +75,14 @@
                 <div class="mx-auto flex h-full w-full max-w-3xl flex-col px-5 py-10 sm:px-8 lg:px-12 lg:py-16">
                     <x-ui.breadcrumbs :items="$breadcrumbs" class="mb-5" />
 
+                    @if (session('status'))
+                        <x-ui.alert tone="success" title="Update">{{ session('status') }}</x-ui.alert>
+                    @endif
+
+                    @if (session('error'))
+                        <x-ui.alert tone="error" title="Update failed">{{ session('error') }}</x-ui.alert>
+                    @endif
+
                     <div class="mb-8 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-cc-accent">
                         <span>Editorial</span>
                         <span class="text-cc-text-muted">/</span>

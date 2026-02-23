@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Content;
 use App\Services\Tmdb\Exceptions\TmdbException;
 use App\Services\Tmdb\Exceptions\TmdbNotConfiguredException;
 use App\Services\Tmdb\TmdbImportService;
@@ -74,10 +75,38 @@ class TmdbImportController extends Controller
         }
 
         if ($content->type === 'serie') {
-            return redirect('/series/' . $content->id)->with('status', 'TMDB import completed successfully.');
+            $queuedSeasons = $tmdbImportService->dispatchTvEpisodeImports($content);
+            $message = $queuedSeasons > 0
+                ? "TMDB import completed. Episodes sync queued for {$queuedSeasons} seasons."
+                : 'TMDB import completed successfully.';
+
+            return redirect('/series/' . $content->id)->with('status', $message);
         }
 
         return redirect('/movies/' . $content->id)->with('status', 'TMDB import completed successfully.');
+    }
+
+    public function importSeriesEpisodes(Content $content, Request $request, TmdbImportService $tmdbImportService): RedirectResponse
+    {
+        if (!$this->isTmdbEnabled()) {
+            return redirect()
+                ->back()
+                ->with('error', 'TMDB import is disabled. Configure TMDB_TOKEN first.');
+        }
+
+        if ($content->type !== 'serie' || $content->tmdb_type !== 'tv' || empty($content->tmdb_id)) {
+            return redirect()
+                ->back()
+                ->with('error', 'This series is not linked to TMDB.');
+        }
+
+        $importAll = $request->boolean('all', false);
+        $maxSeasons = $importAll ? 0 : null;
+        $queuedSeasons = $tmdbImportService->dispatchTvEpisodeImports($content, $maxSeasons);
+
+        return redirect()
+            ->back()
+            ->with('status', "Episodes sync queued for {$queuedSeasons} seasons.");
     }
 
     private function isTmdbEnabled(): bool

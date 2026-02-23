@@ -42,6 +42,12 @@
         $adminActionHref = auth()->check() && auth()->user()->canAccessAdminPanel()
             ? route('admin.home')
             : null;
+        $tmdbEpisodesImportedCount = $content->seasons->sum(
+            fn (\App\Models\Season $season): int => $season->episodes->whereNotNull('tmdb_id')->count()
+        );
+        $tmdbSyncLabel = $content->tmdb_last_synced_at
+            ? $content->tmdb_last_synced_at->diffForHumans()
+            : 'Never';
         $breadcrumbs = [
             ['label' => 'Home', 'href' => route('home')],
             ['label' => 'Series', 'href' => route('content.series.list')],
@@ -51,6 +57,14 @@
 
     <article class="cc-stack-6">
         <x-ui.breadcrumbs :items="$breadcrumbs" />
+
+        @if (session('status'))
+            <x-ui.alert tone="success" title="Update">{{ session('status') }}</x-ui.alert>
+        @endif
+
+        @if (session('error'))
+            <x-ui.alert tone="error" title="Update failed">{{ session('error') }}</x-ui.alert>
+        @endif
 
         <header class="cc-stack-2">
             <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Series Detail</p>
@@ -109,6 +123,20 @@
                         <x-ui.badge tone="premium">Admin controls</x-ui.badge>
                         <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
                         <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
+                        @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
+                            <x-ui.badge tone="neutral">{{ $seasons->count() }} TMDB seasons</x-ui.badge>
+                            <x-ui.badge tone="neutral">{{ $tmdbEpisodesImportedCount }} TMDB episodes</x-ui.badge>
+                            <x-ui.badge tone="neutral">Synced {{ $tmdbSyncLabel }}</x-ui.badge>
+                            <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
+                                @csrf
+                                <x-ui.button type="submit" variant="ghost" size="sm">Import episodes</x-ui.button>
+                            </form>
+                            <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
+                                @csrf
+                                <input type="hidden" name="all" value="1">
+                                <x-ui.button type="submit" variant="ghost" size="sm">Import all seasons</x-ui.button>
+                            </form>
+                        @endif
                     </div>
                 @endif
             </section>

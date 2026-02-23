@@ -9,6 +9,7 @@
             <h2 class="cc-title-section">Import curated titles from TMDB</h2>
             <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
                 Search by title, preview results, and import metadata into the local catalog.
+                TV imports create seasons immediately and queue episodes sync in background jobs.
             </p>
         </header>
 

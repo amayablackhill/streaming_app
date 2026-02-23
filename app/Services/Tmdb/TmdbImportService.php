@@ -2,11 +2,15 @@
 
 namespace App\Services\Tmdb;
 
+use App\Jobs\ImportTvSeasonEpisodesJob;
 use App\Models\Content;
+use App\Models\Episode;
 use App\Models\Genre;
+use App\Models\Season;
 use App\Services\Tmdb\Exceptions\TmdbException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class TmdbImportService
@@ -108,13 +112,105 @@ class TmdbImportService
             'tmdb_last_synced_at' => now(),
         ];
 
-        return Content::query()->updateOrCreate(
+        $content = Content::query()->updateOrCreate(
             [
                 'tmdb_type' => $type,
                 'tmdb_id' => $resolvedTmdbId,
             ],
             $payload
         );
+
+        if ($type === 'tv') {
+            $this->importTvSeasonsFromDetails($content, $details);
+        }
+
+        return $content;
+    }
+
+    public function dispatchTvEpisodeImports(Content $content, ?int $maxSeasons = null): int
+    {
+        if ($content->tmdb_type !== 'tv' || empty($content->tmdb_id)) {
+            return 0;
+        }
+
+        $seasonQuery = $content->seasons()->orderBy('season_number');
+        if ($maxSeasons === null) {
+            $maxSeasons = (int) config('services.tmdb.tv_import_season_limit', 0);
+        }
+        if ($maxSeasons > 0) {
+            $seasonQuery->limit($maxSeasons);
+        }
+
+        $seasons = $seasonQuery->get();
+        foreach ($seasons as $season) {
+            ImportTvSeasonEpisodesJob::dispatch($content->id, $season->id);
+        }
+
+        return $seasons->count();
+    }
+
+    public function importTvSeasonEpisodes(Content $content, Season $season): int
+    {
+        if ($content->tmdb_type !== 'tv' || empty($content->tmdb_id)) {
+            throw new TmdbException('Series content must have tmdb_type=tv and valid tmdb_id.');
+        }
+
+        $tmdbTvId = (int) $content->tmdb_id;
+        $seasonNumber = (int) $season->season_number;
+        $payload = $this->client->getTvSeasonDetails($tmdbTvId, $seasonNumber);
+        $today = now()->toDateString();
+        $seasonFallbackDate = $season->release_date?->toDateString()
+            ?: $content->release_date?->toDateString()
+            ?: $today;
+
+        $season->update([
+            'tmdb_id' => isset($payload['id']) ? (int) $payload['id'] : $season->tmdb_id,
+            'release_date' => $this->parseDateOrFallback($payload['air_date'] ?? null, $seasonFallbackDate),
+            'poster_path' => $payload['poster_path'] ?? $season->poster_path,
+            'overview' => isset($payload['overview']) && trim((string) $payload['overview']) !== ''
+                ? (string) $payload['overview']
+                : $season->overview,
+            'episode_count' => isset($payload['episodes']) && is_array($payload['episodes'])
+                ? count($payload['episodes'])
+                : $season->episode_count,
+            'tmdb_last_synced_at' => now(),
+        ]);
+
+        $runtimeFallback = (int) ($content->runtime_minutes ?: $content->duration ?: 1);
+        $episodes = collect($payload['episodes'] ?? [])
+            ->filter(fn (array $item): bool => isset($item['episode_number']) && (int) $item['episode_number'] > 0)
+            ->values();
+
+        foreach ($episodes as $episodeItem) {
+            $episodeNumber = (int) $episodeItem['episode_number'];
+            $runtimeMinutes = isset($episodeItem['runtime']) && (int) $episodeItem['runtime'] > 0
+                ? (int) $episodeItem['runtime']
+                : $runtimeFallback;
+            $airDate = $this->parseDateOrFallback($episodeItem['air_date'] ?? null, $seasonFallbackDate);
+            $stillPath = isset($episodeItem['still_path']) && trim((string) $episodeItem['still_path']) !== ''
+                ? (string) $episodeItem['still_path']
+                : null;
+
+            Episode::query()->updateOrCreate(
+                [
+                    'season_id' => $season->id,
+                    'episode_number' => $episodeNumber,
+                ],
+                [
+                    'tmdb_id' => isset($episodeItem['id']) ? (int) $episodeItem['id'] : null,
+                    'title' => trim((string) ($episodeItem['name'] ?? '')) ?: "Episode {$episodeNumber}",
+                    'duration' => max(1, $runtimeMinutes),
+                    'runtime_minutes' => max(1, $runtimeMinutes),
+                    'release_date' => $airDate,
+                    'plot' => trim((string) ($episodeItem['overview'] ?? '')) ?: null,
+                    'cover_path' => $stillPath,
+                    'still_path' => $stillPath,
+                    'tmdb_last_synced_at' => now(),
+                ]
+            );
+        }
+
+        return $episodes->count();
     }
 
     private function resolveReleaseDate(string $type, array $details): ?string
@@ -200,5 +296,49 @@ class TmdbImportService
         }
 
         return 'Unknown';
+    }
+
+    private function importTvSeasonsFromDetails(Content $content, array $details): Collection
+    {
+        $seasons = collect($details['seasons'] ?? [])
+            ->filter(fn (array $season): bool => isset($season['season_number']) && (int) $season['season_number'] >= 0)
+            ->values();
+        $fallbackDate = $content->release_date?->toDateString() ?: now()->toDateString();
+
+        return $seasons->map(function (array $seasonPayload) use ($content, $fallbackDate): Season {
+            $seasonNumber = (int) $seasonPayload['season_number'];
+            $releaseDate = $this->parseDateOrFallback($seasonPayload['air_date'] ?? null, $fallbackDate);
+            $overview = trim((string) ($seasonPayload['overview'] ?? ''));
+            $posterPath = isset($seasonPayload['poster_path']) && trim((string) $seasonPayload['poster_path']) !== ''
+                ? (string) $seasonPayload['poster_path']
+                : null;
+
+            return Season::query()->updateOrCreate(
+                [
+                    'serie_id' => $content->id,
+                    'season_number' => $seasonNumber,
+                ],
+                [
+                    'tmdb_id' => isset($seasonPayload['id']) ? (int) $seasonPayload['id'] : null,
+                    'release_date' => $releaseDate,
+                    'poster_path' => $posterPath,
+                    'overview' => $overview !== '' ? $overview : null,
+                    'episode_count' => isset($seasonPayload['episode_count']) ? (int) $seasonPayload['episode_count'] : null,
+                    'tmdb_last_synced_at' => now(),
+                ]
+            );
+        });
+    }
+
+    private function parseDateOrFallback(mixed $rawDate, string $fallbackDate): string
+    {
+        if (is_string($rawDate) && trim($rawDate) !== '') {
+            try {
+                return Carbon::parse($rawDate)->toDateString();
+            } catch (\Throwable) {
+            }
+        }
+
+        return $fallbackDate;
     }
 }

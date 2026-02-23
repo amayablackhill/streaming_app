@@ -62,6 +62,17 @@ class TmdbClient
         });
     }
 
+    public function getTvSeasonDetails(int $tvId, int $seasonNumber): array
+    {
+        $tvId = max(1, $tvId);
+        $seasonNumber = max(0, $seasonNumber);
+        $cacheKey = "tmdb:tv-season:{$tvId}:{$seasonNumber}";
+
+        return Cache::remember($cacheKey, now()->addDays(7), function () use ($tvId, $seasonNumber) {
+            return $this->request("tv/{$tvId}/season/{$seasonNumber}");
+        });
+    }
+
     private function request(string $endpoint, array $query = []): array
     {
         $token = (string) config('services.tmdb.token', '');

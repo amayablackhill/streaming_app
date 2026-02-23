@@ -17,7 +17,7 @@
         ['label' => 'Movies', 'href' => route('movies.table'), 'patterns' => ['movies.table']],
         ['label' => 'Series', 'href' => route('series.table'), 'patterns' => ['series.table', 'seasons.*', 'episodes.*']],
         ['label' => 'Add Content', 'href' => route('content.add'), 'patterns' => ['content.add', 'content.edit', 'content.update']],
-        ['label' => 'TMDB Import', 'href' => route('admin.tmdb.search'), 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import']],
+        ['label' => 'TMDB Import', 'href' => route('admin.tmdb.search'), 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import', 'admin.tmdb.series.episodes.import']],
         ['label' => 'Video Assets', 'href' => route('admin.home').'#video-assets', 'patterns' => ['video-assets.*']],
         ['label' => 'Health', 'href' => route('admin.health.video-pipeline'), 'patterns' => ['admin.health.video-pipeline']],
     ];
