@@ -10,16 +10,6 @@
     'fullWidth' => false,
 ])
 
-@php
-    $tmdbPosterPath = null;
-    if (is_string($image) && preg_match('#^https://image\.tmdb\.org/t/p/(?:w\d+|original)(/.*)$#', $image, $matches) === 1) {
-        $tmdbPosterPath = $matches[1];
-    }
-
-    $posterMobileSrc = $tmdbPosterPath ? 'https://image.tmdb.org/t/p/w342' . $tmdbPosterPath : null;
-    $posterDesktopSrc = $tmdbPosterPath ? 'https://image.tmdb.org/t/p/w500' . $tmdbPosterPath : null;
-@endphp
-
 <article @class([
     'group cc-surface h-full overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40',
     'cc-card-film' => ! $fullWidth,
@@ -30,10 +20,6 @@
             @if ($image)
                 <img
                     src="{{ $image }}"
-                    @if ($posterMobileSrc && $posterDesktopSrc)
-                        srcset="{{ $posterMobileSrc }} 342w, {{ $posterDesktopSrc }} 500w"
-                        sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 14rem"
-                    @endif
                     alt="{{ $title }}"
                     loading="lazy"
                     decoding="async"
