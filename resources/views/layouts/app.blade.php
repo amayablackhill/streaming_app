@@ -14,10 +14,21 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-cc-bg-primary text-cc-text-primary font-sans antialiased">
-        @php
-            $isAdminRoute = request()->is('admin') || request()->is('admin/*');
-        @endphp
+    @php
+        $isAdminRoute = request()->is('admin') || request()->is('admin/*');
+        $isMovieDetail = request()->segment(1) === 'movies'
+            && filled(request()->segment(2))
+            && request()->segment(3) === null;
+        $isSeriesDetail = request()->segment(1) === 'series'
+            && filled(request()->segment(2))
+            && request()->segment(3) === null;
+        $isSplitDetailLayout = $isMovieDetail || $isSeriesDetail;
+    @endphp
+    <body @class([
+        'bg-cc-bg-primary text-cc-text-primary font-sans antialiased',
+        'min-h-screen' => ! $isSplitDetailLayout,
+        'h-screen overflow-hidden' => $isSplitDetailLayout,
+    ])>
 
         @if ($isAdminRoute)
             <x-ui.admin-shell :header="$header ?? null">

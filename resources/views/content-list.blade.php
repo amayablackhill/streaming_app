@@ -62,7 +62,7 @@
     @endphp
 
     @if ($isHomeView && $featuredMovie)
-        <section class="relative flex min-h-[68vh] w-full items-end overflow-hidden sm:min-h-[76vh] lg:min-h-[88vh]">
+        <section class="relative flex min-h-[74vh] w-full items-end overflow-hidden sm:min-h-[84vh] lg:min-h-[112vh]">
             <div class="absolute inset-0 z-0">
                 @if ($featuredBackdrop)
                     <img
@@ -73,7 +73,7 @@
                         loading="eager"
                         fetchpriority="high"
                         draggable="false"
-                        class="h-full w-full select-none object-cover object-[center_24%] sm:object-center"
+                        class="h-full w-full select-none object-cover object-[center_14%] sm:object-[center_18%] lg:object-[center_16%]"
                     >
                 @else
                     <div class="h-full w-full bg-cc-bg-elevated"></div>
@@ -83,7 +83,7 @@
 
             <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 sm:pb-20 md:px-12 md:pb-28 lg:px-16">
                 <div class="max-w-2xl">
-                    <h1 class="-ml-0.5 mb-5 font-serif text-5xl leading-none text-white sm:-ml-1 sm:mb-8 sm:text-7xl md:text-8xl lg:text-9xl">
+                    <h1 class="mt-10 -ml-0.5 mb-5 font-serif text-5xl leading-none text-white sm:-ml-1 sm:mb-8 sm:text-7xl md:text-8xl lg:text-9xl">
                         {{ $featuredMovie->title }}
                     </h1>
 

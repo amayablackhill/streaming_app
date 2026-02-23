@@ -44,7 +44,9 @@
                 <p class="text-[11px] uppercase tracking-[0.1em] text-cc-text-muted">{{ $eyebrow }}</p>
             @endif
 
-            <h3 class="cc-card-title font-serif text-lg leading-tight text-cc-text-primary">{{ $title }}</h3>
+            <h3 class="cc-card-title font-sans text-base font-semibold leading-snug tracking-tight text-cc-text-primary sm:text-[1.0625rem]">
+                {{ $title }}
+            </h3>
 
             <div class="mt-auto flex items-center justify-between gap-2 text-xs text-cc-text-muted">
                 <span>{{ $year ?? 'N/A' }}</span>
