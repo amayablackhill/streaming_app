@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Content;
 use App\Models\Episode;
+use App\Models\Season;
 use App\Models\VideoAsset;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -81,9 +82,67 @@ class CatalogController extends Controller
 
     public function watchEpisode(int $id, int $seasonId, int $episodeId): View
     {
-        $episode = Episode::findOrFail($episodeId);
+        $content = Content::query()
+            ->where('type', 'serie')
+            ->findOrFail($id);
 
-        return view('watchEpisode', compact('episode'));
+        $season = Season::query()
+            ->where('serie_id', $content->id)
+            ->findOrFail($seasonId);
+
+        $episode = Episode::query()
+            ->where('season_id', $season->id)
+            ->findOrFail($episodeId);
+
+        $previousEpisode = Episode::query()
+            ->where('season_id', $season->id)
+            ->where('episode_number', '<', $episode->episode_number)
+            ->orderByDesc('episode_number')
+            ->first();
+
+        if (!$previousEpisode) {
+            $previousSeason = Season::query()
+                ->where('serie_id', $content->id)
+                ->where('season_number', '<', $season->season_number)
+                ->orderByDesc('season_number')
+                ->first();
+
+            if ($previousSeason) {
+                $previousEpisode = Episode::query()
+                    ->where('season_id', $previousSeason->id)
+                    ->orderByDesc('episode_number')
+                    ->first();
+            }
+        }
+
+        $nextEpisode = Episode::query()
+            ->where('season_id', $season->id)
+            ->where('episode_number', '>', $episode->episode_number)
+            ->orderBy('episode_number')
+            ->first();
+
+        if (!$nextEpisode) {
+            $nextSeason = Season::query()
+                ->where('serie_id', $content->id)
+                ->where('season_number', '>', $season->season_number)
+                ->orderBy('season_number')
+                ->first();
+
+            if ($nextSeason) {
+                $nextEpisode = Episode::query()
+                    ->where('season_id', $nextSeason->id)
+                    ->orderBy('episode_number')
+                    ->first();
+            }
+        }
+
+        return view('watchEpisode', [
+            'content' => $content,
+            'season' => $season,
+            'episode' => $episode,
+            'previousEpisode' => $previousEpisode,
+            'nextEpisode' => $nextEpisode,
+        ]);
     }
 
     private function resolveReadyHlsUrl(Content $content): ?string
