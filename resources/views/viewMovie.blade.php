@@ -87,12 +87,12 @@
                         <x-ui.alert tone="error" title="Update failed">{{ session('error') }}</x-ui.alert>
                     @endif
 
-                    <div class="mb-8 hidden items-start justify-between gap-6 lg:flex">
-                        <div>
+                    <div class="mb-6 hidden border-b border-cc-border pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-start lg:gap-8">
+                        <div class="min-w-0">
                             <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
                         </div>
 
-                        <div class="w-36 shrink-0 overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
+                        <div class="w-full max-w-[15rem] justify-self-end overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
                             <div class="aspect-[2/3]">
                                 @if ($posterUrl)
                                     <img
@@ -112,7 +112,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-10 flex flex-wrap items-center gap-3 border-b border-cc-border pb-6">
+                    <div class="mb-10 flex flex-wrap items-center gap-3">
                         @if ($youtubeId || $hlsPlaybackUrl || $playbackUrl)
                             <a
                                 href="#player"
