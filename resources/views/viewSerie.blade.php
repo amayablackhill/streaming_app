@@ -19,9 +19,11 @@
         $episodesCount = $seasonEntries->sum(fn (array $entry): int => $entry['episodes']->count());
 
         $firstSeasonEntry = $seasonEntries->first(fn (array $entry): bool => $entry['episodes']->isNotEmpty());
-        $firstEpisode = $firstSeasonEntry['episodes']->first() ?? null;
-        $firstEpisodeUrl = ($firstSeasonEntry && $firstEpisode)
-            ? route('episodes.watch', [$content->id, $firstSeasonEntry['season']->id, $firstEpisode->id])
+        $firstSeason = is_array($firstSeasonEntry) ? ($firstSeasonEntry['season'] ?? null) : null;
+        $firstEpisodeCollection = is_array($firstSeasonEntry) ? ($firstSeasonEntry['episodes'] ?? collect()) : collect();
+        $firstEpisode = $firstEpisodeCollection->first();
+        $firstEpisodeUrl = ($firstSeason && $firstEpisode)
+            ? route('episodes.watch', [$content->id, $firstSeason->id, $firstEpisode->id])
             : null;
 
         $videoValue = trim((string) ($content->video ?? ''));
