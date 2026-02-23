@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminPageController;
+use App\Http\Controllers\Admin\AdminHealthController;
 use App\Http\Controllers\Admin\TmdbImportController;
 use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\CatalogController;
@@ -50,6 +51,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/seasons/{id}/episodes/{episodeId}/edit', [SeasonEpisodeController::class, 'updateEpisode'])->name('episodes.update');
     Route::get('/video-assets/{videoAsset}', [VideoAssetController::class, 'show'])->name('video-assets.show');
     Route::get('/video-assets/{videoAsset}/status', [VideoAssetController::class, 'status'])->name('video-assets.status');
+    Route::get('/health', [AdminHealthController::class, 'index'])->name('admin.health');
+    Route::get('/health/api', [AdminHealthController::class, 'api'])->name('admin.health.api');
     Route::get('/health/video-pipeline', VideoPipelineHealthController::class)->name('admin.health.video-pipeline');
     Route::get('/tmdb/search', [TmdbImportController::class, 'search'])->name('admin.tmdb.search');
     Route::post('/tmdb/import', [TmdbImportController::class, 'import'])->name('admin.tmdb.import');

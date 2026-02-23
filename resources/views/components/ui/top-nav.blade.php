@@ -19,7 +19,7 @@
         ['label' => 'Add Content', 'href' => route('content.add'), 'patterns' => ['content.add', 'content.edit', 'content.update']],
         ['label' => 'TMDB Import', 'href' => route('admin.tmdb.search'), 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import', 'admin.tmdb.series.episodes.import']],
         ['label' => 'Video Assets', 'href' => route('admin.home').'#video-assets', 'patterns' => ['video-assets.*']],
-        ['label' => 'Health', 'href' => route('admin.health.video-pipeline'), 'patterns' => ['admin.health.video-pipeline']],
+        ['label' => 'Health', 'href' => route('admin.health'), 'patterns' => ['admin.health', 'admin.health.api', 'admin.health.video-pipeline']],
     ];
 
     $adminPatterns = collect($adminMenuLinks)->flatMap(

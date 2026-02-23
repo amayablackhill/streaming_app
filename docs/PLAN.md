@@ -117,6 +117,15 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
+# P1 - Detail & Admin Polish
+
+- [x] DP-01 Admin Health API (`/admin/health/api`) + dashboard `/admin/health` integrando video pipeline health
+- [ ] DP-02 watchEpisode overhaul editorial (contexto serie/temporada/episodio + prev/next + placeholders)
+- [ ] DP-03 Fix jitter poster movie detail (sticky/transform)
+- [ ] DP-04 Series detail overhaul alineado a layout editorial
+
+---
+
 # P3 - UI Overhaul (Rediseño Total)
 
 ## Fundacion visual
