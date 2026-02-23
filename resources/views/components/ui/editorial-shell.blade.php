@@ -5,7 +5,7 @@
 @php
     $isEpisodeWatch = request()->routeIs('episodes.watch');
     $showPublicFooter = (
-        request()->routeIs('home', 'search', 'content.movies.list', 'content.series.list')
+        request()->routeIs('home', 'search', 'content.movies.list', 'content.series.list', 'about', 'credits')
         || request()->is('movies/*')
         || request()->is('series/*')
     ) && ! $isEpisodeWatch;

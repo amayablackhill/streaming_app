@@ -196,4 +196,4 @@ Demo full-stack deployable (Railway) con:
 - [x] AP-01 Overhaul visual de "Admin Controls" en detalles de film/serie (header, acciones right-aligned, bloque informativo)
 - [x] AP-02 Arreglar boton "Watch episode" en detalle de serie (sin salto de linea, altura consistente)
 - [x] AP-03 Arreglar dropdown "Import from TMDB" (caret nativo/estilos)
-- [ ] AP-04 Footer links utiles: paginas publicas About + Credits + GitHub real
+- [x] AP-04 Footer links utiles: paginas publicas About + Credits + GitHub real
