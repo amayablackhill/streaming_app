@@ -208,4 +208,4 @@ Demo full-stack deployable (Railway) con:
 - [x] MO-04 Mobile navigation ergonomics (compacta, usable, sin solapes)
 - [x] MO-05 Posters responsive optimization (mobile w342 / desktop w500)
 - [x] MO-06 Safe area support iOS (notch/home indicator)
-- [ ] MO-07 QA breakpoint pass (sin overflow horizontal ni tap targets degradados)
+- [x] MO-07 QA breakpoint pass (sin overflow horizontal ni tap targets degradados)

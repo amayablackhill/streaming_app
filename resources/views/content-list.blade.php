@@ -83,7 +83,7 @@
 
             <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 sm:pb-20 md:px-12 md:pb-28 lg:px-16">
                 <div class="max-w-2xl">
-                    <h1 class="-ml-0.5 mb-6 font-serif text-5xl leading-none text-white sm:-ml-1 sm:mb-8 sm:text-7xl md:text-8xl lg:text-9xl">
+                    <h1 class="-ml-0.5 mb-6 font-serif text-5xl leading-none text-white [overflow-wrap:anywhere] sm:-ml-1 sm:mb-8 sm:text-7xl md:text-8xl lg:text-9xl">
                         {{ $featuredMovie->title }}
                     </h1>
 
@@ -170,7 +170,7 @@
                                 <h2 class="cc-title-section">{{ $section['title'] }}</h2>
                             </div>
                             @if ($isHomeView)
-                                <a href="{{ $section['title'] === 'Now Showing' ? route('content.movies.list') : route('content.series.list') }}" class="border-b border-cc-border pb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-cc-text-muted transition-colors hover:text-cc-accent">
+                                <a href="{{ $section['title'] === 'Now Showing' ? route('content.movies.list') : route('content.series.list') }}" class="border-b border-cc-border pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-cc-text-muted transition-colors hover:text-cc-accent">
                                     View full catalog
                                 </a>
                             @endif
