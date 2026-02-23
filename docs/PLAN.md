@@ -99,6 +99,14 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
+# P1 - Admin Navigation Sprint
+
+- [x] AN-01 Agrupar navegacion admin en dropdown unico en top-nav (Dashboard, Movies, Series, Add Content, TMDB Import, Video Assets, Health)
+- [ ] AN-02 Refinar iconografia y estados hover de acciones admin
+- [ ] AN-03 Breadcrumbs discretos para admin y detalles de contenido
+
+---
+
 # P1 - Data & Media Sprint (Cineclub Consistency)
 
 - [x] DM-01 Unificar render de posters/backdrops + carrusel funcional (drag + flechas + fallback)

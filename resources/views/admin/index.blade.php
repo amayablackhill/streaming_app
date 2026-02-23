@@ -21,7 +21,7 @@
                 <x-ui.button :href="route('series.table')" variant="ghost" size="sm">Manage series</x-ui.button>
             </article>
 
-            <article class="cc-surface cc-stack-2 p-4 sm:p-5">
+            <article id="video-assets" class="cc-surface cc-stack-2 p-4 sm:p-5">
                 <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Video assets</p>
                 <p class="font-serif text-4xl text-cc-text-primary">{{ $videoAssetCount }}</p>
                 <x-ui.button :href="route('admin.health.video-pipeline')" variant="ghost" size="sm">Pipeline health</x-ui.button>

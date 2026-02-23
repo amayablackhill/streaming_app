@@ -12,28 +12,38 @@
         ['label' => 'Series', 'route' => 'content.series.list', 'patterns' => ['content.series.list', 'series.*', 'episodes.watch']],
     ];
 
-    $adminLinks = [
-        ['label' => 'Admin', 'route' => 'admin.home', 'patterns' => ['admin.home']],
-        ['label' => 'Add Content', 'route' => 'content.add', 'patterns' => ['content.add', 'content.edit', 'content.update']],
-        ['label' => 'Movies Table', 'route' => 'movies.table', 'patterns' => ['movies.table']],
-        ['label' => 'Series Table', 'route' => 'series.table', 'patterns' => ['series.table', 'seasons.*', 'episodes.*', 'video-assets.*']],
-        ['label' => 'TMDB Import', 'route' => 'admin.tmdb.search', 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import']],
+    $adminMenuLinks = [
+        ['label' => 'Dashboard', 'href' => route('admin.home'), 'patterns' => ['admin.home']],
+        ['label' => 'Movies', 'href' => route('movies.table'), 'patterns' => ['movies.table']],
+        ['label' => 'Series', 'href' => route('series.table'), 'patterns' => ['series.table', 'seasons.*', 'episodes.*']],
+        ['label' => 'Add Content', 'href' => route('content.add'), 'patterns' => ['content.add', 'content.edit', 'content.update']],
+        ['label' => 'TMDB Import', 'href' => route('admin.tmdb.search'), 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import']],
+        ['label' => 'Video Assets', 'href' => route('admin.home').'#video-assets', 'patterns' => ['video-assets.*']],
+        ['label' => 'Health', 'href' => route('admin.health.video-pipeline'), 'patterns' => ['admin.health.video-pipeline']],
     ];
 
-    $links = $isAdmin ? array_merge($baseLinks, $adminLinks) : $baseLinks;
+    $adminPatterns = collect($adminMenuLinks)->flatMap(
+        fn (array $link): array => $link['patterns'] ?? []
+    )->values()->all();
+    $isAdminMenuActive = request()->routeIs(...$adminPatterns);
 
     $navTone = $context === 'admin'
         ? 'bg-cc-bg-elevated/95 border-cc-border'
         : 'bg-cc-bg-surface/90 border-cc-border';
 @endphp
 
-<nav x-data="{ open: false }" class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}" aria-label="Primary">
+<nav
+    x-data="{ open: false, adminMenuOpen: false, adminMobileOpen: false }"
+    @keydown.escape.window="adminMenuOpen = false; adminMobileOpen = false"
+    class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}"
+    aria-label="Primary"
+>
     <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-8">
             <x-layout.logo :href="route('home')" />
 
             <div class="hidden items-center gap-1 md:flex">
-                @foreach ($links as $link)
+                @foreach ($baseLinks as $link)
                     @php
                         $isActive = request()->routeIs(...$link['patterns']);
                     @endphp
@@ -45,6 +55,53 @@
                         {{ $link['label'] }}
                     </a>
                 @endforeach
+
+                @if ($isAdmin)
+                    <div class="relative ml-1">
+                        <button
+                            type="button"
+                            class="inline-flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm transition-all cc-motion-base {{ $isAdminMenuActive ? 'text-cc-text-primary bg-cc-bg-elevated border border-cc-border' : 'text-cc-text-secondary hover:text-cc-text-primary' }}"
+                            @click="adminMenuOpen = !adminMenuOpen"
+                            @keydown.arrow-down.prevent="$nextTick(() => { adminMenuOpen = true; $refs.adminDesktopFirstLink.focus(); })"
+                            :aria-expanded="adminMenuOpen.toString()"
+                            aria-haspopup="true"
+                            aria-controls="admin-dropdown-menu"
+                        >
+                            <span>Admin</span>
+                            <x-ui.icon name="arrow-right" class="h-3.5 w-3.5 transition-transform cc-motion-base" x-bind:class="adminMenuOpen ? 'rotate-90' : ''" />
+                        </button>
+
+                        <div
+                            x-show="adminMenuOpen"
+                            x-cloak
+                            x-transition:enter="transition-opacity cc-motion-base"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition-opacity cc-motion-fast cc-motion-exit"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            @click.outside="adminMenuOpen = false"
+                            id="admin-dropdown-menu"
+                            role="menu"
+                            class="absolute right-0 top-full z-50 mt-2 w-52 border border-cc-border bg-cc-bg-elevated/95 p-1 backdrop-blur"
+                        >
+                            @foreach ($adminMenuLinks as $adminLink)
+                                @php
+                                    $adminLinkActive = request()->routeIs(...($adminLink['patterns'] ?? []));
+                                @endphp
+                                <a
+                                    href="{{ $adminLink['href'] }}"
+                                    role="menuitem"
+                                    @if ($loop->first) x-ref="adminDesktopFirstLink" @endif
+                                    @click="adminMenuOpen = false"
+                                    class="block rounded-sm px-3 py-2 text-sm transition-colors cc-motion-base {{ $adminLinkActive ? 'bg-cc-bg-primary text-cc-text-primary' : 'text-cc-text-secondary hover:bg-cc-bg-primary hover:text-cc-text-primary' }}"
+                                >
+                                    {{ $adminLink['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -122,7 +179,7 @@
         </form>
 
         <div class="grid gap-1">
-            @foreach ($links as $link)
+            @foreach ($baseLinks as $link)
                 @php
                     $isActive = request()->routeIs(...$link['patterns']);
                 @endphp
@@ -135,6 +192,47 @@
                 </a>
             @endforeach
         </div>
+
+        @if ($isAdmin)
+            <div class="mt-3 border-t border-cc-border pt-3">
+                <button
+                    type="button"
+                    class="flex w-full items-center justify-between rounded-sm px-3 py-2 text-sm text-cc-text-secondary transition-colors cc-motion-base hover:bg-cc-bg-elevated hover:text-cc-text-primary"
+                    @click="adminMobileOpen = !adminMobileOpen"
+                    :aria-expanded="adminMobileOpen.toString()"
+                    aria-controls="mobile-admin-menu"
+                >
+                    <span class="{{ $isAdminMenuActive ? 'text-cc-text-primary' : '' }}">Admin</span>
+                    <x-ui.icon name="arrow-right" class="h-4 w-4 transition-transform cc-motion-base" x-bind:class="adminMobileOpen ? 'rotate-90' : ''" />
+                </button>
+
+                <div
+                    x-show="adminMobileOpen"
+                    x-cloak
+                    x-transition:enter="transition-opacity cc-motion-base"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition-opacity cc-motion-fast cc-motion-exit"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    id="mobile-admin-menu"
+                    class="mt-1 grid gap-1"
+                >
+                    @foreach ($adminMenuLinks as $adminLink)
+                        @php
+                            $adminLinkActive = request()->routeIs(...($adminLink['patterns'] ?? []));
+                        @endphp
+                        <a
+                            href="{{ $adminLink['href'] }}"
+                            class="rounded-sm px-3 py-2 text-sm transition-colors cc-motion-base {{ $adminLinkActive ? 'bg-cc-bg-elevated text-cc-text-primary' : 'text-cc-text-secondary' }}"
+                            @click="open = false; adminMobileOpen = false"
+                        >
+                            {{ $adminLink['label'] }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
 
         <div class="mt-3 border-t border-cc-border pt-3">
             @auth
