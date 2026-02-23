@@ -38,7 +38,7 @@
     class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}"
     aria-label="Primary"
 >
-    <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
         <div class="flex items-center gap-8">
             <x-layout.logo :href="route('home')" />
 
@@ -164,7 +164,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         id="mobile-nav-menu"
-        class="border-t border-cc-border bg-cc-bg-surface/95 px-4 py-3 md:hidden"
+        class="border-t border-cc-border bg-cc-bg-surface/95 px-3 py-3 md:hidden"
     >
         <form action="{{ route('search') }}" method="GET" role="search" class="mb-3 border-b border-cc-border pb-3">
             <label for="top-nav-search-mobile" class="sr-only">Search catalog</label>
