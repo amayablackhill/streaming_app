@@ -22,7 +22,12 @@ class Season extends Model
      */
     public function contents()
     {
-        return $this->belongsTo(Content::class, 'id');
+        return $this->belongsTo(Content::class, 'serie_id');
+    }
+
+    public function content()
+    {
+        return $this->belongsTo(Content::class, 'serie_id');
     }
 
     /**

@@ -43,6 +43,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/series/{id}/seasons', [SeasonEpisodeController::class, 'storeSeason'])->name('seasons.store');
 
     Route::post('/seasons/{id}/episodes', [SeasonEpisodeController::class, 'storeEpisode'])->name('episodes.store');
+    Route::delete('/seasons/{id}/episodes/{episodeId}', [SeasonEpisodeController::class, 'destroyEpisode'])->name('episodes.destroy');
     Route::delete('/deleteSeason/{id}', [SeasonEpisodeController::class, 'destroySeason'])->name('seasons.destroy');
     Route::get('/seasons/{id}/episodes/create', [AdminPageController::class, 'createEpisodeForm'])->name('episodes.create');
     Route::get('/seasons/{id}/episodes/{episodeId}/edit', [AdminPageController::class, 'editEpisodeForm'])->name('episodes.edit');

@@ -183,6 +183,11 @@
                                                             <div class="flex flex-wrap items-center gap-2">
                                                                 <x-ui.button :href="route('episodes.watch', [$content->id, $season->id, $episode->id])" variant="ghost" size="sm" class="w-full sm:w-auto">Watch</x-ui.button>
                                                                 <x-ui.button :href="route('episodes.edit', [$season->id, $episode->id])" variant="secondary" size="sm" class="w-full sm:w-auto">Edit</x-ui.button>
+                                                                <form action="{{ route('episodes.destroy', [$season->id, $episode->id]) }}" method="POST" onsubmit="return confirm('Delete this episode?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <x-ui.button type="submit" variant="danger" size="sm" class="w-full sm:w-auto">Delete</x-ui.button>
+                                                                </form>
                                                             </div>
                                                         </td>
                                                     </tr>

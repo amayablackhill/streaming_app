@@ -59,15 +59,15 @@ class AdminPageController extends Controller
 
     public function createEpisodeForm(int $id): View
     {
-        $season = Season::findOrFail($id);
+        $season = Season::with('contents')->findOrFail($id);
 
         return view('addEpisodes', compact('season'));
     }
 
     public function editEpisodeForm(int $id, int $episodeId): View
     {
-        $episode = Episode::findOrFail($episodeId);
-        $season = Season::findOrFail($id);
+        $season = Season::with('contents')->findOrFail($id);
+        $episode = Episode::where('season_id', $season->id)->findOrFail($episodeId);
 
         return view('addEpisodes', compact('episode', 'season'));
     }
