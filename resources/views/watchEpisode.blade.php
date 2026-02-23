@@ -90,7 +90,7 @@
         </section>
 
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-            <section class="cc-surface cc-stack-4 p-4 sm:p-5">
+            <section class="cc-surface flex h-full flex-col gap-5 p-5 sm:p-6">
                 @if ($episodeVideoUrl)
                     <div class="cc-elevated overflow-hidden">
                         <div class="aspect-video bg-black">
@@ -115,11 +115,14 @@
                     @endif
                 </div>
 
-                <p class="text-sm leading-editorial text-cc-text-secondary">
-                    {{ $overviewText }}
-                </p>
+                <div class="cc-elevated p-4 sm:p-5">
+                    <p class="text-sm leading-7 text-cc-text-secondary whitespace-pre-line break-words">
+                        {{ $overviewText }}
+                    </p>
+                </div>
 
-                <div class="flex flex-wrap items-center gap-2">
+                <div class="mt-auto border-t border-cc-border pt-4">
+                    <div class="flex flex-wrap items-center gap-2.5">
                     <x-ui.button :href="$previousEpisodeUrl" variant="ghost" size="sm" :disabled="!$previousEpisodeUrl">
                         Previous episode
                     </x-ui.button>
@@ -129,6 +132,7 @@
                     <x-ui.button :href="url('/series/' . $content->id)" variant="secondary" size="sm">
                         Back to series
                     </x-ui.button>
+                    </div>
                 </div>
             </section>
 
