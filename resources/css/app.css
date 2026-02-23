@@ -43,21 +43,6 @@
         padding: 0;
     }
 
-    @media (max-width: 639px) {
-        :root {
-            --cc-space-4: 0.875rem;
-            --cc-space-6: 1.25rem;
-            --cc-space-8: 1.625rem;
-            --cc-space-10: 2rem;
-            --cc-space-12: 2.375rem;
-        }
-
-        body {
-            font-size: 0.9375rem;
-            line-height: 1.5;
-        }
-    }
-
     h1,
     h2,
     h3,
@@ -122,12 +107,6 @@
         max-width: 100%;
     }
 
-    @media (max-width: 639px) {
-        .cc-card-film {
-            width: 11.25rem;
-        }
-    }
-
     @media (min-width: 640px) {
         .cc-card-film {
             width: 14rem;
@@ -188,12 +167,6 @@
         gap: 0.875rem;
         padding-bottom: 0.5rem;
         scroll-snap-type: x mandatory;
-    }
-
-    @media (max-width: 639px) {
-        .cc-rail-track {
-            gap: 0.625rem;
-        }
     }
 
     .cc-rail-track > * {
@@ -278,16 +251,6 @@
         font-size: 1.75rem;
         line-height: 1.2;
         letter-spacing: -0.01em;
-    }
-
-    @media (max-width: 639px) {
-        .cc-title-display {
-            font-size: 2.125rem;
-        }
-
-        .cc-title-section {
-            font-size: 1.5rem;
-        }
     }
 }
 

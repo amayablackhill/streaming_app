@@ -33,7 +33,7 @@
     <x-ui.top-nav context="admin" />
 
     <header class="border-b border-cc-border bg-cc-bg-elevated/70">
-        <div class="mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
             <div class="cc-stack-2">
                 <p class="text-[11px] uppercase tracking-[0.12em] text-cc-text-muted">Curator Workspace</p>
                 @if ($header)
@@ -46,7 +46,7 @@
         </div>
     </header>
 
-    <main class="mx-auto w-full max-w-7xl px-3 py-8 sm:px-6 lg:px-8">
+    <main class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {{ $slot }}
     </main>
 </div>
