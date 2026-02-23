@@ -38,8 +38,8 @@
     class="sticky top-0 z-40 border-b backdrop-blur {{ $navTone }}"
     aria-label="Primary"
 >
-    <div class="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-3 sm:h-16 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-4 sm:gap-8">
+    <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-8">
             <x-layout.logo :href="route('home')" />
 
             <div class="hidden items-center gap-1 md:flex">
@@ -144,7 +144,7 @@
 
         <button
             type="button"
-            class="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-cc-border p-2 text-cc-text-secondary transition-colors cc-motion-base hover:text-cc-text-primary md:hidden"
+            class="inline-flex items-center justify-center rounded-sm border border-cc-border p-2 text-cc-text-secondary transition-colors cc-motion-base hover:text-cc-text-primary md:hidden"
             @click="open = !open"
             aria-label="Toggle navigation"
             :aria-expanded="open.toString()"
@@ -164,7 +164,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         id="mobile-nav-menu"
-        class="max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-cc-border bg-cc-bg-surface/95 px-3 py-3 md:hidden"
+        class="border-t border-cc-border bg-cc-bg-surface/95 px-3 py-3 md:hidden"
     >
         <form action="{{ route('search') }}" method="GET" role="search" class="mb-3 border-b border-cc-border pb-3">
             <label for="top-nav-search-mobile" class="sr-only">Search catalog</label>
@@ -174,7 +174,7 @@
                 type="search"
                 :value="request('q')"
                 placeholder="Search catalog..."
-                class="h-11 w-full px-3.5 text-[13px] placeholder:text-cc-text-muted/90"
+                class="h-10 w-full px-3.5 text-[13px] placeholder:text-cc-text-muted/90"
             />
         </form>
 
@@ -185,7 +185,7 @@
                 @endphp
                 <a
                     href="{{ route($link['route']) }}"
-                    class="flex min-h-[44px] items-center rounded-sm px-3 py-2 text-sm {{ $isActive ? 'bg-cc-bg-elevated text-cc-text-primary' : 'text-cc-text-secondary' }}"
+                    class="rounded-sm px-3 py-2 text-sm {{ $isActive ? 'bg-cc-bg-elevated text-cc-text-primary' : 'text-cc-text-secondary' }}"
                     @if ($isActive) aria-current="page" @endif
                 >
                     {{ $link['label'] }}
@@ -197,7 +197,7 @@
             <div class="mt-3 border-t border-cc-border pt-3">
                 <button
                     type="button"
-                    class="flex min-h-[44px] w-full items-center justify-between rounded-sm px-3 py-2 text-sm text-cc-text-secondary transition-colors cc-motion-base hover:bg-cc-bg-elevated hover:text-cc-text-primary"
+                    class="flex w-full items-center justify-between rounded-sm px-3 py-2 text-sm text-cc-text-secondary transition-colors cc-motion-base hover:bg-cc-bg-elevated hover:text-cc-text-primary"
                     @click="adminMobileOpen = !adminMobileOpen"
                     :aria-expanded="adminMobileOpen.toString()"
                     aria-controls="mobile-admin-menu"
@@ -224,7 +224,7 @@
                         @endphp
                         <a
                             href="{{ $adminLink['href'] }}"
-                            class="flex min-h-[44px] items-center rounded-sm px-3 py-2 text-sm transition-colors cc-motion-base {{ $adminLinkActive ? 'bg-cc-bg-elevated text-cc-text-primary' : 'text-cc-text-secondary' }}"
+                            class="rounded-sm px-3 py-2 text-sm transition-colors cc-motion-base {{ $adminLinkActive ? 'bg-cc-bg-elevated text-cc-text-primary' : 'text-cc-text-secondary' }}"
                             @click="open = false; adminMobileOpen = false"
                         >
                             {{ $adminLink['label'] }}
