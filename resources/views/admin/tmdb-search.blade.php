@@ -39,7 +39,7 @@
                         id="tmdb-query"
                         name="q"
                         :value="$query"
-                        placeholder="Search movie or TV title"
+                        placeholder="Search film or TV title"
                         :disabled="!$tmdbEnabled"
                         required
                     />
@@ -56,7 +56,7 @@
                         ])
                         @disabled(!$tmdbEnabled)
                     >
-                        <option value="movie" @selected($type === 'movie')>Movie</option>
+                        <option value="movie" @selected($type === 'movie')>Film</option>
                         <option value="tv" @selected($type === 'tv')>TV</option>
                     </select>
                 </div>
@@ -72,7 +72,7 @@
         @if ($query !== '' && empty($results))
             <x-ui.empty-state
                 title="No TMDB matches"
-                description="Try a different title or switch the type filter between movie and TV."
+                description="Try a different title or switch the type filter between film and TV."
             />
         @endif
 

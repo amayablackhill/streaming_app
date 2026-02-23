@@ -9,7 +9,7 @@
     <section class="cc-stack-6">
         <header class="cc-stack-2">
             <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Admin · Curator Workflow</p>
-            <h1 class="cc-title-display">Edit {{ $isSeries ? 'Series' : 'Movie' }}</h1>
+            <h1 class="cc-title-display">Edit {{ $isSeries ? 'Series' : 'Film' }}</h1>
             <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
                 Update metadata and media while keeping catalog quality consistent.
             </p>

@@ -7,7 +7,7 @@
 
     $adminPageLabel = match (true) {
         request()->routeIs('admin.home') => 'Dashboard',
-        request()->routeIs('movies.table') => 'Movies',
+        request()->routeIs('movies.table') => 'Films',
         request()->routeIs('series.table') => 'Series',
         request()->routeIs('content.add') => 'Add Content',
         request()->routeIs('content.edit'), request()->routeIs('content.update') => 'Edit Content',

@@ -10,9 +10,9 @@
 
         <div class="grid gap-4 md:grid-cols-3">
             <article class="cc-surface cc-stack-2 p-4 sm:p-5">
-                <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Movies</p>
+                <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Films</p>
                 <p class="font-serif text-4xl text-cc-text-primary">{{ $movieCount }}</p>
-                <x-ui.button :href="route('movies.table')" variant="ghost" size="sm">Manage movies</x-ui.button>
+                <x-ui.button :href="route('movies.table')" variant="ghost" size="sm">Manage films</x-ui.button>
             </article>
 
             <article class="cc-surface cc-stack-2 p-4 sm:p-5">

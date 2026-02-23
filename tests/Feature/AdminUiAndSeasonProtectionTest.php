@@ -35,7 +35,7 @@ class AdminUiAndSeasonProtectionTest extends TestCase
             ->get('/movies/'.$movie->id)
             ->assertOk()
             ->assertSeeText('Admin controls')
-            ->assertSeeText('Edit movie');
+            ->assertSeeText('Edit film');
 
         $this->actingAs($member)
             ->get('/movies/'.$movie->id)
@@ -131,4 +131,3 @@ class AdminUiAndSeasonProtectionTest extends TestCase
         return [$admin, $member];
     }
 }
-

@@ -8,13 +8,13 @@
 
     $baseLinks = [
         ['label' => 'Home', 'route' => 'home', 'patterns' => ['home', 'search']],
-        ['label' => 'Movies', 'route' => 'content.movies.list', 'patterns' => ['content.movies.list', 'movies.*']],
+        ['label' => 'Films', 'route' => 'content.movies.list', 'patterns' => ['content.movies.list', 'movies.*']],
         ['label' => 'Series', 'route' => 'content.series.list', 'patterns' => ['content.series.list', 'series.*', 'episodes.watch']],
     ];
 
     $adminMenuLinks = [
         ['label' => 'Dashboard', 'href' => route('admin.home'), 'patterns' => ['admin.home']],
-        ['label' => 'Movies', 'href' => route('movies.table'), 'patterns' => ['movies.table']],
+        ['label' => 'Films', 'href' => route('movies.table'), 'patterns' => ['movies.table']],
         ['label' => 'Series', 'href' => route('series.table'), 'patterns' => ['series.table', 'seasons.*', 'episodes.*']],
         ['label' => 'Add Content', 'href' => route('content.add'), 'patterns' => ['content.add', 'content.edit', 'content.update']],
         ['label' => 'TMDB Import', 'href' => route('admin.tmdb.search'), 'patterns' => ['admin.tmdb.search', 'admin.tmdb.import', 'admin.tmdb.series.episodes.import']],

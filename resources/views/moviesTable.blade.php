@@ -13,12 +13,12 @@
         <header class="cc-stack-2 sm:flex sm:items-end sm:justify-between">
             <div class="cc-stack-2">
                 <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Admin · Catalog Table</p>
-                <h1 class="cc-title-display">Movies</h1>
+                <h1 class="cc-title-display">Films</h1>
                 <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
                     Curate film entries, review metadata quality and maintain catalog consistency.
                 </p>
                 <div class="flex items-center gap-2">
-                    <x-ui.badge tone="neutral">{{ $movies->count() }} total movies</x-ui.badge>
+                    <x-ui.badge tone="neutral">{{ $movies->count() }} total films</x-ui.badge>
                 </div>
             </div>
 
@@ -66,9 +66,9 @@
 
         @if ($movies->isEmpty())
             <x-ui.empty-state
-                title="No movies in catalog"
-                description="Create your first film entry to start managing the movie table."
-                :action-label="'Add movie'"
+                title="No films in catalog"
+                description="Create your first film entry to start managing the film table."
+                :action-label="'Add film'"
                 :action-href="route('content.add')"
             />
         @else
@@ -107,7 +107,7 @@
                                         <div class="flex flex-wrap items-center gap-2">
                                             <x-ui.button :href="url('/movies/' . $movie->id)" variant="ghost" size="sm" class="w-full sm:w-auto">View</x-ui.button>
                                             <x-ui.button :href="route('content.edit', $movie->id)" variant="secondary" size="sm" class="w-full sm:w-auto">Edit</x-ui.button>
-                                            <form action="{{ route('content.destroy', $movie->id) }}" method="POST" onsubmit="return confirm('Delete this movie?')">
+                                            <form action="{{ route('content.destroy', $movie->id) }}" method="POST" onsubmit="return confirm('Delete this film?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <x-ui.button type="submit" variant="danger" size="sm" class="w-full sm:w-auto">Delete</x-ui.button>

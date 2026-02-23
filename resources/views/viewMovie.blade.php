@@ -40,7 +40,7 @@
         $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
         $breadcrumbs = [
             ['label' => 'Home', 'href' => route('home')],
-            ['label' => 'Movies', 'href' => route('content.movies.list')],
+            ['label' => 'Films', 'href' => route('content.movies.list')],
             ['label' => $content->title],
         ];
     @endphp
@@ -154,7 +154,7 @@
                     @if ($adminActionEnabled)
                         <section class="mb-8 flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
                             <x-ui.badge tone="premium">Admin controls</x-ui.badge>
-                            <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit movie</x-ui.button>
+                            <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit film</x-ui.button>
                             <x-ui.button :href="route('admin.home')" variant="ghost" size="sm">Admin panel</x-ui.button>
                         </section>
                     @endif

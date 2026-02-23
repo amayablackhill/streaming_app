@@ -129,7 +129,7 @@
 
                 <div class="flex flex-wrap items-center gap-2 pt-1">
                     @if ($isMoviesView)
-                        <x-ui.badge tone="neutral">Total {{ $movies->count() }} movies</x-ui.badge>
+                        <x-ui.badge tone="neutral">Total {{ $movies->count() }} films</x-ui.badge>
                     @elseif ($isSeriesView)
                         <x-ui.badge tone="neutral">Total {{ $series->count() }} series</x-ui.badge>
                     @else
