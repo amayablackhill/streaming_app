@@ -12,7 +12,7 @@
     ];
 
     $classes = implode(' ', [
-        'inline-flex items-center rounded-sm border px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em]',
+        'inline-flex h-6 items-center rounded-sm border px-2.5 text-[11px] font-medium uppercase leading-none tracking-[0.08em]',
         $toneClasses[$tone] ?? $toneClasses['neutral'],
     ]);
 @endphp

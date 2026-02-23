@@ -201,8 +201,8 @@
             </section>
 
             <div class="flex flex-wrap items-center gap-3">
-                <x-ui.button type="submit" variant="primary">Publish content</x-ui.button>
-                <x-ui.button :href="route('admin.home')" variant="ghost">Cancel</x-ui.button>
+                <x-ui.button type="submit" variant="primary" size="sm">Publish content</x-ui.button>
+                <x-ui.button :href="route('admin.home')" variant="ghost" size="sm">Cancel</x-ui.button>
             </div>
         </form>
     </section>

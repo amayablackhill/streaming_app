@@ -31,9 +31,9 @@
         <section class="cc-surface cc-stack-4 p-4 sm:p-5">
             <h2 class="cc-title-section">Quick actions</h2>
             <div class="flex flex-wrap gap-3">
-                <x-ui.button :href="route('content.add')" variant="primary">Add content</x-ui.button>
-                <x-ui.button :href="route('admin.tmdb.search')" variant="secondary">Import from TMDB</x-ui.button>
-                <x-ui.button :href="route('series.table')" variant="ghost">Manage seasons</x-ui.button>
+                <x-ui.button :href="route('content.add')" variant="primary" size="sm">Add content</x-ui.button>
+                <x-ui.button :href="route('admin.tmdb.search')" variant="secondary" size="sm">Import from TMDB</x-ui.button>
+                <x-ui.button :href="route('series.table')" variant="ghost" size="sm">Manage seasons</x-ui.button>
             </div>
         </section>
     </section>

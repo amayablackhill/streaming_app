@@ -144,10 +144,10 @@
             </section>
 
             <div class="flex flex-wrap items-center gap-3">
-                <x-ui.button type="submit" variant="primary">Update content</x-ui.button>
-                <x-ui.button :href="route($tableRoute)" variant="ghost">Back to table</x-ui.button>
+                <x-ui.button type="submit" variant="primary" size="sm">Update content</x-ui.button>
+                <x-ui.button :href="route($tableRoute)" variant="ghost" size="sm">Back to table</x-ui.button>
                 @if ($isSeries)
-                    <x-ui.button :href="route('seasons.manage', $content->id)" variant="secondary">Manage seasons</x-ui.button>
+                    <x-ui.button :href="route('seasons.manage', $content->id)" variant="secondary" size="sm">Manage seasons</x-ui.button>
                 @endif
             </div>
         </form>
