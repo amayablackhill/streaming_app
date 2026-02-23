@@ -106,12 +106,6 @@
                         <x-ui.alert tone="error" title="Update failed">{{ session('error') }}</x-ui.alert>
                     @endif
 
-                    <div class="mb-8 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-cc-accent">
-                        <span>Editorial</span>
-                        <span class="text-cc-text-muted">/</span>
-                        <span>Series Detail</span>
-                    </div>
-
                     <div class="mb-8 hidden items-start justify-between gap-6 lg:flex">
                         <div>
                             <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
