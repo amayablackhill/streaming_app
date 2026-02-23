@@ -290,8 +290,8 @@
                                             @else
                                                 <ul class="cc-stack-2">
                                                     @foreach ($episodes as $episode)
-                                                        <li class="cc-surface flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
-                                                            <div class="cc-stack-2">
+                                                        <li class="cc-surface flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                                                            <div class="cc-stack-2 min-w-0">
                                                                 <p class="text-sm font-medium text-cc-text-primary">
                                                                     E{{ str_pad((string) $episode->episode_number, 2, '0', STR_PAD_LEFT) }} - {{ $episode->title }}
                                                                 </p>
@@ -308,13 +308,16 @@
                                                                 @endif
                                                             </div>
 
-                                                            <x-ui.button
-                                                                :href="route('episodes.watch', [$content->id, $season->id, $episode->id])"
-                                                                variant="secondary"
-                                                                size="sm"
-                                                            >
-                                                                Watch episode
-                                                            </x-ui.button>
+                                                            <div class="shrink-0">
+                                                                <x-ui.button
+                                                                    :href="route('episodes.watch', [$content->id, $season->id, $episode->id])"
+                                                                    variant="secondary"
+                                                                    size="sm"
+                                                                    class="whitespace-nowrap"
+                                                                >
+                                                                    Watch episode
+                                                                </x-ui.button>
+                                                            </div>
                                                         </li>
                                                     @endforeach
                                                 </ul>
