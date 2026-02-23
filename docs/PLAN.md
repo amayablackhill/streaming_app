@@ -99,6 +99,16 @@ Demo full-stack deployable (Railway) con:
 
 ---
 
+# P1 - Data & Media Sprint (Cineclub Consistency)
+
+- [x] DM-01 Unificar render de posters/backdrops + carrusel funcional (drag + flechas + fallback)
+- [ ] DM-02 Migraciones `curated_lists` y `curated_list_items` (rank + unique list/content)
+- [ ] DM-03 Comando `curated:import` idempotente (CSV/JSON local, unresolved/ambiguous report)
+- [ ] DM-05 README con formato CSV/JSON para curated imports
+- [ ] DM-06 Sistema de iconos unico y consistente + aria-label en icon-only buttons
+
+---
+
 # P3 - UI Overhaul (Rediseño Total)
 
 ## Fundacion visual

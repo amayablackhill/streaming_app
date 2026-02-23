@@ -21,13 +21,11 @@
             ?? $movies->sortByDesc(fn ($movie) => (float) ($movie->rating ?? 0))->first()
             ?? $movies->first();
 
-        $featuredPoster = null;
+        $featuredBackdrop = null;
         $featuredYear = 'N/A';
         $featuredDuration = null;
         if ($featuredMovie) {
-            $featuredPoster = $featuredMovie->picture
-                ? asset('storage/movies/' . $featuredMovie->picture)
-                : asset('storage/logo/netflick_logo_definitive.png');
+            $featuredBackdrop = $featuredMovie->backdrop_url ?: $featuredMovie->poster_url;
             $featuredYear = $featuredMovie->release_date ? substr((string) $featuredMovie->release_date, 0, 4) : 'N/A';
             $featuredDuration = $featuredMovie->duration ? $featuredMovie->duration . ' min' : null;
         }
@@ -51,7 +49,20 @@
     @if ($isHomeView && $featuredMovie)
         <section class="relative flex min-h-[88vh] w-full items-end overflow-hidden">
             <div class="absolute inset-0 z-0">
-                <img src="{{ $featuredPoster }}" alt="{{ $featuredMovie->title }} feature artwork" class="h-full w-full object-cover">
+                @if ($featuredBackdrop)
+                    <img
+                        src="{{ $featuredBackdrop }}"
+                        alt="{{ $featuredMovie->title }} feature artwork"
+                        width="1920"
+                        height="1080"
+                        loading="eager"
+                        fetchpriority="high"
+                        draggable="false"
+                        class="h-full w-full select-none object-cover object-center"
+                    >
+                @else
+                    <div class="h-full w-full bg-cc-bg-elevated"></div>
+                @endif
                 <div class="absolute inset-0 cc-hero-gradient"></div>
             </div>
 
@@ -160,10 +171,6 @@
                                     @foreach ($section['items'] as $content)
                                         @php
                                             $detailUrl = url('/' . ($content->type === 'serie' ? 'series' : 'movies') . '/' . $content->id);
-                                            $posterDir = $content->type === 'film' ? 'movies' : 'series';
-                                            $posterUrl = $content->picture
-                                                ? asset('storage/' . $posterDir . '/' . $content->picture)
-                                                : asset('storage/logo/netflick_logo_definitive.png');
                                             $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
                                             $meta = $content->rating ? 'Rating ' . number_format((float) $content->rating, 1) : null;
                                         @endphp
@@ -171,7 +178,7 @@
                                         <x-ui.card-film
                                             :title="$content->title"
                                             :href="$detailUrl"
-                                            :image="$posterUrl"
+                                            :image="$content->poster_url"
                                             :year="$releaseYear"
                                             :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
                                             :meta="$meta"
@@ -179,14 +186,10 @@
                                     @endforeach
                                 </x-ui.rail>
                             @else
-                                <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                                <div class="flex flex-wrap gap-4">
                                     @foreach ($section['items'] as $content)
                                         @php
                                             $detailUrl = url('/' . ($content->type === 'serie' ? 'series' : 'movies') . '/' . $content->id);
-                                            $posterDir = $content->type === 'film' ? 'movies' : 'series';
-                                            $posterUrl = $content->picture
-                                                ? asset('storage/' . $posterDir . '/' . $content->picture)
-                                                : asset('storage/logo/netflick_logo_definitive.png');
                                             $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
                                             $meta = $content->rating ? 'Rating ' . number_format((float) $content->rating, 1) : null;
                                         @endphp
@@ -194,7 +197,7 @@
                                         <x-ui.card-film
                                             :title="$content->title"
                                             :href="$detailUrl"
-                                            :image="$posterUrl"
+                                            :image="$content->poster_url"
                                             :year="$releaseYear"
                                             :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
                                             :meta="$meta"

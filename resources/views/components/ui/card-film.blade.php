@@ -9,19 +9,27 @@
     'badgeTone' => 'neutral',
 ])
 
-<article class="group cc-surface overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40">
+<article class="group cc-card-film cc-surface overflow-hidden transition-all cc-motion-base hover:-translate-y-0.5 hover:border-cc-text-muted/40">
     <a href="{{ $href }}" class="block">
-        <div class="aspect-[2/3] bg-cc-bg-elevated overflow-hidden">
+        <div class="relative aspect-[2/3] overflow-hidden bg-cc-bg-elevated">
             @if ($image)
                 <img
                     src="{{ $image }}"
                     alt="{{ $title }}"
                     loading="lazy"
-                    class="h-full w-full object-cover transition-transform cc-motion-slow group-hover:scale-[1.02]"
+                    decoding="async"
+                    width="560"
+                    height="840"
+                    draggable="false"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    class="pointer-events-none h-full w-full select-none object-cover transition-transform cc-motion-slow group-hover:scale-[1.02]"
                 />
+                <div class="cc-card-media-fallback hidden">
+                    <span>{{ $title }}</span>
+                </div>
             @else
-                <div class="flex h-full items-center justify-center px-4 text-center text-xs uppercase tracking-[0.1em] text-cc-text-muted">
-                    No poster
+                <div class="cc-card-media-fallback flex">
+                    <span>{{ $title }}</span>
                 </div>
             @endif
         </div>

@@ -57,10 +57,6 @@
                     @foreach ($results as $content)
                         @php
                             $detailUrl = url('/' . ($content->type === 'serie' ? 'series' : 'movies') . '/' . $content->id);
-                            $posterDir = $content->type === 'film' ? 'movies' : 'series';
-                            $posterUrl = $content->picture
-                                ? asset('storage/' . $posterDir . '/' . $content->picture)
-                                : asset('storage/logo/netflick_logo_definitive.png');
                             $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
                             $meta = $content->director ?: optional($content->genre)->name;
                         @endphp
@@ -68,7 +64,7 @@
                         <x-ui.card-film
                             :title="$content->title"
                             :href="$detailUrl"
-                            :image="$posterUrl"
+                            :image="$content->poster_url"
                             :year="$releaseYear"
                             :eyebrow="$content->type === 'serie' ? 'Series' : 'Film'"
                             :meta="$meta"
