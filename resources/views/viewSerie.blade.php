@@ -10,7 +10,19 @@
         $ratingLabel = isset($content->rating) ? number_format((float) $content->rating, 1) : null;
 
         $seasons = $content->seasons->sortBy('season_number')->values();
-        $episodesCount = $seasons->sum(fn ($season) => $season->episodes->count());
+        $seasonEntries = $seasons->map(function (\App\Models\Season $season) {
+            return [
+                'season' => $season,
+                'episodes' => $season->episodes->sortBy('episode_number')->values(),
+            ];
+        });
+        $episodesCount = $seasonEntries->sum(fn (array $entry): int => $entry['episodes']->count());
+
+        $firstSeasonEntry = $seasonEntries->first(fn (array $entry): bool => $entry['episodes']->isNotEmpty());
+        $firstEpisode = $firstSeasonEntry['episodes']->first() ?? null;
+        $firstEpisodeUrl = ($firstSeasonEntry && $firstEpisode)
+            ? route('episodes.watch', [$content->id, $firstSeasonEntry['season']->id, $firstEpisode->id])
+            : null;
 
         $videoValue = trim((string) ($content->video ?? ''));
         $youtubeId = null;
@@ -39,15 +51,16 @@
         );
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
         $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
-        $adminActionHref = auth()->check() && auth()->user()->canAccessAdminPanel()
-            ? route('admin.home')
-            : null;
-        $tmdbEpisodesImportedCount = $content->seasons->sum(
+        $hasFeaturedPlayback = $youtubeId || $hlsPlaybackUrl || $playbackUrl;
+
+        $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
+        $tmdbEpisodesImportedCount = $seasons->sum(
             fn (\App\Models\Season $season): int => $season->episodes->whereNotNull('tmdb_id')->count()
         );
         $tmdbSyncLabel = $content->tmdb_last_synced_at
             ? $content->tmdb_last_synced_at->diffForHumans()
             : 'Never';
+
         $breadcrumbs = [
             ['label' => 'Home', 'href' => route('home')],
             ['label' => 'Series', 'href' => route('content.series.list')],
@@ -55,223 +68,258 @@
         ];
     @endphp
 
-    <article class="cc-stack-6">
-        <x-ui.breadcrumbs :items="$breadcrumbs" />
-
-        @if (session('status'))
-            <x-ui.alert tone="success" title="Update">{{ session('status') }}</x-ui.alert>
-        @endif
-
-        @if (session('error'))
-            <x-ui.alert tone="error" title="Update failed">{{ session('error') }}</x-ui.alert>
-        @endif
-
-        <header class="cc-stack-2">
-            <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Series Detail</p>
-            <h1 class="cc-title-display">{{ $content->title }}</h1>
-            <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
-                {{ $overviewText }}
-            </p>
-        </header>
-
-        <x-ui.alert tone="info" title="Playback policy">
-            Main catalog experience uses trailers and short legal demo clips.
-        </x-ui.alert>
-
-        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-            <section class="cc-surface cc-stack-4 p-4 sm:p-5">
-                <div class="cc-elevated aspect-video overflow-hidden">
-                    @if ($youtubeId)
-                        <iframe
-                            src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}"
-                            title="Trailer for {{ $content->title }}"
-                            loading="lazy"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen
-                            class="h-full w-full"
-                        ></iframe>
-                    @elseif ($hlsPlaybackUrl)
-                        <video id="detail-hls-player-series" controls preload="metadata" poster="{{ $backdropUrl ?: '' }}" class="h-full w-full bg-black"></video>
-                    @elseif ($playbackUrl)
-                        <video controls preload="metadata" poster="{{ $backdropUrl ?: '' }}" class="h-full w-full bg-black">
-                            <source src="{{ $playbackUrl }}" type="video/mp4">
-                            Your browser does not support HTML5 video.
-                        </video>
-                    @else
-                        <x-ui.empty-state
-                            title="Trailer not available"
-                            description="Add a YouTube trailer URL or a short demo clip to enable featured playback."
-                        />
-                    @endif
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                    <x-ui.badge tone="neutral">Series</x-ui.badge>
-                    <x-ui.badge tone="neutral">{{ $releaseYear }}</x-ui.badge>
-                    <x-ui.badge tone="neutral">{{ $seasons->count() }} seasons</x-ui.badge>
-                    <x-ui.badge tone="neutral">{{ $episodesCount }} episodes</x-ui.badge>
-                    @if ($runtimeValue)
-                        <x-ui.badge tone="neutral">{{ $runtimeValue }} min</x-ui.badge>
-                    @endif
-                    @if ($ratingLabel)
-                        <x-ui.badge tone="premium">Rating {{ $ratingLabel }}</x-ui.badge>
-                    @endif
-                </div>
-
-                @if ($adminActionHref)
-                    <div class="flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
-                        <x-ui.badge tone="premium">Admin controls</x-ui.badge>
-                        <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
-                        <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
-                        @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
-                            <x-ui.badge tone="neutral">{{ $seasons->count() }} TMDB seasons</x-ui.badge>
-                            <x-ui.badge tone="neutral">{{ $tmdbEpisodesImportedCount }} TMDB episodes</x-ui.badge>
-                            <x-ui.badge tone="neutral">Synced {{ $tmdbSyncLabel }}</x-ui.badge>
-                            <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
-                                @csrf
-                                <x-ui.button type="submit" variant="ghost" size="sm">Import episodes</x-ui.button>
-                            </form>
-                            <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
-                                @csrf
-                                <input type="hidden" name="all" value="1">
-                                <x-ui.button type="submit" variant="ghost" size="sm">Import all seasons</x-ui.button>
-                            </form>
-                        @endif
+    <article class="min-h-[calc(100vh-4rem)] bg-cc-bg-primary">
+        <main class="flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row lg:items-start">
+            <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-[45%] lg:self-start">
+                <div class="absolute inset-0 bg-gradient-to-t from-cc-bg-primary via-transparent to-transparent opacity-65 lg:opacity-35"></div>
+                @if ($backdropUrl)
+                    <img
+                        src="{{ $backdropUrl }}"
+                        alt="{{ $content->title }} backdrop"
+                        loading="lazy"
+                        draggable="false"
+                        width="1920"
+                        height="1080"
+                        class="h-full w-full select-none object-cover"
+                    >
+                @else
+                    <div class="flex h-full w-full items-center justify-center bg-cc-bg-elevated text-center text-sm text-cc-text-muted">
+                        No artwork available
                     </div>
                 @endif
+
+                <div class="absolute bottom-0 left-0 z-10 w-full bg-gradient-to-t from-cc-bg-primary to-transparent p-5 lg:hidden">
+                    <h1 class="font-serif text-3xl text-white">{{ $content->title }}</h1>
+                    <p class="mt-1 text-sm text-cc-accent">{{ $releaseYear }}  -  {{ $content->director ?: 'Unknown Creator' }}</p>
+                </div>
             </section>
 
-            <aside class="cc-surface cc-stack-4 p-4 sm:p-5">
-                <div class="overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
-                    <div class="aspect-[2/3]">
-                        @if ($posterUrl)
-                            <img
-                                src="{{ $posterUrl }}"
-                                alt="{{ $content->title }} poster"
-                                loading="lazy"
-                                width="500"
-                                height="750"
-                                class="h-full w-full object-cover"
-                            >
-                        @else
-                            <div class="flex h-full items-center justify-center p-4 text-center text-xs text-cc-text-muted">
-                                Poster unavailable
-                            </div>
-                        @endif
+            <section class="w-full bg-cc-bg-primary lg:w-[55%]">
+                <div class="mx-auto flex h-full w-full max-w-3xl flex-col px-5 py-10 sm:px-8 lg:px-12 lg:py-16">
+                    <x-ui.breadcrumbs :items="$breadcrumbs" class="mb-5" />
+
+                    @if (session('status'))
+                        <x-ui.alert tone="success" title="Update">{{ session('status') }}</x-ui.alert>
+                    @endif
+
+                    @if (session('error'))
+                        <x-ui.alert tone="error" title="Update failed">{{ session('error') }}</x-ui.alert>
+                    @endif
+
+                    <div class="mb-8 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-cc-accent">
+                        <span>Editorial</span>
+                        <span class="text-cc-text-muted">/</span>
+                        <span>Series Detail</span>
                     </div>
-                </div>
 
-                <dl class="cc-stack-2 text-sm leading-editorial text-cc-text-secondary">
-                    <div>
-                        <dt class="text-cc-caption uppercase tracking-label text-cc-text-muted">Genre</dt>
-                        <dd class="text-cc-text-primary">{{ $genreName }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-cc-caption uppercase tracking-label text-cc-text-muted">Release date</dt>
-                        <dd class="text-cc-text-primary">{{ $content->release_date ?: 'N/A' }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-cc-caption uppercase tracking-label text-cc-text-muted">Creator / Director</dt>
-                        <dd class="text-cc-text-primary">{{ $content->director ?: 'Unknown' }}</dd>
-                    </div>
-                </dl>
-
-                <x-ui.button href="{{ route('content.series.list') }}" variant="secondary" size="sm">
-                    Back to series
-                </x-ui.button>
-            </aside>
-        </div>
-
-        <section class="cc-surface cc-stack-4 p-4 sm:p-5">
-            <header class="cc-stack-2">
-                <h2 class="cc-title-section">Seasons & Episodes</h2>
-                <p class="text-sm leading-editorial text-cc-text-secondary">
-                    Browse each season and jump directly to episode playback.
-                </p>
-            </header>
-
-            @if ($seasons->isEmpty())
-                <x-ui.empty-state
-                    title="No seasons available"
-                    description="This series still has no seasons published. Add them from the admin panel."
-                    :action-label="$adminActionHref ? 'Go to admin' : null"
-                    :action-href="$adminActionHref"
-                />
-            @else
-                <div class="cc-stack-4">
-                    @foreach ($seasons as $season)
-                        @php
-                            $episodes = $season->episodes->sortBy('episode_number')->values();
-                        @endphp
-
-                        <section class="cc-elevated cc-stack-3 p-4" x-data="{ open: true }">
-                            <header class="flex flex-wrap items-center justify-between gap-3">
-                                <div class="cc-stack-2">
-                                    <h3 class="text-lg font-medium text-cc-text-primary">
-                                        Season {{ $season->season_number }}
-                                    </h3>
-                                    <div class="flex items-center gap-2">
-                                        <x-ui.badge tone="neutral">{{ $episodes->count() }} episodes</x-ui.badge>
-                                        @if ($season->release_date)
-                                            <x-ui.badge tone="neutral">{{ $season->release_date }}</x-ui.badge>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <x-ui.button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    @click="open = !open"
-                                    x-text="open ? 'Collapse' : 'Expand'"
-                                >
-                                    Collapse
-                                </x-ui.button>
-                            </header>
-
-                            <div x-show="open" x-transition:enter="transition-opacity cc-motion-base" x-transition:leave="transition-opacity cc-motion-fast cc-motion-exit">
-                                @if ($episodes->isEmpty())
-                                    <x-ui.alert tone="warning" title="No episodes">
-                                        This season does not have episodes yet.
-                                    </x-ui.alert>
-                                @else
-                                    <ul class="cc-stack-2">
-                                        @foreach ($episodes as $episode)
-                                            <li class="cc-surface flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
-                                                <div class="cc-stack-2">
-                                                    <p class="text-sm font-medium text-cc-text-primary">
-                                                        Episode {{ $episode->episode_number }}: {{ $episode->title }}
-                                                    </p>
-                                                    <p class="text-xs text-cc-text-secondary">
-                                                        {{ $episode->duration ? $episode->duration . ' min' : 'Duration N/A' }}
-                                                        @if ($episode->release_date)
-                                                             -  {{ $episode->release_date }}
-                                                        @endif
-                                                    </p>
-                                                    @if ($episode->plot)
-                                                        <p class="text-xs leading-editorial text-cc-text-muted">
-                                                            {{ \Illuminate\Support\Str::limit($episode->plot, 140) }}
-                                                        </p>
-                                                    @endif
-                                                </div>
-
-                                                <x-ui.button
-                                                    :href="route('episodes.watch', [$content->id, $season->id, $episode->id])"
-                                                    variant="secondary"
-                                                    size="sm"
-                                                >
-                                                    Watch episode
-                                                </x-ui.button>
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                    <div class="mb-8 hidden items-start justify-between gap-6 lg:flex">
+                        <div>
+                            <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
+                            <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-cc-text-secondary">
+                                <span class="text-cc-text-primary">{{ $content->director ?: 'Unknown Creator' }}</span>
+                                <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
+                                <span>{{ $releaseYear }}</span>
+                                <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
+                                <span>{{ $genreName }}</span>
+                                @if ($ratingLabel)
+                                    <span class="rounded-sm border border-cc-border px-2 py-0.5 text-[11px] uppercase tracking-[0.08em] text-cc-text-primary">
+                                        Rating {{ $ratingLabel }}
+                                    </span>
                                 @endif
                             </div>
+                        </div>
+
+                        <div class="w-36 shrink-0 overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
+                            <div class="aspect-[2/3]">
+                                @if ($posterUrl)
+                                    <img
+                                        src="{{ $posterUrl }}"
+                                        alt="{{ $content->title }} poster"
+                                        loading="lazy"
+                                        width="500"
+                                        height="750"
+                                        class="h-full w-full object-cover"
+                                    >
+                                @else
+                                    <div class="flex h-full items-center justify-center p-3 text-center text-xs text-cc-text-muted">
+                                        Poster unavailable
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-10 flex flex-wrap items-center gap-3 border-b border-cc-border pb-6">
+                        @if ($hasFeaturedPlayback)
+                            <a
+                                href="#player"
+                                class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-cc-bg-primary transition-all cc-motion-base hover:bg-cc-text-primary"
+                            >
+                                <x-ui.icon name="play" class="h-4 w-4" />
+                                Watch Trailer
+                            </a>
+                        @endif
+
+                        <x-ui.button :href="$firstEpisodeUrl" variant="secondary" size="sm" :disabled="!$firstEpisodeUrl">
+                            Watch First Episode
+                        </x-ui.button>
+
+                        <a
+                            href="{{ route('content.series.list') }}"
+                            class="inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-cc-text-secondary transition-colors cc-motion-base hover:bg-cc-bg-elevated hover:text-cc-text-primary"
+                        >
+                            <x-ui.icon name="arrow-left" class="h-4 w-4" />
+                            Back to catalog
+                        </a>
+                    </div>
+
+                    @if ($adminActionEnabled)
+                        <section class="mb-8 flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
+                            <x-ui.badge tone="premium">Admin controls</x-ui.badge>
+                            <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
+                            <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
+                            @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
+                                <x-ui.badge tone="neutral">{{ $seasons->count() }} TMDB seasons</x-ui.badge>
+                                <x-ui.badge tone="neutral">{{ $tmdbEpisodesImportedCount }} TMDB episodes</x-ui.badge>
+                                <x-ui.badge tone="neutral">Synced {{ $tmdbSyncLabel }}</x-ui.badge>
+                                <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
+                                    @csrf
+                                    <x-ui.button type="submit" variant="ghost" size="sm">Import episodes</x-ui.button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
+                                    @csrf
+                                    <input type="hidden" name="all" value="1">
+                                    <x-ui.button type="submit" variant="ghost" size="sm">Import all seasons</x-ui.button>
+                                </form>
+                            @endif
                         </section>
-                    @endforeach
+                    @endif
+
+                    <article class="space-y-5">
+                        <p class="font-serif text-xl italic leading-relaxed text-cc-text-primary">
+                            {{ $overviewText }}
+                        </p>
+                    </article>
+
+                    <section id="player" class="mt-10 overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
+                        <div class="aspect-video bg-black">
+                            @if ($youtubeId)
+                                <iframe
+                                    src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}"
+                                    title="Trailer for {{ $content->title }}"
+                                    loading="lazy"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen
+                                    class="h-full w-full"
+                                ></iframe>
+                            @elseif ($hlsPlaybackUrl)
+                                <video id="detail-hls-player-series" controls preload="metadata" poster="{{ $posterUrl ?: '' }}" class="h-full w-full bg-black"></video>
+                            @elseif ($playbackUrl)
+                                <video controls preload="metadata" poster="{{ $posterUrl ?: '' }}" class="h-full w-full bg-black">
+                                    <source src="{{ $playbackUrl }}" type="video/mp4">
+                                    Your browser does not support HTML5 video.
+                                </video>
+                            @else
+                                <div class="flex h-full items-center justify-center p-6 text-center text-sm text-cc-text-secondary">
+                                    Trailer not available yet for this series.
+                                </div>
+                            @endif
+                        </div>
+                    </section>
+
+                    <section class="mt-12 border-t border-cc-border pt-8">
+                        <header class="mb-5 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <h2 class="text-xs font-bold uppercase tracking-[0.16em] text-cc-text-muted">Seasons & Episodes</h2>
+                                <p class="mt-2 text-sm text-cc-text-secondary">{{ $seasons->count() }} seasons - {{ $episodesCount }} episodes</p>
+                            </div>
+                        </header>
+
+                        @if ($seasonEntries->isEmpty())
+                            <x-ui.empty-state
+                                title="No seasons available"
+                                description="This series still has no seasons published. Add them from the admin panel."
+                                :action-label="$adminActionEnabled ? 'Go to admin' : null"
+                                :action-href="$adminActionEnabled ? route('seasons.manage', $content->id) : null"
+                            />
+                        @else
+                            <div class="cc-stack-4">
+                                @foreach ($seasonEntries as $entry)
+                                    @php
+                                        /** @var \App\Models\Season $season */
+                                        $season = $entry['season'];
+                                        /** @var \Illuminate\Support\Collection<int, \App\Models\Episode> $episodes */
+                                        $episodes = $entry['episodes'];
+                                    @endphp
+
+                                    <section class="cc-elevated p-4" x-data="{ open: {{ $loop->first ? 'true' : 'false' }} }">
+                                        <header class="flex flex-wrap items-center justify-between gap-3">
+                                            <div class="cc-stack-2">
+                                                <h3 class="text-lg font-medium text-cc-text-primary">Season {{ $season->season_number }}</h3>
+                                                <div class="flex flex-wrap items-center gap-2">
+                                                    <x-ui.badge tone="neutral">{{ $episodes->count() }} episodes</x-ui.badge>
+                                                    @if ($season->release_date)
+                                                        <x-ui.badge tone="neutral">{{ $season->release_date->toDateString() }}</x-ui.badge>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <x-ui.button type="button" variant="ghost" size="sm" @click="open = !open" x-text="open ? 'Hide episodes' : 'Show episodes'">
+                                                Hide episodes
+                                            </x-ui.button>
+                                        </header>
+
+                                        <div
+                                            class="mt-4"
+                                            x-show="open"
+                                            x-transition:enter="transition-opacity cc-motion-base"
+                                            x-transition:leave="transition-opacity cc-motion-fast cc-motion-exit"
+                                        >
+                                            @if ($episodes->isEmpty())
+                                                <x-ui.alert tone="warning" title="No episodes">
+                                                    This season does not have episodes yet.
+                                                </x-ui.alert>
+                                            @else
+                                                <ul class="cc-stack-2">
+                                                    @foreach ($episodes as $episode)
+                                                        <li class="cc-surface flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
+                                                            <div class="cc-stack-2">
+                                                                <p class="text-sm font-medium text-cc-text-primary">
+                                                                    E{{ str_pad((string) $episode->episode_number, 2, '0', STR_PAD_LEFT) }} - {{ $episode->title }}
+                                                                </p>
+                                                                <p class="text-xs text-cc-text-secondary">
+                                                                    {{ ($episode->runtime_minutes ?: $episode->duration) ? ($episode->runtime_minutes ?: $episode->duration) . ' min' : 'Duration N/A' }}
+                                                                    @if ($episode->release_date)
+                                                                        - {{ $episode->release_date->toDateString() }}
+                                                                    @endif
+                                                                </p>
+                                                                @if ($episode->plot)
+                                                                    <p class="text-xs leading-editorial text-cc-text-muted">
+                                                                        {{ \Illuminate\Support\Str::limit($episode->plot, 140) }}
+                                                                    </p>
+                                                                @endif
+                                                            </div>
+
+                                                            <x-ui.button
+                                                                :href="route('episodes.watch', [$content->id, $season->id, $episode->id])"
+                                                                variant="secondary"
+                                                                size="sm"
+                                                            >
+                                                                Watch episode
+                                                            </x-ui.button>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </div>
+                                    </section>
+                                @endforeach
+                            </div>
+                        @endif
+                    </section>
                 </div>
-            @endif
-        </section>
+            </section>
+        </main>
     </article>
 
     @if (!$youtubeId && $hlsPlaybackUrl)
@@ -302,4 +350,3 @@
         </script>
     @endif
 </x-app-layout>
-
