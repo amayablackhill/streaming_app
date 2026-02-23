@@ -1,8 +1,9 @@
 <x-app-layout>
     @php
-        $posterUrl = $content->picture
-            ? asset('storage/series/' . $content->picture)
-            : asset('storage/logo/netflick_logo_definitive.png');
+        $posterUrl = $content->poster_url;
+        $backdropUrl = $content->backdrop_url ?: $posterUrl;
+        $overviewText = $content->display_overview ?: 'No synopsis available yet.';
+        $runtimeValue = $content->display_runtime;
 
         $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
         $genreName = optional($content->genre)->name ?? 'Uncategorized';
@@ -55,7 +56,7 @@
             <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Series Detail</p>
             <h1 class="cc-title-display">{{ $content->title }}</h1>
             <p class="max-w-3xl text-sm leading-editorial text-cc-text-secondary">
-                Explore seasons and episodes with direct playback access for each chapter.
+                {{ $overviewText }}
             </p>
         </header>
 
@@ -76,9 +77,9 @@
                             class="h-full w-full"
                         ></iframe>
                     @elseif ($hlsPlaybackUrl)
-                        <video id="detail-hls-player-series" controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black"></video>
+                        <video id="detail-hls-player-series" controls preload="metadata" poster="{{ $backdropUrl ?: '' }}" class="h-full w-full bg-black"></video>
                     @elseif ($playbackUrl)
-                        <video controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black">
+                        <video controls preload="metadata" poster="{{ $backdropUrl ?: '' }}" class="h-full w-full bg-black">
                             <source src="{{ $playbackUrl }}" type="video/mp4">
                             Your browser does not support HTML5 video.
                         </video>
@@ -95,6 +96,9 @@
                     <x-ui.badge tone="neutral">{{ $releaseYear }}</x-ui.badge>
                     <x-ui.badge tone="neutral">{{ $seasons->count() }} seasons</x-ui.badge>
                     <x-ui.badge tone="neutral">{{ $episodesCount }} episodes</x-ui.badge>
+                    @if ($runtimeValue)
+                        <x-ui.badge tone="neutral">{{ $runtimeValue }} min</x-ui.badge>
+                    @endif
                     @if ($ratingLabel)
                         <x-ui.badge tone="premium">Rating {{ $ratingLabel }}</x-ui.badge>
                     @endif
@@ -111,12 +115,22 @@
 
             <aside class="cc-surface cc-stack-4 p-4 sm:p-5">
                 <div class="overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
-                    <img
-                        src="{{ $posterUrl }}"
-                        alt="{{ $content->title }} poster"
-                        loading="lazy"
-                        class="h-auto w-full object-cover"
-                    >
+                    <div class="aspect-[2/3]">
+                        @if ($posterUrl)
+                            <img
+                                src="{{ $posterUrl }}"
+                                alt="{{ $content->title }} poster"
+                                loading="lazy"
+                                width="500"
+                                height="750"
+                                class="h-full w-full object-cover"
+                            >
+                        @else
+                            <div class="flex h-full items-center justify-center p-4 text-center text-xs text-cc-text-muted">
+                                Poster unavailable
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <dl class="cc-stack-2 text-sm leading-editorial text-cc-text-secondary">

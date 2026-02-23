@@ -1,12 +1,13 @@
 <x-app-layout>
     @php
-        $posterUrl = $content->picture
-            ? asset('storage/movies/' . $content->picture)
-            : asset('storage/logo/netflick_logo_definitive.png');
+        $posterUrl = $content->poster_url;
+        $backdropUrl = $content->backdrop_url ?: $posterUrl;
+        $overviewText = $content->display_overview ?: 'No synopsis available yet.';
+        $runtimeValue = $content->display_runtime;
 
         $releaseYear = $content->release_date ? substr((string) $content->release_date, 0, 4) : 'N/A';
         $genreName = optional($content->genre)->name ?? 'Uncategorized';
-        $durationLabel = $content->duration ? $content->duration . ' min' : 'N/A';
+        $durationLabel = $runtimeValue ? $runtimeValue . ' min' : 'N/A';
         $ratingLabel = isset($content->rating) ? number_format((float) $content->rating, 1) : null;
 
         $videoValue = trim((string) ($content->video ?? ''));
@@ -48,12 +49,21 @@
         <main class="flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row">
             <section class="relative h-[52vh] w-full overflow-hidden bg-cc-bg-elevated lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-[45%]">
                 <div class="absolute inset-0 bg-gradient-to-t from-cc-bg-primary via-transparent to-transparent opacity-65 lg:opacity-35"></div>
-                <img
-                    src="{{ $posterUrl }}"
-                    alt="{{ $content->title }} poster"
-                    loading="lazy"
-                    class="h-full w-full object-cover transition-transform duration-[2000ms] ease-soft hover:scale-105"
-                >
+                @if ($backdropUrl)
+                    <img
+                        src="{{ $backdropUrl }}"
+                        alt="{{ $content->title }} backdrop"
+                        loading="lazy"
+                        draggable="false"
+                        width="1920"
+                        height="1080"
+                        class="h-full w-full select-none object-cover transition-transform duration-[2000ms] ease-soft hover:scale-105"
+                    >
+                @else
+                    <div class="flex h-full w-full items-center justify-center bg-cc-bg-elevated text-center text-sm text-cc-text-muted">
+                        No artwork available
+                    </div>
+                @endif
 
                 <div class="absolute bottom-0 left-0 z-10 w-full bg-gradient-to-t from-cc-bg-primary to-transparent p-5 lg:hidden">
                     <h1 class="font-serif text-3xl text-white">{{ $content->title }}</h1>
@@ -71,19 +81,40 @@
                         <span>Film Detail</span>
                     </div>
 
-                    <div class="mb-8 hidden lg:block">
-                        <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
-                        <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-cc-text-secondary">
-                            <span class="text-cc-text-primary">{{ $content->director ?: 'Unknown Director' }}</span>
-                            <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
-                            <span>{{ $releaseYear }}</span>
-                            <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
-                            <span>{{ $genreName }}</span>
-                            @if ($ratingLabel)
-                                <span class="rounded-sm border border-cc-border px-2 py-0.5 text-[11px] uppercase tracking-[0.08em] text-cc-text-primary">
-                                    Rating {{ $ratingLabel }}
-                                </span>
-                            @endif
+                    <div class="mb-8 hidden items-start justify-between gap-6 lg:flex">
+                        <div>
+                            <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
+                            <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-cc-text-secondary">
+                                <span class="text-cc-text-primary">{{ $content->director ?: 'Unknown Director' }}</span>
+                                <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
+                                <span>{{ $releaseYear }}</span>
+                                <span class="h-1 w-1 rounded-full bg-cc-text-muted/70"></span>
+                                <span>{{ $genreName }}</span>
+                                @if ($ratingLabel)
+                                    <span class="rounded-sm border border-cc-border px-2 py-0.5 text-[11px] uppercase tracking-[0.08em] text-cc-text-primary">
+                                        Rating {{ $ratingLabel }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="w-36 shrink-0 overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
+                            <div class="aspect-[2/3]">
+                                @if ($posterUrl)
+                                    <img
+                                        src="{{ $posterUrl }}"
+                                        alt="{{ $content->title }} poster"
+                                        loading="lazy"
+                                        width="500"
+                                        height="750"
+                                        class="h-full w-full object-cover"
+                                    >
+                                @else
+                                    <div class="flex h-full items-center justify-center p-3 text-center text-xs text-cc-text-muted">
+                                        Poster unavailable
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -121,7 +152,7 @@
 
                     <article class="space-y-5">
                         <p class="font-serif text-xl italic leading-relaxed text-cc-text-primary">
-                            {{ $content->description ?: 'No synopsis available yet.' }}
+                            {{ $overviewText }}
                         </p>
                     </article>
 
@@ -137,9 +168,9 @@
                                     class="h-full w-full"
                                 ></iframe>
                             @elseif ($hlsPlaybackUrl)
-                                <video id="detail-hls-player" controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black"></video>
+                                <video id="detail-hls-player" controls preload="metadata" poster="{{ $posterUrl ?: '' }}" class="h-full w-full bg-black"></video>
                             @elseif ($playbackUrl)
-                                <video controls preload="metadata" poster="{{ $posterUrl }}" class="h-full w-full bg-black">
+                                <video controls preload="metadata" poster="{{ $posterUrl ?: '' }}" class="h-full w-full bg-black">
                                     <source src="{{ $playbackUrl }}" type="video/mp4">
                                     Your browser does not support HTML5 video.
                                 </video>
