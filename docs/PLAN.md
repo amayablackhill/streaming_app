@@ -103,7 +103,7 @@ Demo full-stack deployable (Railway) con:
 
 - [x] AN-01 Agrupar navegacion admin en dropdown unico en top-nav (Dashboard, Movies, Series, Add Content, TMDB Import, Video Assets, Health)
 - [x] AN-02 Refinar iconografia y estados hover de acciones admin
-- [ ] AN-03 Breadcrumbs discretos para admin y detalles de contenido
+- [x] AN-03 Breadcrumbs discretos para admin y detalles de contenido
 
 ---
 

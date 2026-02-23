@@ -37,6 +37,11 @@
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
         $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
         $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
+        $breadcrumbs = [
+            ['label' => 'Home', 'href' => route('home')],
+            ['label' => 'Movies', 'href' => route('content.movies.list')],
+            ['label' => $content->title],
+        ];
     @endphp
 
     <article class="min-h-[calc(100vh-4rem)] bg-cc-bg-primary">
@@ -58,6 +63,8 @@
 
             <section class="w-full bg-cc-bg-primary lg:w-[55%]">
                 <div class="mx-auto flex h-full w-full max-w-3xl flex-col px-5 py-10 sm:px-8 lg:px-12 lg:py-16">
+                    <x-ui.breadcrumbs :items="$breadcrumbs" class="mb-5" />
+
                     <div class="mb-8 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-cc-accent">
                         <span>Editorial</span>
                         <span class="text-cc-text-muted">/</span>

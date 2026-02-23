@@ -41,9 +41,16 @@
         $adminActionHref = auth()->check() && auth()->user()->canAccessAdminPanel()
             ? route('admin.home')
             : null;
+        $breadcrumbs = [
+            ['label' => 'Home', 'href' => route('home')],
+            ['label' => 'Series', 'href' => route('content.series.list')],
+            ['label' => $content->title],
+        ];
     @endphp
 
     <article class="cc-stack-6">
+        <x-ui.breadcrumbs :items="$breadcrumbs" />
+
         <header class="cc-stack-2">
             <p class="text-cc-caption uppercase tracking-label text-cc-text-muted">Series Detail</p>
             <h1 class="cc-title-display">{{ $content->title }}</h1>
