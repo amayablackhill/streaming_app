@@ -38,6 +38,10 @@
         $playbackUrl = $playbackPath ? asset('storage/' . $playbackPath) : null;
         $hlsPlaybackUrl = isset($hlsUrl) && is_string($hlsUrl) && $hlsUrl !== '' ? $hlsUrl : null;
         $adminActionEnabled = auth()->check() && auth()->user()->canAccessAdminPanel();
+        $tmdbSyncLabel = $content->tmdb_last_synced_at
+            ? $content->tmdb_last_synced_at->diffForHumans()
+            : 'Never';
+        $sourceLabel = ($content->tmdb_id && $content->tmdb_type) ? 'TMDB linked' : 'Local entry';
         $breadcrumbs = [
             ['label' => 'Home', 'href' => route('home')],
             ['label' => 'Films', 'href' => route('content.movies.list')],
@@ -127,9 +131,6 @@
                             Back to catalog
                         </a>
 
-                        <button type="button" aria-label="Share film" class="ml-auto inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-cc-text-muted transition-colors cc-motion-base hover:text-cc-text-primary">
-                            <x-ui.icon name="share" class="h-4 w-4" />
-                        </button>
                     </div>
 
                     <section class="mb-6">
@@ -152,10 +153,20 @@
                     </article>
 
                     @if ($adminActionEnabled)
-                        <section class="mb-8 flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
-                            <x-ui.badge tone="premium">Admin controls</x-ui.badge>
-                            <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit film</x-ui.button>
-                            <x-ui.button :href="route('admin.home')" variant="ghost" size="sm">Admin panel</x-ui.button>
+                        <section class="mb-8 rounded-sm border border-cc-border bg-cc-bg-surface p-4">
+                            <h2 class="text-xs font-bold uppercase tracking-[0.16em] text-cc-text-muted">Admin Controls</h2>
+
+                            <div class="mt-3 flex flex-wrap items-center justify-end gap-2">
+                                <x-ui.button :href="route('admin.home')" variant="ghost" size="sm">Admin panel</x-ui.button>
+                                <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit film</x-ui.button>
+                            </div>
+
+                            <div class="mt-3 flex flex-wrap items-center gap-2 border-t border-cc-border pt-3">
+                                <x-ui.badge tone="premium">Role admin</x-ui.badge>
+                                <x-ui.badge tone="neutral">Type Film</x-ui.badge>
+                                <x-ui.badge tone="neutral">{{ $sourceLabel }}</x-ui.badge>
+                                <x-ui.badge tone="neutral">Synced {{ $tmdbSyncLabel }}</x-ui.badge>
+                            </div>
                         </section>
                     @endif
 
@@ -249,4 +260,3 @@
         </script>
     @endif
 </x-app-layout>
-

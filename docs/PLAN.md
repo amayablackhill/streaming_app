@@ -190,3 +190,10 @@ Demo full-stack deployable (Railway) con:
 - [x] Resolver ruta/vista legacy de temporadas: se elimino `/admin/addSeasons/{id}` por no uso y se mantiene flujo estable en `/admin/series/{id}/seasons` (`seasons.manage`).
 - [x] Sustituir `User::isAdmin()` legacy (basado en `role_id`) por middleware `role:admin` + Spatie roles (`hasRole('admin')`), sin fallback legacy.
 ---
+
+# P1 - UI Admin & Detail Polish Sprint
+
+- [x] AP-01 Overhaul visual de "Admin Controls" en detalles de film/serie (header, acciones right-aligned, bloque informativo)
+- [ ] AP-02 Arreglar boton "Watch episode" en detalle de serie (sin salto de linea, altura consistente)
+- [ ] AP-03 Arreglar dropdown "Import from TMDB" (caret nativo/estilos)
+- [ ] AP-04 Footer links utiles: paginas publicas About + Credits + GitHub real

@@ -176,24 +176,36 @@
                     </article>
 
                     @if ($adminActionEnabled)
-                        <section class="mb-8 flex flex-wrap items-center gap-3 rounded-sm border border-cc-border bg-cc-bg-surface p-3">
-                            <x-ui.badge tone="premium">Admin controls</x-ui.badge>
-                            <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
-                            <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
-                            @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
-                                <x-ui.badge tone="neutral">{{ $seasons->count() }} TMDB seasons</x-ui.badge>
-                                <x-ui.badge tone="neutral">{{ $tmdbEpisodesImportedCount }} TMDB episodes</x-ui.badge>
-                                <x-ui.badge tone="neutral">Synced {{ $tmdbSyncLabel }}</x-ui.badge>
-                                <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
-                                    @csrf
-                                    <x-ui.button type="submit" variant="ghost" size="sm">Import episodes</x-ui.button>
-                                </form>
-                                <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
-                                    @csrf
-                                    <input type="hidden" name="all" value="1">
-                                    <x-ui.button type="submit" variant="ghost" size="sm">Import all seasons</x-ui.button>
-                                </form>
-                            @endif
+                        <section class="mb-8 rounded-sm border border-cc-border bg-cc-bg-surface p-4">
+                            <h2 class="text-xs font-bold uppercase tracking-[0.16em] text-cc-text-muted">Admin Controls</h2>
+
+                            <div class="mt-3 flex flex-wrap items-center justify-end gap-2">
+                                <x-ui.button :href="route('seasons.manage', $content->id)" variant="ghost" size="sm">Manage seasons</x-ui.button>
+                                <x-ui.button :href="route('content.edit', $content->id)" variant="secondary" size="sm">Edit series</x-ui.button>
+                                @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
+                                    <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
+                                        @csrf
+                                        <x-ui.button type="submit" variant="ghost" size="sm">Import episodes</x-ui.button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.tmdb.series.episodes.import', $content) }}" class="inline-flex">
+                                        @csrf
+                                        <input type="hidden" name="all" value="1">
+                                        <x-ui.button type="submit" variant="ghost" size="sm">Import all seasons</x-ui.button>
+                                    </form>
+                                @endif
+                            </div>
+
+                            <div class="mt-3 flex flex-wrap items-center gap-2 border-t border-cc-border pt-3">
+                                <x-ui.badge tone="premium">Role admin</x-ui.badge>
+                                <x-ui.badge tone="neutral">Type Series</x-ui.badge>
+                                @if ($content->tmdb_type === 'tv' && $content->tmdb_id)
+                                    <x-ui.badge tone="neutral">{{ $seasons->count() }} TMDB seasons</x-ui.badge>
+                                    <x-ui.badge tone="neutral">{{ $tmdbEpisodesImportedCount }} TMDB episodes</x-ui.badge>
+                                    <x-ui.badge tone="neutral">Synced {{ $tmdbSyncLabel }}</x-ui.badge>
+                                @else
+                                    <x-ui.badge tone="neutral">Local entry</x-ui.badge>
+                                @endif
+                            </div>
                         </section>
                     @endif
 

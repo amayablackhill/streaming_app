@@ -34,13 +34,13 @@ class AdminUiAndSeasonProtectionTest extends TestCase
         $this->actingAs($admin)
             ->get('/movies/'.$movie->id)
             ->assertOk()
-            ->assertSeeText('Admin controls')
+            ->assertSeeText('Admin Controls')
             ->assertSeeText('Edit film');
 
         $this->actingAs($member)
             ->get('/movies/'.$movie->id)
             ->assertOk()
-            ->assertDontSeeText('Admin controls');
+            ->assertDontSeeText('Admin Controls');
     }
 
     public function test_non_admin_user_cannot_mutate_seasons_and_episodes(): void
