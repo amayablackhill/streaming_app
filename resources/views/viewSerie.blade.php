@@ -1,6 +1,12 @@
 <x-app-layout>
     @php
         $posterUrl = $content->poster_url;
+        $tmdbPosterPath = null;
+        if (is_string($posterUrl) && preg_match('#^https://image\.tmdb\.org/t/p/(?:w\d+|original)(/.*)$#', $posterUrl, $matches) === 1) {
+            $tmdbPosterPath = $matches[1];
+        }
+        $posterMobileSrc = $tmdbPosterPath ? 'https://image.tmdb.org/t/p/w342' . $tmdbPosterPath : null;
+        $posterDesktopSrc = $tmdbPosterPath ? 'https://image.tmdb.org/t/p/w500' . $tmdbPosterPath : null;
         $backdropUrl = $content->backdrop_url ?: $posterUrl;
         $overviewText = $content->display_overview ?: 'No synopsis available yet.';
         $runtimeValue = $content->display_runtime;
@@ -89,7 +95,7 @@
                 @endif
 
                 <div class="absolute bottom-0 left-0 z-10 w-full bg-gradient-to-t from-cc-bg-primary to-transparent p-5 lg:hidden">
-                    <h1 class="font-serif text-3xl text-white">{{ $content->title }}</h1>
+                    <h1 class="font-serif text-4xl text-white">{{ $content->title }}</h1>
                     <p class="mt-1 text-sm text-cc-accent">{{ $releaseYear }}  -  {{ $content->director ?: 'Unknown Creator' }}</p>
                 </div>
             </section>
@@ -108,7 +114,7 @@
 
                     <div class="mb-6 hidden border-b border-cc-border pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-start lg:gap-8">
                         <div class="min-w-0">
-                            <h1 class="font-serif text-5xl leading-[1.1] text-white xl:text-6xl">{{ $content->title }}</h1>
+                            <h1 class="font-serif text-6xl leading-[1.05] text-white xl:text-7xl">{{ $content->title }}</h1>
                         </div>
 
                         <div class="w-full max-w-[15rem] justify-self-end overflow-hidden rounded-sm border border-cc-border bg-cc-bg-elevated">
@@ -116,6 +122,10 @@
                                 @if ($posterUrl)
                                     <img
                                         src="{{ $posterUrl }}"
+                                        @if ($posterMobileSrc && $posterDesktopSrc)
+                                            srcset="{{ $posterMobileSrc }} 342w, {{ $posterDesktopSrc }} 500w"
+                                            sizes="(max-width: 1023px) 40vw, 15rem"
+                                        @endif
                                         alt="{{ $content->title }} poster"
                                         loading="lazy"
                                         width="500"
