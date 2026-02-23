@@ -62,7 +62,7 @@
     @endphp
 
     @if ($isHomeView && $featuredMovie)
-        <section class="relative flex min-h-[88vh] w-full items-end overflow-hidden">
+        <section class="relative flex min-h-[70vh] w-full items-end overflow-hidden sm:min-h-[78vh] lg:min-h-[88vh]">
             <div class="absolute inset-0 z-0">
                 @if ($featuredBackdrop)
                     <img
@@ -73,7 +73,7 @@
                         loading="eager"
                         fetchpriority="high"
                         draggable="false"
-                        class="h-full w-full select-none object-cover object-center"
+                        class="h-full w-full select-none object-cover object-[center_24%] sm:object-center"
                     >
                 @else
                     <div class="h-full w-full bg-cc-bg-elevated"></div>
@@ -81,13 +81,13 @@
                 <div class="absolute inset-0 cc-hero-gradient"></div>
             </div>
 
-            <div class="relative z-10 mx-auto w-full max-w-7xl px-6 pb-20 md:px-12 md:pb-28 lg:px-16">
+            <div class="relative z-10 mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 sm:pb-20 md:px-12 md:pb-28 lg:px-16">
                 <div class="max-w-2xl">
-                    <h1 class="-ml-1 mb-8 font-serif text-6xl leading-none text-white sm:text-7xl md:text-8xl lg:text-9xl">
+                    <h1 class="-ml-0.5 mb-6 font-serif text-5xl leading-none text-white sm:-ml-1 sm:mb-8 sm:text-7xl md:text-8xl lg:text-9xl">
                         {{ $featuredMovie->title }}
                     </h1>
 
-                    <div class="mb-8 flex flex-wrap items-center gap-4 text-xs uppercase tracking-widest text-cc-text-secondary md:text-sm">
+                    <div class="mb-6 flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest text-cc-text-secondary sm:mb-8 sm:gap-4 md:text-sm">
                         <span>{{ $featuredMovie->director ?: 'Unknown Director' }}</span>
                         <span class="h-1 w-1 rounded-full bg-cc-accent"></span>
                         <span>{{ $featuredYear }}</span>
@@ -99,7 +99,7 @@
 
 
 
-                    <div class="flex flex-wrap gap-4">
+                    <div class="flex flex-wrap gap-3 sm:gap-4">
                         <x-ui.button :href="url('/movies/' . $featuredMovie->id)" variant="secondary" size="lg" class="border-white bg-white text-cc-bg-primary hover:bg-cc-accent hover:text-white">
                             <x-ui.icon name="play" class="h-4 w-4" />
                             Watch Film
