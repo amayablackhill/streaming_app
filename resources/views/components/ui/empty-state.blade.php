@@ -7,9 +7,7 @@
 
 <section {{ $attributes->merge(['class' => 'cc-surface cc-stack-4 px-6 py-8 text-center sm:px-8']) }}>
     <div class="mx-auto cc-elevated flex h-12 w-12 items-center justify-center rounded-sm border border-cc-border text-cc-text-muted">
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 6h16M4 12h16M4 18h10" />
-        </svg>
+        <x-ui.icon name="list" class="h-5 w-5" />
     </div>
 
     <div class="cc-stack-2">

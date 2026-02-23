@@ -53,4 +53,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m6 6 12 12M18 6 6 18" />
         </svg>
         @break
+    @case('list')
+        <svg {{ $attributes->except('class')->merge(['class' => $classes]) }} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 6h16M4 12h16M4 18h10" />
+        </svg>
+        @break
 @endswitch
