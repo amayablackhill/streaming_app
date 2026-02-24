@@ -19,6 +19,7 @@ class ProbeVideoJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private const MAX_DEMO_DURATION_SECONDS = 20.0;
+    private const MAX_DEMO_FILE_SIZE_BYTES = 26214400;
 
     public int $tries = 3;
     public int $timeout = 300;
@@ -47,6 +48,24 @@ class ProbeVideoJob implements ShouldQueue
             $sourcePath = Storage::disk($videoAsset->source_disk)->path($videoAsset->source_path);
         } catch (Throwable $exception) {
             $this->markFailed($videoAsset, 'Source file path cannot be resolved: '.$exception->getMessage());
+            return;
+        }
+
+        if (!is_file($sourcePath)) {
+            $this->markFailed($videoAsset, 'Source file is missing before probe.');
+            return;
+        }
+
+        $sourceBytes = @filesize($sourcePath);
+        if ($sourceBytes !== false && $sourceBytes > self::MAX_DEMO_FILE_SIZE_BYTES) {
+            $this->markFailed(
+                $videoAsset,
+                sprintf(
+                    'Demo clip file size %.2fMB exceeds max allowed %.2fMB.',
+                    $sourceBytes / 1024 / 1024,
+                    self::MAX_DEMO_FILE_SIZE_BYTES / 1024 / 1024
+                )
+            );
             return;
         }
 
@@ -82,6 +101,11 @@ class ProbeVideoJob implements ShouldQueue
         $videoStream = collect($probeData['streams'] ?? [])->first(
             fn (array $stream): bool => ($stream['codec_type'] ?? null) === 'video'
         );
+
+        if (!is_array($videoStream)) {
+            $this->markFailed($videoAsset, 'ffprobe output does not contain a valid video stream.');
+            return;
+        }
 
         $duration = isset($probeData['format']['duration']) ? (float) $probeData['format']['duration'] : null;
         if ($duration !== null && $duration > self::MAX_DEMO_DURATION_SECONDS) {

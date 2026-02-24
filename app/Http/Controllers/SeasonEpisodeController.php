@@ -42,7 +42,7 @@ class SeasonEpisodeController extends Controller
                 Rule::unique('seasons', 'season_number')->where(fn ($query) => $query->where('serie_id', $id)),
             ],
             'release_date' => 'required|date',
-            'poster_path' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
+            'poster_path' => 'nullable|file|image|mimetypes:image/jpeg,image/png,image/webp|max:10240|dimensions:max_width=6000,max_height=6000',
             'overview' => 'nullable|string',
         ]);
 
@@ -81,8 +81,8 @@ class SeasonEpisodeController extends Controller
             'release_date' => 'required|date',
             'overview' => 'nullable|string',
             'plot' => 'nullable|string',
-            'cover_path' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
-            'episode_path' => 'nullable|mimetypes:video/mp4|max:25600',
+            'cover_path' => 'nullable|file|image|mimetypes:image/jpeg,image/png,image/webp|max:10240|dimensions:max_width=6000,max_height=6000',
+            'episode_path' => 'nullable|file|mimes:mp4|mimetypes:video/mp4|max:25600',
         ]);
 
         $season = Season::findOrFail($id);
@@ -123,8 +123,8 @@ class SeasonEpisodeController extends Controller
             'duration' => 'required|integer|min:1',
             'release_date' => 'required|date',
             'plot' => 'nullable|string',
-            'cover_path' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
-            'episode_path' => 'nullable|mimetypes:video/mp4|max:25600',
+            'cover_path' => 'nullable|file|image|mimetypes:image/jpeg,image/png,image/webp|max:10240|dimensions:max_width=6000,max_height=6000',
+            'episode_path' => 'nullable|file|mimes:mp4|mimetypes:video/mp4|max:25600',
         ]);
 
         DB::transaction(function () use ($request, $episode): void {
@@ -185,4 +185,3 @@ class SeasonEpisodeController extends Controller
         return $filename;
     }
 }
-
