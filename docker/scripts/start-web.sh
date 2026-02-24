@@ -8,6 +8,7 @@ envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/con
 
 mkdir -p \
   storage/framework/cache \
+  storage/framework/cache/data \
   storage/framework/sessions \
   storage/framework/views \
   storage/logs \
