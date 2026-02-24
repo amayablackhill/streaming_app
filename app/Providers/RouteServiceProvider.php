@@ -45,8 +45,30 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
+        $resolveKey = static function (Request $request): string {
+            $userId = $request->user()?->id;
+
+            return $userId ? "user:{$userId}" : "ip:{$request->ip()}";
+        };
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('search', function (Request $request) use ($resolveKey) {
+            return Limit::perMinute(40)->by($resolveKey($request));
+        });
+
+        RateLimiter::for('admin', function (Request $request) use ($resolveKey) {
+            return Limit::perMinute(120)->by($resolveKey($request));
+        });
+
+        RateLimiter::for('tmdb', function (Request $request) use ($resolveKey) {
+            return Limit::perMinute(20)->by($resolveKey($request));
+        });
+
+        RateLimiter::for('uploads', function (Request $request) use ($resolveKey) {
+            return Limit::perMinute(12)->by($resolveKey($request));
         });
     }
 }
