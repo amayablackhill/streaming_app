@@ -56,6 +56,17 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Force HTTPS
+    |--------------------------------------------------------------------------
+    |
+    | Enable this in production behind a trusted proxy/load balancer to force
+    | generated URLs to use HTTPS and avoid mixed-content/session issues.
+    |
+    */
+    'force_https' => env('APP_FORCE_HTTPS', env('APP_ENV') === 'production'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*
