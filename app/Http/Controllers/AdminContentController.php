@@ -64,7 +64,7 @@ class AdminContentController extends Controller
         $content = Content::findOrFail($id);
         $this->authorize('update', $content);
 
-        return DB::transaction(function () use ($request, $content) {
+        return DB::transaction(function () use ($request, $content, $tmdbClient) {
             $videoAsset = $request->hasFile('video') ? $this->queueVideoProcessing($request, $content) : null;
             if ($videoAsset) {
                 DB::afterCommit(function () use ($videoAsset): void {
