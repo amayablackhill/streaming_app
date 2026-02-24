@@ -31,8 +31,8 @@
 
         @if ($query === '')
             <x-ui.empty-state
-                title="Empieza con un titulo"
-                description="Escribe el nombre de una pelicula o serie para descubrir resultados curados."
+                title="Start with a title"
+                description="Type the name of a film or series to discover curated results."
                 :action-label="'Explore home'"
                 :action-href="route('home')"
             />
@@ -40,7 +40,7 @@
             <section class="cc-stack-4">
                 <header class="flex flex-wrap items-center justify-between gap-3">
                     <p class="text-sm text-cc-text-secondary">
-                        {{ $results->total() }} resultados para
+                        {{ $results->total() }} results for
                         <span class="break-all font-medium text-cc-text-primary">"{{ $query }}"</span>
                     </p>
                     <div class="flex flex-wrap items-center gap-2">
@@ -109,8 +109,8 @@
             </section>
         @else
             <x-ui.empty-state
-                title="No hemos encontrado nada"
-                description="No hemos encontrado nada. Prueba con otro titulo o explora la seleccion curada."
+                title="No results found"
+                description="We could not find anything. Try another title or explore the curated selection."
                 :action-label="'Explore curated home'"
                 :action-href="route('home')"
             />
