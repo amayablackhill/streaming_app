@@ -17,7 +17,7 @@ class CleanupSourceJobTest extends TestCase
 
     public function test_cleanup_deletes_source_when_asset_is_ready_and_master_exists(): void
     {
-        Storage::fake('public');
+        $this->fakePublicDisk();
         $videoAsset = $this->createVideoAsset(VideoAsset::STATUS_READY);
 
         Storage::disk('public')->put($videoAsset->source_path, 'source');
@@ -30,7 +30,7 @@ class CleanupSourceJobTest extends TestCase
 
     public function test_cleanup_keeps_source_when_asset_failed(): void
     {
-        Storage::fake('public');
+        $this->fakePublicDisk();
         $videoAsset = $this->createVideoAsset(VideoAsset::STATUS_FAILED);
 
         Storage::disk('public')->put($videoAsset->source_path, 'source');

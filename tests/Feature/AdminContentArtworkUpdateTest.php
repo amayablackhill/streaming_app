@@ -71,7 +71,7 @@ class AdminContentArtworkUpdateTest extends TestCase
 
     public function test_admin_can_upload_local_alternate_poster_and_backdrop(): void
     {
-        Storage::fake('public');
+        $this->fakePublicDisk();
 
         $admin = $this->createAdminUser();
         $genre = Genre::create(['name' => 'Drama']);
@@ -129,4 +129,3 @@ class AdminContentArtworkUpdateTest extends TestCase
         return $admin;
     }
 }
-

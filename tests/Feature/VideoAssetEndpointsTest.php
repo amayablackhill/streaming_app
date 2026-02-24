@@ -17,7 +17,7 @@ class VideoAssetEndpointsTest extends TestCase
 
     public function test_admin_can_get_video_asset_status_json(): void
     {
-        Storage::fake('public');
+        $this->fakePublicDisk();
 
         $admin = User::factory()->create();
         PermissionRole::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
