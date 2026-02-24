@@ -38,6 +38,8 @@ class ContentRequest extends FormRequest
             'is_featured' => 'nullable|boolean',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
             'video' => 'nullable|mimetypes:video/mp4|max:25600',
+            'poster_path' => 'nullable|string|max:255',
+            'backdrop_path' => 'nullable|string|max:255',
         ];
     }
 

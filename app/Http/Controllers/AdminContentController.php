@@ -32,6 +32,8 @@ class AdminContentController extends Controller
                 'picture' => $this->handleImageUpload($request, $request->type),
                 'video' => null,
                 'is_featured' => $request->boolean('is_featured') && $request->type === 'film',
+                'poster_path' => $this->nullableTrimmed($request->input('poster_path')),
+                'backdrop_path' => $this->nullableTrimmed($request->input('backdrop_path')),
             ]);
 
             if ($content->is_featured) {
@@ -85,6 +87,8 @@ class AdminContentController extends Controller
                 'picture' => $request->hasFile('picture') ? $this->handleImageUpload($request, $content->type) : $content->picture,
                 'video' => $videoAsset?->original_filename ?? $content->video,
                 'is_featured' => $isFeatured,
+                'poster_path' => $this->nullableTrimmed($request->input('poster_path')),
+                'backdrop_path' => $this->nullableTrimmed($request->input('backdrop_path')),
             ]);
 
             if ($isFeatured && $content->type === 'film') {
@@ -170,5 +174,16 @@ class AdminContentController extends Controller
     private function catalogTableRoute(string $type): string
     {
         return $type === 'serie' ? 'series.table' : 'movies.table';
+    }
+
+    private function nullableTrimmed(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $trimmed = trim($value);
+
+        return $trimmed === '' ? null : $trimmed;
     }
 }

@@ -21,7 +21,7 @@
 <div @class([
     'flex flex-col bg-cc-bg-primary text-cc-text-primary',
     'min-h-screen' => ! $isSplitDetailLayout,
-    'h-screen overflow-hidden' => $isSplitDetailLayout,
+    'min-h-screen lg:h-screen lg:overflow-hidden' => $isSplitDetailLayout,
 ])>
     <x-ui.top-nav context="editorial" />
 

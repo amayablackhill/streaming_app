@@ -27,7 +27,7 @@
     <body @class([
         'bg-cc-bg-primary text-cc-text-primary font-sans antialiased',
         'min-h-screen' => ! $isSplitDetailLayout,
-        'h-screen overflow-hidden' => $isSplitDetailLayout,
+        'min-h-screen lg:h-screen lg:overflow-hidden' => $isSplitDetailLayout,
     ])>
 
         @if ($isAdminRoute)
