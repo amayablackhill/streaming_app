@@ -11,6 +11,15 @@ Production-ready Laravel monolith focused on **editorial catalog UX** + **real v
   - Email: `test@gmail.com`
   - Password: `123`
 
+## Demo Steps
+1. Open `https://cineclubarchive.up.railway.app`.
+2. Log in with the demo admin account.
+3. Go to `Admin > TMDB Import` and search by title.
+4. Import films/series directly from TMDB (fastest way to populate catalog, including metadata/artwork).
+5. Use manual forms only for custom edits; avoid excessive TMDB requests.
+
+TMDB API is already configured in production and consumed in controlled mode (cached, import-only).
+
 ## What This Project Demonstrates
 - Laravel architecture hardening from FP prototype to deployable app.
 - Queue-based video processing (no blocking HTTP requests).
