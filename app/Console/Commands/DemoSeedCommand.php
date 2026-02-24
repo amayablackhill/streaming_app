@@ -210,9 +210,9 @@ class DemoSeedCommand extends Command
                 [
                     'title' => $item['title'],
                     'type' => $item['type'],
-                    'release_date' => $item['release_date'],
                 ],
                 array_filter([
+                    'release_date' => $item['release_date'],
                     'genre_id' => $genreId,
                     'duration' => $item['duration'],
                     'rating' => $item['rating'],
