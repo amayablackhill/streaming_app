@@ -1,200 +1,187 @@
-# Netflix Portfolio App
+﻿# Cineclub Streaming Portfolio
 
-Laravel monolith (Blade + Alpine) hardened as a streaming portfolio project.
+Production-ready Laravel monolith focused on **editorial catalog UX** + **real video pipeline engineering**.
 
-## Local setup (Sail)
-1. Install dependencies:
+- Public playback model: trailers and demo clips only (legal/low-cost portfolio scope).
+- Core differentiator: asynchronous FFmpeg pipeline to HLS (`m3u8 + segments`) with status tracking.
+
+## Live Demo
+- App: `https://cineclubarchive.up.railway.app`
+- Admin login (demo):
+  - Email: `test@gmail.com`
+  - Password: `123`
+
+## What This Project Demonstrates
+- Laravel architecture hardening from FP prototype to deployable app.
+- Queue-based video processing (no blocking HTTP requests).
+- TMDB import-only integration with cache and graceful fallback.
+- Role-based admin access (Spatie Permission).
+- Dockerized local/dev/prod workflows.
+- CI-friendly test suite.
+
+## Feature Scope
+### Public
+- Home editorial catalog with featured hero + rails.
+- Films and series listings.
+- Search (`/search?q=`) with pagination.
+- Film/series detail views with metadata and trailer/demo playback.
+
+### Admin
+- CRUD for films/series.
+- Season/episode management.
+- TMDB search/import (`movie` + `tv`).
+- Video asset monitoring and health endpoints.
+- Alternative artwork control per content:
+  - TMDB path (`/abc.jpg`), external URL (`https://...`), or local upload.
+  - Reset artwork back to TMDB values.
+
+## Architecture (At a Glance)
+- `Controllers`: route orchestration + authorization.
+- `Form Requests`: validation and input constraints.
+- `Services/Tmdb/*`: external API integration and mapping.
+- `Jobs`: async media pipeline and TMDB episode imports.
+- `Models`: content metadata, accessors (`poster_url`, `backdrop_url`, etc.).
+- `Views`: Blade + Alpine, Cineclub design tokens.
+
+Video pipeline chain:
+1. `ProbeVideoJob`
+2. `TranscodeToHlsJob`
+3. `GenerateThumbnailsJob`
+4. `CleanupSourceJob`
+
+## Tech Stack
+- Backend: Laravel (PHP 8.3), MySQL/Postgres.
+- Frontend: Blade + Alpine + Tailwind.
+- Auth: Laravel Breeze.
+- Roles/Permissions: Spatie Laravel Permission.
+- Video: FFmpeg + FFprobe.
+- Queue: Database driver.
+- Deploy: Railway (web + worker + postgres + volume).
+
+## Local Quickstart (WSL + Sail)
+> Recommended: run from WSL (Ubuntu) for best Docker/Sail compatibility.
+
+1. Install dependencies
 ```bash
-docker run --rm -u "$(id -u):$(id -g)" -v ./:/var/www/html -w /var/www/html laravelsail/php81-composer:latest composer install --ignore-platform-reqs
+composer install
+./vendor/bin/sail npm install
 ```
 
-2. Start web + db + worker:
+2. Start services
 ```bash
 ./vendor/bin/sail up -d
 ```
 
-3. Run migrations + base seed (users/roles):
+3. Bootstrap database
 ```bash
 ./vendor/bin/sail artisan migrate --seed
-```
-
-4. Load deterministic demo catalog data:
-```bash
 ./vendor/bin/sail artisan app:demo-seed
+./vendor/bin/sail artisan storage:link
 ```
 
-5. Start frontend dev server (optional):
+4. Frontend assets
 ```bash
-./vendor/bin/sail npm install
 ./vendor/bin/sail npm run dev
+# or
+./vendor/bin/sail npm run build
 ```
 
-## Queue worker
-- Database queue is enabled by default (`QUEUE_CONNECTION=database`).
-- Dedicated worker container runs:
+5. Open app
+- `http://localhost`
+
+## Demo Data / Admin Access
+- Promote any user to admin:
 ```bash
-php artisan queue:work --queue=video,default --tries=3 --timeout=3600
+./vendor/bin/sail artisan app:make-admin your@email.com
 ```
 
-Useful checks:
+## Tests & Quality
+Run full suite:
 ```bash
-./vendor/bin/sail ps
-./vendor/bin/sail logs -f laravel.worker
-./vendor/bin/sail artisan queue:failed
+./vendor/bin/sail artisan test
 ```
 
-## Production Docker (clean baseline)
-
-Build image:
+Run focused tests:
 ```bash
-docker build -t netflix-main:prod .
+./vendor/bin/sail artisan test tests/Feature/AdminContentArtworkUpdateTest.php
 ```
 
-Run production stack locally:
-```bash
-docker compose -f docker-compose.prod.yml up -d --build
-docker compose -f docker-compose.prod.yml exec web php artisan migrate --force
-docker compose -f docker-compose.prod.yml ps
-docker compose -f docker-compose.prod.yml logs -f web
-docker compose -f docker-compose.prod.yml logs -f worker
-```
+## Environment Variables
+Required (core):
+- `APP_KEY`
+- `APP_URL`
+- `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
+- `QUEUE_CONNECTION=database`
+- `FILESYSTEM_DISK=public`
 
-Notes:
-- Web container runs `nginx + php-fpm` through supervisor.
-- Worker container runs `php artisan queue:work --queue=video,default --tries=3 --timeout=3600`.
-- `FFMPEG_PATH` and `FFPROBE_PATH` are preconfigured to `/usr/bin/ffmpeg` and `/usr/bin/ffprobe`.
+Video pipeline:
+- `FFMPEG_PATH` (default `/usr/bin/ffmpeg`)
+- `FFPROBE_PATH` (default `/usr/bin/ffprobe`)
 
-## Railway
+TMDB (optional):
+- `TMDB_TOKEN`
+- If missing, TMDB UI/actions are disabled gracefully and app still works with local data.
 
-This repository includes a Railway-ready Docker setup.
+## TMDB Import Model (Import-Only)
+TMDB is **not** used during public navigation runtime.
 
-- `web` service uses `SERVICE_ROLE=web` (nginx + php-fpm + queue worker for `video,default`).
-- `worker` service uses `SERVICE_ROLE=worker` and `WORKER_QUEUES=default`.
-- `Postgres` is provisioned as a separate Railway database service.
-- Storage volume is mounted on `web` at `/var/www/html/storage`.
-
-Detailed steps and CLI commands:
-- `docs/railway-deploy.md`
-
-Pre-deploy gate (runs tests first, then deploys):
-```powershell
-./scripts/deploy-railway.ps1 -WebMessage "Deploy web" -WorkerMessage "Deploy worker"
-```
-
-## Demo URL
-- `https://web-production-f4ce.up.railway.app`
-
-## Demo steps
-1. Open `https://web-production-f4ce.up.railway.app/login`.
-2. Sign in with an admin demo user and go to `https://web-production-f4ce.up.railway.app/admin/addContent`.
-3. Upload a short MP4 clip (<= 20s, <= 25MB) as content video.
-4. Open `/admin/video-assets/{id}` and wait until status becomes `ready`.
-5. Verify HLS playback and direct access to `master.m3u8` + `.ts` segments.
-
-## TMDB import-only integration
-TMDB is used only for admin import and periodic metadata refresh.
-Public catalog navigation never calls TMDB at runtime.
-
-### 1) Configure token
-Set in `.env`:
-
-```bash
-TMDB_TOKEN=your_tmdb_v4_read_token
-```
-
-If `TMDB_TOKEN` is empty:
-- app keeps working with local data
-- TMDB admin import UI is shown as disabled
-- `tmdb:sync` command exits gracefully
-
-### 2) Admin import flow
-1. Open `/admin/tmdb/search`
-2. Search by title and choose type (`movie` or `tv`)
-3. Click `Import` on a result
-4. App creates/updates local content by unique key `(tmdb_type, tmdb_id)`
-5. For `tv` imports, seasons are upserted immediately and episodes are queued in background jobs (idempotent per season/episode).
-
-Manual TV episodes sync from admin:
-- Open a series detail as admin and use `Import episodes` or `Import all seasons`.
-- Jobs run on `default` queue and can be retried safely.
-
-### 3) Manual sync command
-Refresh stale TMDB-linked records (`tmdb_last_synced_at <= 30 days`):
-
+Used only for:
+- Admin search/import (`/admin/tmdb/search`)
+- Optional sync command:
 ```bash
 ./vendor/bin/sail artisan tmdb:sync --limit=50
 ```
 
-### 4) Caching strategy
-- `search`: 12 hours
-- `details`: 7 days
-- `videos`: 7 days
+Cache policy:
+- Search: 12h
+- Details: 7d
+- Videos: 7d
 
-Images use TMDB CDN paths (`poster_path`, `backdrop_path`) directly.
-No poster/backdrop files are downloaded during import.
+## Deploy (Railway)
+Current production setup:
+- `web` service: nginx + php-fpm + queue worker
+- `postgres` service
+- attached volume at `/var/www/html/storage`
 
-## Curated import (CSV/JSON)
-Import curated rails/lists from local files with idempotent upserts:
-
+Deploy command:
 ```bash
-./vendor/bin/sail artisan curated:import storage/app/curated/home.csv
+railway up --detach
 ```
 
-Useful options:
+Important runtime checks:
+- `php artisan migrate --force`
+- `php artisan storage:link`
+- queue worker running: `queue:work --queue=video,default --tries=3 --timeout=3600`
+
+## Operational Runbook (Quick)
+- Health pages:
+  - `/admin/health`
+  - `/admin/health/api`
+  - `/admin/health/video-pipeline`
+- Queue diagnostics:
 ```bash
-./vendor/bin/sail artisan curated:import storage/app/curated/home.csv --dry-run
-./vendor/bin/sail artisan curated:import storage/app/curated/home.json --slug=home-curated --name="Home Curated"
-./vendor/bin/sail artisan curated:import storage/app/curated/home.csv --default-type=movie
+./vendor/bin/sail artisan queue:failed
+./vendor/bin/sail artisan queue:retry all
 ```
 
-Supported formats:
-- CSV: headers in snake_case.
-- JSON: array of items, or object with `{ "list": {...}, "items": [...] }`.
+## Tradeoffs / Decisions
+- Monolith over SPA: faster stabilization and lower deployment complexity.
+- Database queue first: simpler ops; Redis is optional.
+- TMDB import-only: avoids runtime API dependency and rate/cost volatility.
+- Public content strategy (trailers/demo clips): legal-safe, low storage cost.
 
-### CSV example
-```csv
-rank,title,year,tmdb_type,tmdb_id,content_id
-1,La Haine,1995,movie,406,
-2,Perfect Days,2023,movie,976893,
-3,,,,,12
-```
+## Portfolio Assets
+Screenshots placeholder paths:
+- `docs/screenshots/home.png`
+- `docs/screenshots/detail-film.png`
+- `docs/screenshots/detail-series.png`
+- `docs/screenshots/admin-tmdb.png`
+- `docs/screenshots/video-pipeline.png`
 
-Resolution priority per row:
-1. `content_id` (local content)
-2. `tmdb_id` + `tmdb_type` (`movie|tv`)
-3. `title` (+ optional `year`) via TMDB search
+## Credits
+- Metadata and artwork paths: TMDB API.
+- Icons/fonts and UI assets used under their respective licenses.
 
-### JSON example (with list metadata)
-```json
-{
-  "list": {
-    "slug": "home-curated",
-    "name": "Home Curated",
-    "description": "Editorial picks for homepage rails"
-  },
-  "items": [
-    { "rank": 1, "tmdb_type": "movie", "tmdb_id": 406 },
-    { "rank": 2, "title": "Perfect Days", "year": 2023, "tmdb_type": "movie" },
-    { "rank": 3, "content_id": 12 }
-  ]
-}
-```
-
-Output includes summary, unresolved rows, and ambiguous matches.
-`TMDB_TOKEN` is only required when resolving TMDB rows (`tmdb_id` or `title` lookup).
-
-## Demo seed command (local-first)
-This command sets a clean, consistent demo catalog for portfolio screenshots and recruiter walkthroughs.
-
-```bash
-./vendor/bin/sail artisan app:demo-seed
-```
-
-Append-only mode (keeps current catalog rows):
-```bash
-./vendor/bin/sail artisan app:demo-seed --append
-```
-
-Notes:
-- Default behavior resets catalog tables (`contents`, `seasons`, `episodes`, `genres`) and inserts a curated baseline.
-- Use `--append` if you want to keep existing catalog rows.
+## Legal Note
+This portfolio does not distribute full copyrighted films/series.
+Primary public playback uses trailers and short demo clips uploaded by admin.
