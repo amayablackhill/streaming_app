@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <text x="256" y="256"
+        text-anchor="middle"
+        fill="#ffffff"
+        font-size="240"
+        font-family="Helvetica Neue, Arial, sans-serif"
+        font-weight="800"
+        letter-spacing="-25"
+        transform="translate(0, 20)">
+        CC
+  </text>
+</svg>
