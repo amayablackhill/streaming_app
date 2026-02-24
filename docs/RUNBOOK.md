@@ -54,6 +54,51 @@ railway ssh -s web "cd /var/www/html && php artisan optimize:clear"
 railway ssh -s web "cd /var/www/html && php artisan app:make-admin your@email.com"
 ```
 
+## Deploy/Ops/Health Checklist
+
+### Pre-deploy
+1. Run full tests:
+```bash
+./vendor/bin/sail artisan test
+```
+2. Build assets (if frontend changes):
+```bash
+./vendor/bin/sail npm run build
+```
+3. Ensure no pending local migrations are missing from repo.
+
+### Deploy
+1. Push deploy:
+```bash
+railway up --detach
+```
+2. Run production migrations:
+```bash
+railway ssh -s web "cd /var/www/html && php artisan migrate --force"
+```
+3. Ensure storage link exists:
+```bash
+railway ssh -s web "cd /var/www/html && php artisan storage:link"
+```
+
+### Post-deploy health
+1. Open:
+   - `/admin/health`
+   - `/admin/health/api`
+   - `/admin/health/video-pipeline`
+2. Check web logs:
+```bash
+railway logs -s web -e production --lines 200
+```
+3. Check queue behavior:
+```bash
+railway ssh -s web "cd /var/www/html && php artisan queue:failed"
+```
+4. Smoke test critical routes:
+   - `/`
+   - `/search?q=test`
+   - `/admin/tmdb/search`
+
 ## Known Operational Gotchas
 - Windows symlink can break `railway up` due to `public/storage`.
   - Workaround: remove symlink before upload, then recreate locally with `storage:link`.

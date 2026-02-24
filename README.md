@@ -153,6 +153,16 @@ Important runtime checks:
 - `php artisan storage:link`
 - queue worker running: `queue:work --queue=video,default --tries=3 --timeout=3600`
 
+### Deploy/Ops Checklist
+- [ ] `php artisan test` passing locally
+- [ ] `railway up --detach` completed successfully
+- [ ] DB migrations applied in production (`php artisan migrate --force`)
+- [ ] storage symlink exists (`php artisan storage:link`)
+- [ ] queue worker active for `video,default`
+- [ ] `/admin/health/api` returns `ok=true`
+- [ ] `/admin/health/video-pipeline` shows FFmpeg/storage writable
+- [ ] smoke test done (`/`, `/search?q=test`, `/admin/tmdb/search`)
+
 ## Operational Runbook (Quick)
 - Health pages:
   - `/admin/health`
