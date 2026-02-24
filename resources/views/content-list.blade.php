@@ -62,7 +62,7 @@
     @endphp
 
     @if ($isHomeView && $featuredMovie)
-        <section class="relative flex min-h-[74vh] w-full items-end overflow-hidden sm:min-h-[84vh] lg:min-h-[112vh]">
+        <section class="relative flex min-h-[74vh] w-full items-end overflow-hidden sm:min-h-[84vh] lg:min-h-[100vh]">
             <div class="absolute inset-0 z-0">
                 @if ($featuredBackdrop)
                     <img
