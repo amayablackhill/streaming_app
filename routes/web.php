@@ -30,7 +30,7 @@ Route::get('/search', [CatalogController::class, 'search'])->middleware('throttl
 Route::view('/about', 'about')->name('about');
 Route::view('/credits', 'credits')->name('credits');
 
-Route::prefix('admin')->middleware(['auth', 'role:admin', 'throttle:admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:admin', 'throttle:admin', 'oplog'])->group(function () {
     Route::get('/', [AdminPageController::class, 'index'])->name('admin.home');
     Route::get('/movies', [AdminPageController::class, 'moviesTable'])->name('movies.table');
     Route::get('/series', [AdminPageController::class, 'seriesTable'])->name('series.table');
