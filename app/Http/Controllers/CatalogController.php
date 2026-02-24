@@ -159,6 +159,10 @@ class CatalogController extends Controller
         }
 
         try {
+            if ($videoAsset->hls_disk === 'public') {
+                return '/storage/'.ltrim($videoAsset->hls_master_path, '/');
+            }
+
             return Storage::disk($videoAsset->hls_disk)->url($videoAsset->hls_master_path);
         } catch (Throwable) {
             return null;
