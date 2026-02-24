@@ -175,8 +175,16 @@ Screenshots placeholder paths:
 - `docs/screenshots/home.png`
 - `docs/screenshots/detail-film.png`
 - `docs/screenshots/detail-series.png`
+- `docs/screenshots/search.png`
+- `docs/screenshots/admin-dashboard.png`
 - `docs/screenshots/admin-tmdb.png`
 - `docs/screenshots/video-pipeline.png`
+
+Capture workflow:
+1. Run local app in production-like mode (`npm run build`).
+2. Capture desktop screenshots (1440px wide) for the routes above.
+3. Save images into `docs/screenshots/` with the exact names listed.
+4. Keep screenshots updated when UI changes significantly.
 
 ## Credits
 - Metadata and artwork paths: TMDB API.
