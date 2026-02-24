@@ -37,9 +37,13 @@ class ContentRequest extends FormRequest
             'type' => 'required|string|in:film,serie',
             'is_featured' => 'nullable|boolean',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
+            'poster_image' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
+            'backdrop_image' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
             'video' => 'nullable|mimetypes:video/mp4|max:25600',
             'poster_path' => 'nullable|string|max:255',
             'backdrop_path' => 'nullable|string|max:255',
+            'poster_reset_tmdb' => 'nullable|boolean',
+            'backdrop_reset_tmdb' => 'nullable|boolean',
         ];
     }
 

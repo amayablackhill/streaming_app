@@ -124,7 +124,19 @@
                     <div class="cc-stack-2">
                         <label for="poster_path" class="text-sm font-medium text-cc-text-secondary">Alternative poster (TMDB path or URL)</label>
                         <x-ui.input id="poster_path" name="poster_path" type="text" :value="old('poster_path', $content->poster_path)" placeholder="/abc123.jpg or https://..." :invalid="$errors->has('poster_path')" />
-                        <p class="text-xs text-cc-text-muted">Optional. Accepts TMDB path or full image URL.</p>
+                        <p class="text-xs text-cc-text-muted">TMDB path (`/abc.jpg`) o URL completa (`https://...`).</p>
+                        @if ($content->tmdb_id && $content->tmdb_type)
+                            <label class="inline-flex items-center gap-2 text-xs text-cc-text-muted">
+                                <input
+                                    type="checkbox"
+                                    name="poster_reset_tmdb"
+                                    value="1"
+                                    @checked(old('poster_reset_tmdb'))
+                                    class="rounded-sm border-cc-border bg-cc-bg-elevated text-cc-accent focus:ring-0"
+                                >
+                                <span>Reset poster to TMDB value</span>
+                            </label>
+                        @endif
                         @error('poster_path')
                             <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
@@ -134,23 +146,52 @@
                         <label for="backdrop_path" class="text-sm font-medium text-cc-text-secondary">Alternative backdrop (TMDB path or URL)</label>
                         <x-ui.input id="backdrop_path" name="backdrop_path" type="text" :value="old('backdrop_path', $content->backdrop_path)" placeholder="/xyz789.jpg or https://..." :invalid="$errors->has('backdrop_path')" />
                         <p class="text-xs text-cc-text-muted">Optional. Used for hero/detail backgrounds when available.</p>
+                        @if ($content->tmdb_id && $content->tmdb_type)
+                            <label class="inline-flex items-center gap-2 text-xs text-cc-text-muted">
+                                <input
+                                    type="checkbox"
+                                    name="backdrop_reset_tmdb"
+                                    value="1"
+                                    @checked(old('backdrop_reset_tmdb'))
+                                    class="rounded-sm border-cc-border bg-cc-bg-elevated text-cc-accent focus:ring-0"
+                                >
+                                <span>Reset backdrop to TMDB value</span>
+                            </label>
+                        @endif
                         @error('backdrop_path')
                             <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="cc-stack-2">
-                        <label for="picture" class="text-sm font-medium text-cc-text-secondary">Poster image</label>
+                        <label for="poster_image" class="text-sm font-medium text-cc-text-secondary">Poster image upload (local)</label>
                         <input
                             type="file"
-                            name="picture"
-                            id="picture"
+                            name="poster_image"
+                            id="poster_image"
                             accept="image/*"
                             class="cc-input w-full text-sm file:mr-3 file:rounded-sm file:border-0 file:bg-cc-bg-elevated file:px-3 file:py-2 file:text-cc-text-secondary hover:file:text-cc-text-primary"
                         >
                         @if ($currentPoster)
                             <img src="{{ $currentPoster }}" alt="{{ $content->title }} poster" class="mt-2 h-40 w-auto rounded-sm border border-cc-border object-cover">
                         @endif
+                        @error('poster_image')
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="cc-stack-2">
+                        <label for="backdrop_image" class="text-sm font-medium text-cc-text-secondary">Backdrop / hero image upload (local)</label>
+                        <input
+                            type="file"
+                            name="backdrop_image"
+                            id="backdrop_image"
+                            accept="image/*"
+                            class="cc-input w-full text-sm file:mr-3 file:rounded-sm file:border-0 file:bg-cc-bg-elevated file:px-3 file:py-2 file:text-cc-text-secondary hover:file:text-cc-text-primary"
+                        >
+                        @error('backdrop_image')
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="cc-stack-2">

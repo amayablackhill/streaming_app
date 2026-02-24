@@ -9,6 +9,7 @@ use App\Jobs\ProbeVideoJob;
 use App\Jobs\TranscodeToHlsJob;
 use App\Models\Content;
 use App\Models\VideoAsset;
+use App\Services\Tmdb\TmdbClient;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -32,8 +33,8 @@ class AdminContentController extends Controller
                 'picture' => $this->handleImageUpload($request, $request->type),
                 'video' => null,
                 'is_featured' => $request->boolean('is_featured') && $request->type === 'film',
-                'poster_path' => $this->nullableTrimmed($request->input('poster_path')),
-                'backdrop_path' => $this->nullableTrimmed($request->input('backdrop_path')),
+                'poster_path' => $this->resolveArtworkValue($request, 'poster_path', 'poster_image'),
+                'backdrop_path' => $this->resolveArtworkValue($request, 'backdrop_path', 'backdrop_image'),
             ]);
 
             if ($content->is_featured) {
@@ -58,7 +59,7 @@ class AdminContentController extends Controller
         });
     }
 
-    public function updateContent(ContentRequest $request, int $id)
+    public function updateContent(ContentRequest $request, int $id, TmdbClient $tmdbClient)
     {
         $content = Content::findOrFail($id);
         $this->authorize('update', $content);
@@ -75,6 +76,8 @@ class AdminContentController extends Controller
                 ? ($request->boolean('is_featured') && $content->type === 'film')
                 : (bool) $content->is_featured;
 
+            $tmdbArtwork = $this->resolveTmdbArtworkReset($request, $content, $tmdbClient);
+
             $content->update([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -87,8 +90,22 @@ class AdminContentController extends Controller
                 'picture' => $request->hasFile('picture') ? $this->handleImageUpload($request, $content->type) : $content->picture,
                 'video' => $videoAsset?->original_filename ?? $content->video,
                 'is_featured' => $isFeatured,
-                'poster_path' => $this->nullableTrimmed($request->input('poster_path')),
-                'backdrop_path' => $this->nullableTrimmed($request->input('backdrop_path')),
+                'poster_path' => $this->resolveArtworkValue(
+                    $request,
+                    'poster_path',
+                    'poster_image',
+                    $content->poster_path,
+                    $tmdbArtwork['poster_path'] ?? null,
+                    $request->boolean('poster_reset_tmdb')
+                ),
+                'backdrop_path' => $this->resolveArtworkValue(
+                    $request,
+                    'backdrop_path',
+                    'backdrop_image',
+                    $content->backdrop_path,
+                    $tmdbArtwork['backdrop_path'] ?? null,
+                    $request->boolean('backdrop_reset_tmdb')
+                ),
             ]);
 
             if ($isFeatured && $content->type === 'film') {
@@ -185,5 +202,66 @@ class AdminContentController extends Controller
         $trimmed = trim($value);
 
         return $trimmed === '' ? null : $trimmed;
+    }
+
+    private function resolveArtworkValue(
+        ContentRequest $request,
+        string $pathField,
+        string $fileField,
+        ?string $currentValue = null,
+        ?string $tmdbValue = null,
+        bool $useTmdbReset = false
+    ): ?string {
+        if ($useTmdbReset) {
+            return $tmdbValue;
+        }
+
+        if ($request->hasFile($fileField)) {
+            $file = $request->file($fileField);
+            $storedPath = $file->storeAs(
+                'content/artwork',
+                time().'_'.uniqid().'_'.$fileField.'.'.$file->getClientOriginalExtension(),
+                'public'
+            );
+
+            return 'local:'.$storedPath;
+        }
+
+        if ($request->exists($pathField)) {
+            return $this->nullableTrimmed($request->input($pathField));
+        }
+
+        return $currentValue;
+    }
+
+    private function resolveTmdbArtworkReset(ContentRequest $request, Content $content, TmdbClient $tmdbClient): ?array
+    {
+        $shouldResetPoster = $request->boolean('poster_reset_tmdb');
+        $shouldResetBackdrop = $request->boolean('backdrop_reset_tmdb');
+
+        if (! $shouldResetPoster && ! $shouldResetBackdrop) {
+            return null;
+        }
+
+        if (! $content->tmdb_id || ! $content->tmdb_type) {
+            return [
+                'poster_path' => null,
+                'backdrop_path' => null,
+            ];
+        }
+
+        try {
+            $details = $tmdbClient->getDetails($content->tmdb_type, (int) $content->tmdb_id);
+        } catch (\Throwable $exception) {
+            return [
+                'poster_path' => $content->poster_path,
+                'backdrop_path' => $content->backdrop_path,
+            ];
+        }
+
+        return [
+            'poster_path' => $details['poster_path'] ?? null,
+            'backdrop_path' => $details['backdrop_path'] ?? null,
+        ];
     }
 }

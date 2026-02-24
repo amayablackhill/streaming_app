@@ -173,7 +173,7 @@
                     <div class="cc-stack-2">
                         <label for="poster_path" class="text-sm font-medium text-cc-text-secondary">Alternative poster (TMDB path or URL)</label>
                         <x-ui.input id="poster_path" name="poster_path" type="text" :value="old('poster_path')" placeholder="/abc123.jpg or https://..." :invalid="$errors->has('poster_path')" />
-                        <p class="text-xs text-cc-text-muted">Optional. Accepts TMDB path or full image URL.</p>
+                        <p class="text-xs text-cc-text-muted">Optional. TMDB path (`/abc.jpg`) or full URL (`https://...`).</p>
                         @error('poster_path')
                             <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
@@ -189,15 +189,29 @@
                     </div>
 
                     <div class="cc-stack-2">
-                        <label for="picture" class="text-sm font-medium text-cc-text-secondary">Poster image</label>
+                        <label for="poster_image" class="text-sm font-medium text-cc-text-secondary">Poster image upload (local)</label>
                         <input
                             type="file"
-                            name="picture"
-                            id="picture"
+                            name="poster_image"
+                            id="poster_image"
                             accept="image/*"
                             class="cc-input w-full text-sm file:mr-3 file:rounded-sm file:border-0 file:bg-cc-bg-elevated file:px-3 file:py-2 file:text-cc-text-secondary hover:file:text-cc-text-primary"
                         >
-                        @error('picture')
+                        @error('poster_image')
+                            <p class="text-xs text-rose-300">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="cc-stack-2">
+                        <label for="backdrop_image" class="text-sm font-medium text-cc-text-secondary">Backdrop / hero image upload (local)</label>
+                        <input
+                            type="file"
+                            name="backdrop_image"
+                            id="backdrop_image"
+                            accept="image/*"
+                            class="cc-input w-full text-sm file:mr-3 file:rounded-sm file:border-0 file:bg-cc-bg-elevated file:px-3 file:py-2 file:text-cc-text-secondary hover:file:text-cc-text-primary"
+                        >
+                        @error('backdrop_image')
                             <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>

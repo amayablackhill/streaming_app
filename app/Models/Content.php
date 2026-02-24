@@ -101,8 +101,27 @@ class Content extends Model
             return null;
         }
 
+        if (Str::startsWith($cleanValue, 'local:')) {
+            $localPath = ltrim(Str::after($cleanValue, 'local:'), '/');
+
+            return asset('storage/'.$localPath);
+        }
+
         if (Str::startsWith($cleanValue, ['http://', 'https://'])) {
             return $cleanValue;
+        }
+
+        if (
+            Str::startsWith($cleanValue, 'storage/')
+            || Str::startsWith($cleanValue, 'content/')
+            || Str::startsWith($cleanValue, 'movies/')
+            || Str::startsWith($cleanValue, 'series/')
+        ) {
+            $path = Str::startsWith($cleanValue, 'storage/')
+                ? $cleanValue
+                : 'storage/'.$cleanValue;
+
+            return asset($path);
         }
 
         return $this->tmdbImageUrl($cleanValue, $tmdbSize);
