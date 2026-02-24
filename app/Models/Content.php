@@ -59,8 +59,9 @@ class Content extends Model
 
     public function getPosterUrlAttribute(): ?string
     {
-        if (!empty($this->poster_path)) {
-            return $this->tmdbImageUrl($this->poster_path, 'w500');
+        $alternatePoster = $this->resolveAlternateImage($this->poster_path, 'w500');
+        if ($alternatePoster) {
+            return $alternatePoster;
         }
 
         return $this->legacyImageUrl();
@@ -68,8 +69,9 @@ class Content extends Model
 
     public function getBackdropUrlAttribute(): ?string
     {
-        if (!empty($this->backdrop_path)) {
-            return $this->tmdbImageUrl($this->backdrop_path, 'original');
+        $alternateBackdrop = $this->resolveAlternateImage($this->backdrop_path, 'original');
+        if ($alternateBackdrop) {
+            return $alternateBackdrop;
         }
 
         return $this->legacyImageUrl();
@@ -90,6 +92,20 @@ class Content extends Model
         $cleanPath = Str::start($path, '/');
 
         return "https://image.tmdb.org/t/p/{$size}{$cleanPath}";
+    }
+
+    private function resolveAlternateImage(?string $value, string $tmdbSize): ?string
+    {
+        $cleanValue = trim((string) $value);
+        if ($cleanValue === '') {
+            return null;
+        }
+
+        if (Str::startsWith($cleanValue, ['http://', 'https://'])) {
+            return $cleanValue;
+        }
+
+        return $this->tmdbImageUrl($cleanValue, $tmdbSize);
     }
 
     private function legacyImageUrl(): ?string

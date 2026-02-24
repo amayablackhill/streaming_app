@@ -171,17 +171,17 @@
 
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="cc-stack-2">
-                        <label for="poster_path" class="text-sm font-medium text-cc-text-secondary">Alternative poster path (TMDB)</label>
-                        <x-ui.input id="poster_path" name="poster_path" type="text" :value="old('poster_path')" placeholder="/abc123.jpg" :invalid="$errors->has('poster_path')" />
-                        <p class="text-xs text-cc-text-muted">Optional. Uses TMDB CDN when set.</p>
+                        <label for="poster_path" class="text-sm font-medium text-cc-text-secondary">Alternative poster (TMDB path or URL)</label>
+                        <x-ui.input id="poster_path" name="poster_path" type="text" :value="old('poster_path')" placeholder="/abc123.jpg or https://..." :invalid="$errors->has('poster_path')" />
+                        <p class="text-xs text-cc-text-muted">Optional. Accepts TMDB path or full image URL.</p>
                         @error('poster_path')
                             <p class="text-xs text-rose-300">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="cc-stack-2">
-                        <label for="backdrop_path" class="text-sm font-medium text-cc-text-secondary">Alternative backdrop path (TMDB)</label>
-                        <x-ui.input id="backdrop_path" name="backdrop_path" type="text" :value="old('backdrop_path')" placeholder="/xyz789.jpg" :invalid="$errors->has('backdrop_path')" />
+                        <label for="backdrop_path" class="text-sm font-medium text-cc-text-secondary">Alternative backdrop (TMDB path or URL)</label>
+                        <x-ui.input id="backdrop_path" name="backdrop_path" type="text" :value="old('backdrop_path')" placeholder="/xyz789.jpg or https://..." :invalid="$errors->has('backdrop_path')" />
                         <p class="text-xs text-cc-text-muted">Optional. Used for hero/detail backdrop.</p>
                         @error('backdrop_path')
                             <p class="text-xs text-rose-300">{{ $message }}</p>
