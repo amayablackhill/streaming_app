@@ -236,7 +236,14 @@
 
         <div class="mt-3 border-t border-cc-border pt-3">
             @auth
-                <p class="mb-2 text-sm text-cc-text-secondary">{{ $user->name ?? $user->username }}</p>
+                <div class="mb-2 flex items-center gap-2">
+                    <x-ui.badge :tone="$isAdmin ? 'premium' : 'neutral'">
+                        {{ $isAdmin ? 'curator' : 'member' }}
+                    </x-ui.badge>
+                    <p class="min-w-0 flex-1 truncate text-sm leading-6 text-cc-text-secondary">
+                        {{ $user->name ?? $user->username }}
+                    </p>
+                </div>
                 <div class="flex items-center gap-2">
                     <x-ui.button href="{{ route('profile.edit') }}" variant="ghost" size="sm">Profile</x-ui.button>
                     <form method="POST" action="{{ route('logout') }}">
