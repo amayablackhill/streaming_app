@@ -44,6 +44,38 @@ class SecurityHardeningTest extends TestCase
             ->assertStatus(503);
     }
 
+    public function test_search_route_is_rate_limited_after_threshold(): void
+    {
+        $user = User::factory()->create();
+
+        for ($i = 0; $i < 40; $i++) {
+            $this->actingAs($user)
+                ->get(route('search', ['q' => 'alien']))
+                ->assertStatus(200);
+        }
+
+        $this->actingAs($user)
+            ->get(route('search', ['q' => 'alien']))
+            ->assertStatus(429);
+    }
+
+    public function test_admin_tmdb_search_is_rate_limited_after_threshold(): void
+    {
+        config()->set('security.features.tmdb_import', true);
+        config()->set('services.tmdb.token', '');
+        $admin = $this->makeAdmin();
+
+        for ($i = 0; $i < 20; $i++) {
+            $this->actingAs($admin)
+                ->get(route('admin.tmdb.search'))
+                ->assertStatus(200);
+        }
+
+        $this->actingAs($admin)
+            ->get(route('admin.tmdb.search'))
+            ->assertStatus(429);
+    }
+
     private function makeAdmin(): User
     {
         $admin = User::factory()->create();
