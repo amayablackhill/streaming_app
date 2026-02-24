@@ -61,7 +61,13 @@
 
                     <div class="cc-stack-2">
                         <label for="release_date" class="text-sm font-medium text-cc-text-secondary">Release date *</label>
-                        <x-ui.input id="release_date" name="release_date" type="date" :value="old('release_date', $content->release_date)" :invalid="$errors->has('release_date')" />
+                        <x-ui.input
+                            id="release_date"
+                            name="release_date"
+                            type="date"
+                            :value="old('release_date', optional($content->release_date)->format('Y-m-d'))"
+                            :invalid="$errors->has('release_date')"
+                        />
                     </div>
 
                     <div class="cc-stack-2">

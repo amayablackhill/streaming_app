@@ -216,7 +216,7 @@
                             </div>
                             <div class="flex flex-col gap-1">
                                 <span class="text-cc-text-muted">Release Date</span>
-                                <span class="text-cc-text-primary">{{ $content->release_date ?: 'N/A' }}</span>
+                                <span class="text-cc-text-primary">{{ $content->release_date ? $content->release_date->toDateString() : 'N/A' }}</span>
                             </div>
                             @if ($ratingLabel)
                                 <div class="flex flex-col gap-1">
