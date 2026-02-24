@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'oplog' => \App\Http\Middleware\OperationalEventLogger::class,
+        'feature' => \App\Http\Middleware\EnsureFeatureEnabled::class,
     ];
 }

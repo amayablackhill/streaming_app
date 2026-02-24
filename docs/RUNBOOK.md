@@ -39,6 +39,16 @@
 railway logs -s web -e production --lines 200
 ```
 
+### Incident kill-switches (no deploy required)
+Disable sensitive surfaces quickly from Railway variables:
+- `ADMIN_WRITES_ENABLED=false` (blocks admin write actions)
+- `TMDB_IMPORT_ENABLED=false` (blocks TMDB search/import endpoints)
+
+Then restart/redeploy service:
+```bash
+railway redeploy -s web -e production --yes
+```
+
 ### Migrations
 ```bash
 railway ssh -s web "cd /var/www/html && php artisan migrate --force"

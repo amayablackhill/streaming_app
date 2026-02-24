@@ -34,3 +34,8 @@
 - Decision: Replace hardcoded role checks with role-based authorization.
 - Why: Safer and maintainable authZ model.
 - Tradeoff: Requires role seeding and migration discipline.
+
+## D-008 Operational feature flags for incident response
+- Decision: Add env-driven kill switches for admin writes and TMDB import surfaces.
+- Why: During abuse/spikes, ops can disable risky write/import paths immediately without code changes.
+- Tradeoff: Requires explicit runbook discipline and variable hygiene in production.

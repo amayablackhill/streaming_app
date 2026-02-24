@@ -36,29 +36,29 @@ Route::prefix('admin')->middleware(['auth', 'role:admin', 'throttle:admin', 'opl
     Route::get('/series', [AdminPageController::class, 'seriesTable'])->name('series.table');
 
     Route::get('/addContent', [AdminPageController::class, 'addContentForm'])->name('content.add');
-    Route::post('/addContent', [AdminContentController::class, 'addContent'])->middleware('throttle:uploads')->name('content.add');
+    Route::post('/addContent', [AdminContentController::class, 'addContent'])->middleware(['feature:admin_writes', 'throttle:uploads'])->name('content.add');
 
     Route::get('/editContent/{id}', [AdminPageController::class, 'editContentForm'])->name('content.edit');
-    Route::put('/editContent/{id}', [AdminContentController::class, 'updateContent'])->middleware('throttle:uploads')->name('content.update');
-    Route::delete('/deleteContent/{id}', [AdminContentController::class, 'destroyContent'])->name('content.destroy');
+    Route::put('/editContent/{id}', [AdminContentController::class, 'updateContent'])->middleware(['feature:admin_writes', 'throttle:uploads'])->name('content.update');
+    Route::delete('/deleteContent/{id}', [AdminContentController::class, 'destroyContent'])->middleware('feature:admin_writes')->name('content.destroy');
 
     Route::get('/series/{id}/seasons', [AdminPageController::class, 'seasonsManage'])->name('seasons.manage');
-    Route::post('/series/{id}/seasons', [SeasonEpisodeController::class, 'storeSeason'])->middleware('throttle:uploads')->name('seasons.store');
+    Route::post('/series/{id}/seasons', [SeasonEpisodeController::class, 'storeSeason'])->middleware(['feature:admin_writes', 'throttle:uploads'])->name('seasons.store');
 
-    Route::post('/seasons/{id}/episodes', [SeasonEpisodeController::class, 'storeEpisode'])->middleware('throttle:uploads')->name('episodes.store');
-    Route::delete('/seasons/{id}/episodes/{episodeId}', [SeasonEpisodeController::class, 'destroyEpisode'])->name('episodes.destroy');
-    Route::delete('/deleteSeason/{id}', [SeasonEpisodeController::class, 'destroySeason'])->name('seasons.destroy');
+    Route::post('/seasons/{id}/episodes', [SeasonEpisodeController::class, 'storeEpisode'])->middleware(['feature:admin_writes', 'throttle:uploads'])->name('episodes.store');
+    Route::delete('/seasons/{id}/episodes/{episodeId}', [SeasonEpisodeController::class, 'destroyEpisode'])->middleware('feature:admin_writes')->name('episodes.destroy');
+    Route::delete('/deleteSeason/{id}', [SeasonEpisodeController::class, 'destroySeason'])->middleware('feature:admin_writes')->name('seasons.destroy');
     Route::get('/seasons/{id}/episodes/create', [AdminPageController::class, 'createEpisodeForm'])->name('episodes.create');
     Route::get('/seasons/{id}/episodes/{episodeId}/edit', [AdminPageController::class, 'editEpisodeForm'])->name('episodes.edit');
-    Route::post('/seasons/{id}/episodes/{episodeId}/edit', [SeasonEpisodeController::class, 'updateEpisode'])->middleware('throttle:uploads')->name('episodes.update');
+    Route::post('/seasons/{id}/episodes/{episodeId}/edit', [SeasonEpisodeController::class, 'updateEpisode'])->middleware(['feature:admin_writes', 'throttle:uploads'])->name('episodes.update');
     Route::get('/video-assets/{videoAsset}', [VideoAssetController::class, 'show'])->name('video-assets.show');
     Route::get('/video-assets/{videoAsset}/status', [VideoAssetController::class, 'status'])->name('video-assets.status');
     Route::get('/health', [AdminHealthController::class, 'index'])->name('admin.health');
     Route::get('/health/api', [AdminHealthController::class, 'api'])->name('admin.health.api');
     Route::get('/health/video-pipeline', VideoPipelineHealthController::class)->name('admin.health.video-pipeline');
-    Route::get('/tmdb/search', [TmdbImportController::class, 'search'])->middleware('throttle:tmdb')->name('admin.tmdb.search');
-    Route::post('/tmdb/import', [TmdbImportController::class, 'import'])->middleware('throttle:tmdb')->name('admin.tmdb.import');
-    Route::post('/tmdb/series/{content}/episodes/import', [TmdbImportController::class, 'importSeriesEpisodes'])->middleware('throttle:tmdb')->name('admin.tmdb.series.episodes.import');
+    Route::get('/tmdb/search', [TmdbImportController::class, 'search'])->middleware(['feature:tmdb_import', 'throttle:tmdb'])->name('admin.tmdb.search');
+    Route::post('/tmdb/import', [TmdbImportController::class, 'import'])->middleware(['feature:tmdb_import', 'throttle:tmdb'])->name('admin.tmdb.import');
+    Route::post('/tmdb/series/{content}/episodes/import', [TmdbImportController::class, 'importSeriesEpisodes'])->middleware(['feature:tmdb_import', 'throttle:tmdb'])->name('admin.tmdb.series.episodes.import');
 
     Route::fallback([AdminPageController::class, 'fallback']);
 });
