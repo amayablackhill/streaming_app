@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <style>
+    .cc-mark { fill: #0f0f0f; }
+    @media (prefers-color-scheme: dark) {
+      .cc-mark { fill: #ffffff; }
+    }
+  </style>
   <text x="256" y="256"
         text-anchor="middle"
-        fill="#ffffff"
+        class="cc-mark"
         font-size="240"
         font-family="Helvetica Neue, Arial, sans-serif"
         font-weight="800"
